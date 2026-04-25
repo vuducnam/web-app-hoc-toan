@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Đăng nhập phụ huynh — Math SGK</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --canvas:#f8fafc; --brand:#0cbbab; --brand-dark:#067a70; --ink:#0f172a; --ink-600:#475569; }
+  body { background: var(--canvas); font-family: Nunito, sans-serif; color: var(--ink); }
+  /* flat, business style — no chunky shadows, no playfulness */
+  .shadow-flat { box-shadow: 0 1px 2px rgb(15 23 42 / .06); }
+  .shadow-soft { box-shadow: 0 4px 12px rgb(15 23 42 / .08); }
+</style>
+</head>
+<body class="min-h-screen grid place-items-center p-6">
+
+<div class="w-full max-w-md">
+  <!-- Brand header — no mascot, minimal -->
+  <div class="flex items-center gap-3 justify-center mb-8">
+    <div class="w-9 h-9 rounded-lg bg-[var(--brand-dark)] grid place-items-center text-white font-bold">M</div>
+    <span class="font-bold text-lg">Math SGK · Phụ huynh</span>
+  </div>
+
+  <!-- Card — flat, thin border, no shadow-chunky -->
+  <div class="bg-white rounded-lg shadow-soft border border-slate-200 p-8">
+    <h1 class="text-2xl font-bold">Đăng nhập phụ huynh</h1>
+    <p class="text-sm text-[var(--ink-600)] mt-1">Theo dõi tiến độ học của con một cách nhẹ nhàng, không áp lực.</p>
+
+    <form class="mt-6 space-y-4">
+      <div>
+        <label for="email" class="block text-sm font-semibold mb-1.5">Email</label>
+        <div class="relative">
+          <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="email" type="email" placeholder="anhchi@email.com"
+            class="w-full pl-10 pr-4 py-2.5 rounded-md border border-slate-300 focus:border-[var(--brand-dark)] focus:ring-2 focus:ring-[var(--brand-dark)]/20 focus:outline-none text-sm" />
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="password" class="block text-sm font-semibold">Mật khẩu</label>
+          <a href="#" class="text-xs text-[var(--brand-dark)] hover:underline">Quên mật khẩu?</a>
+        </div>
+        <div class="relative">
+          <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="password" type="password" placeholder="••••••••"
+            class="w-full pl-10 pr-10 py-2.5 rounded-md border border-slate-300 focus:border-[var(--brand-dark)] focus:ring-2 focus:ring-[var(--brand-dark)]/20 focus:outline-none text-sm" />
+          <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <label class="flex items-center gap-2 text-sm text-[var(--ink-600)]">
+        <input type="checkbox" class="rounded border-slate-300" />
+        Ghi nhớ thiết bị này
+      </label>
+
+      <a href="./parent-dashboard.html" class="block w-full py-2.5 rounded-md bg-[var(--brand-dark)] text-white font-semibold text-center shadow-flat hover:shadow-soft transition text-sm">
+        Đăng nhập
+      </a>
+    </form>
+
+    <div class="my-6 flex items-center gap-3 text-xs text-slate-400">
+      <div class="flex-1 h-px bg-slate-200"></div>
+      <span>hoặc</span>
+      <div class="flex-1 h-px bg-slate-200"></div>
+    </div>
+
+    <button class="w-full py-2.5 rounded-md border border-slate-300 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-slate-50">
+      <!-- Google logo placeholder -->
+      <span class="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 via-green-500 to-red-500"></span>
+      Đăng nhập với Google
+    </button>
+
+    <p class="text-sm text-[var(--ink-600)] text-center mt-6">
+      Chưa có tài khoản?
+      <a href="#" class="text-[var(--brand-dark)] font-semibold hover:underline">Đăng ký</a>
+    </p>
+  </div>
+
+  <!-- Legal strip -->
+  <div class="mt-6 flex items-center justify-center gap-4 text-xs text-slate-500">
+    <a href="#" class="hover:text-slate-700">Điều khoản</a>
+    <span>·</span>
+    <a href="#" class="hover:text-slate-700">Quyền riêng tư</a>
+    <span>·</span>
+    <a href="./student-signin.html" class="hover:text-slate-700">Đăng nhập học sinh</a>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

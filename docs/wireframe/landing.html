@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Math SGK — Luyện toán lớp 4-5 vui vẻ mỗi ngày</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --sun:#f0b429; --sun-dark:#a17a14; --coral:#ff3366; --ink:#0f172a; }
+  body { background: var(--paper); font-family: Nunito, system-ui, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, system-ui, sans-serif; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.15); }
+  .btn:active { transform: translateY(3px); box-shadow: none !important; }
+</style>
+</head>
+<body class="min-h-screen">
+<!-- NAV -->
+<nav class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-[var(--brand)] grid place-items-center text-white font-display font-bold">M</div>
+    <span class="font-display text-xl font-bold">Math SGK</span>
+  </div>
+  <div class="flex items-center gap-3 text-sm">
+    <a href="./student-signin.html" class="px-4 py-2 rounded-lg text-[var(--brand-dark)] font-semibold">Học sinh</a>
+    <a href="./parent-signin.html" class="px-4 py-2 rounded-lg border border-slate-200 font-semibold">Phụ huynh</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="max-w-6xl mx-auto px-6 pt-12 pb-20 grid md:grid-cols-2 gap-10 items-center">
+  <div>
+    <span class="inline-block bg-[var(--sun)]/20 text-[var(--sun-dark)] font-bold text-xs uppercase tracking-wider px-3 py-1 rounded-full">Theo SGK Kết Nối Tri Thức</span>
+    <h1 class="font-display text-5xl md:text-6xl font-bold mt-4 leading-tight">
+      Luyện toán <span class="text-[var(--brand)]">vui vẻ</span><br/>mỗi ngày 10 phút
+    </h1>
+    <p class="mt-5 text-lg text-slate-600 max-w-lg">
+      Ứng dụng luyện toán lớp 4-5 bám sát chương trình SGK Kết Nối Tri Thức. Bạn Mimi sẽ đồng hành cùng em học mỗi ngày!
+    </p>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href="./student-signin.html" class="btn chunky-sun bg-[var(--sun)] text-[var(--ink)] font-display font-bold px-8 py-4 rounded-2xl text-lg">
+        Em là học sinh
+      </a>
+      <a href="./parent-signin.html" class="btn chunky-flat bg-white border-2 border-slate-200 font-semibold px-8 py-4 rounded-2xl text-lg">
+        Tôi là phụ huynh
+      </a>
+    </div>
+    <div class="mt-8 flex items-center gap-6 text-sm text-slate-500">
+      <span class="flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4"></i>An toàn cho trẻ</span>
+      <span class="flex items-center gap-2"><i data-lucide="wifi-off" class="w-4 h-4"></i>Hoạt động offline</span>
+      <span class="flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i>Không quảng cáo</span>
+    </div>
+  </div>
+
+  <!-- HERO ILLUSTRATION: Mimi placeholder + floating cards -->
+  <div class="relative h-96">
+    <!-- annotation: Mimi 'cheering' state SVG here, 240px -->
+    <div class="absolute inset-0 grid place-items-center">
+      <div class="w-60 h-60 rounded-full bg-[var(--sun)] grid place-items-center text-white font-display text-2xl font-bold ring-8 ring-[var(--sun)]/20">
+        MIMI<br/>(cheering)
+      </div>
+    </div>
+    <div class="absolute top-4 left-4 bg-white rounded-2xl chunky-flat px-4 py-3 text-sm font-bold">
+      <span class="text-[var(--coral)]">🔥 7</span> ngày liên tiếp
+    </div>
+    <div class="absolute bottom-8 right-0 bg-white rounded-2xl chunky-flat px-4 py-3 text-sm font-bold flex items-center gap-2">
+      <i data-lucide="star" class="w-4 h-4 text-[var(--sun)]"></i>
+      <span>+120 XP</span>
+    </div>
+    <div class="absolute top-24 right-4 bg-[var(--brand)] text-white rounded-full px-3 py-1 text-xs font-bold">Tuyệt vời!</div>
+  </div>
+</section>
+
+<!-- FEATURES: role split -->
+<section class="max-w-6xl mx-auto px-6 pb-20">
+  <h2 class="font-display text-3xl font-bold text-center mb-10">Hai trải nghiệm, một mục tiêu</h2>
+  <div class="grid md:grid-cols-2 gap-6">
+    <!-- STUDENT -->
+    <div class="bg-white rounded-3xl chunky-flat p-8 border-2 border-[var(--brand)]/20">
+      <div class="w-16 h-16 rounded-2xl bg-[var(--brand)]/10 grid place-items-center mb-5">
+        <i data-lucide="gamepad-2" class="w-8 h-8 text-[var(--brand)]"></i>
+      </div>
+      <h3 class="font-display text-2xl font-bold mb-3">Dành cho học sinh</h3>
+      <ul class="space-y-2 text-slate-700">
+        <li class="flex gap-2"><span class="text-[var(--brand)]">•</span>Luyện theo chủ đề SGK lớp 4-5</li>
+        <li class="flex gap-2"><span class="text-[var(--brand)]">•</span>Huy chương, XP, chuỗi ngày</li>
+        <li class="flex gap-2"><span class="text-[var(--brand)]">•</span>Mimi khen thưởng mỗi lần đúng</li>
+        <li class="flex gap-2"><span class="text-[var(--brand)]">•</span>Đăng nhập bằng mã PIN 4 số</li>
+      </ul>
+      <a href="./student-signin.html" class="btn chunky-brand bg-[var(--brand)] text-white font-display font-bold px-6 py-3 rounded-2xl inline-block mt-6">
+        Vào luyện ngay
+      </a>
+    </div>
+
+    <!-- PARENT -->
+    <div class="bg-white rounded-2xl shadow-sm p-8 border border-slate-200">
+      <div class="w-12 h-12 rounded-lg bg-slate-100 grid place-items-center mb-5">
+        <i data-lucide="bar-chart-3" class="w-6 h-6 text-slate-700"></i>
+      </div>
+      <h3 class="text-2xl font-bold mb-3">Dành cho phụ huynh</h3>
+      <ul class="space-y-2 text-slate-600 text-sm">
+        <li class="flex gap-2"><span>•</span>Đánh giá tổng hợp 0-100 điểm</li>
+        <li class="flex gap-2"><span>•</span>Phân tích điểm mạnh, điểm yếu</li>
+        <li class="flex gap-2"><span>•</span>Nhiệt đồ luyện tập 7 ngày</li>
+        <li class="flex gap-2"><span>•</span>Không áp lực, không so sánh</li>
+      </ul>
+      <a href="./parent-signin.html" class="bg-[var(--brand-dark)] text-white font-semibold px-5 py-2.5 rounded-lg inline-block mt-6 text-sm hover:shadow-md transition">
+        Đăng nhập phụ huynh
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-slate-200 py-6 text-center text-sm text-slate-500">
+  © 2026 Math SGK — Không thu thập dữ liệu nhạy cảm của trẻ.
+</footer>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

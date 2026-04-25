@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Kết quả buổi học</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --sun:#f0b429; --sun-dark:#a17a14; --coral:#ff3366; --ink:#0f172a; --success:#22c55e;
+    --m0:#e5e7eb; --m1:#fcd34d; --m2:#34d399; --m3:#0cbbab;
+  }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .btn:active { transform: translateY(3px); box-shadow: none !important; }
+  @keyframes pop { 0% { transform: scale(.7); opacity:0; } 100% { transform: scale(1); opacity:1; } }
+  .pop-in { animation: pop .5s cubic-bezier(.34,1.56,.64,1) both; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<main class="max-w-3xl mx-auto px-5 py-8 space-y-6">
+
+  <!-- HERO summary -->
+  <section class="bg-gradient-to-br from-[var(--brand)]/10 via-white to-[var(--sun)]/10 rounded-3xl chunky-flat p-8 text-center pop-in">
+    <!-- annotation: Mimi 'excited' state SVG 140px -->
+    <div class="w-36 h-36 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold">MIMI<br/>(excited)</div>
+    <h1 class="font-display text-4xl font-bold mt-4">Hoàn thành rồi!</h1>
+    <p class="text-slate-600 mt-1">Bạn đã làm xong buổi luyện tập về <b>Phân số</b></p>
+  </section>
+
+  <!-- KEY STATS -->
+  <section class="grid grid-cols-3 gap-3">
+    <div class="bg-white rounded-2xl chunky-flat p-4 text-center">
+      <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">Đúng</div>
+      <div class="font-display text-4xl font-bold text-[var(--success)] mt-1">8<span class="text-xl text-slate-400">/10</span></div>
+      <div class="text-xs text-slate-500 mt-0.5">80% chính xác</div>
+    </div>
+    <div class="bg-white rounded-2xl chunky-flat p-4 text-center">
+      <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">XP nhận</div>
+      <div class="font-display text-4xl font-bold text-[var(--sun-dark)] mt-1 flex items-center justify-center gap-1">
+        <i data-lucide="star" class="w-6 h-6 text-[var(--sun)]" fill="currentColor"></i>+120
+      </div>
+      <div class="text-xs text-slate-500 mt-0.5">Tổng: 1,360</div>
+    </div>
+    <div class="bg-white rounded-2xl chunky-flat p-4 text-center">
+      <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">Chuỗi</div>
+      <div class="font-display text-4xl font-bold text-[var(--coral)] mt-1 flex items-center justify-center gap-1">
+        <i data-lucide="flame" class="w-6 h-6"></i>8
+      </div>
+      <div class="text-xs text-slate-500 mt-0.5">ngày liên tiếp</div>
+    </div>
+  </section>
+
+  <!-- BADGES UNLOCKED -->
+  <section class="bg-white rounded-3xl chunky-flat p-6">
+    <div class="flex items-center gap-2 mb-3">
+      <i data-lucide="award" class="w-5 h-5 text-[var(--sun)]"></i>
+      <h2 class="font-display text-xl font-bold">Huy chương mới mở</h2>
+    </div>
+    <div class="flex gap-3">
+      <div class="flex-1 bg-[var(--sun)]/10 rounded-2xl p-4 border-2 border-[var(--sun)] text-center pop-in">
+        <div class="w-14 h-14 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white text-xl">🏅</div>
+        <div class="font-bold mt-2">Tự Tin</div>
+        <div class="text-[10px] font-bold text-amber-700">ĐỒNG · Độ chính xác ≥ 80%</div>
+      </div>
+      <div class="flex-1 bg-orange-50 rounded-2xl p-4 border-2 border-orange-400 text-center pop-in" style="animation-delay:.1s">
+        <div class="w-14 h-14 mx-auto rounded-full bg-orange-400 grid place-items-center text-white text-xl">⚡</div>
+        <div class="font-bold mt-2">Tính Nhanh</div>
+        <div class="text-[10px] font-bold text-orange-700">ĐỒNG · 5 câu dưới 20 giây</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASTERY CHANGES -->
+  <section class="bg-white rounded-3xl chunky-flat p-6">
+    <div class="flex items-center gap-2 mb-4">
+      <i data-lucide="trending-up" class="w-5 h-5 text-[var(--brand)]"></i>
+      <h2 class="font-display text-xl font-bold">Tiến bộ kỹ năng</h2>
+    </div>
+
+    <!-- skill 1 — bucket up -->
+    <div class="py-3 border-b border-slate-100">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-semibold">Rút gọn phân số</span>
+        <span class="text-xs font-bold text-[var(--brand-dark)] flex items-center gap-1">
+          Quen thuộc → Thành thạo <i data-lucide="arrow-up" class="w-3 h-3"></i>
+        </span>
+      </div>
+      <div class="flex h-2 rounded-full overflow-hidden">
+        <div class="flex-1 bg-[var(--m3)]"></div>
+        <div class="flex-1 bg-[var(--m2)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+      </div>
+    </div>
+
+    <!-- skill 2 — same -->
+    <div class="py-3 border-b border-slate-100">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-semibold">Quy đồng mẫu số</span>
+        <span class="text-xs font-bold text-amber-700">Quen thuộc</span>
+      </div>
+      <div class="flex h-2 rounded-full overflow-hidden">
+        <div class="flex-1 bg-[var(--m1)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+      </div>
+    </div>
+
+    <!-- skill 3 — needs work -->
+    <div class="py-3">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-semibold">So sánh phân số</span>
+        <span class="text-xs font-bold text-slate-500">Cần luyện thêm</span>
+      </div>
+      <div class="flex h-2 rounded-full overflow-hidden">
+        <div class="flex-1 bg-[var(--m1)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+        <div class="flex-1 bg-[var(--m0)]"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BUTTONS -->
+  <section class="grid sm:grid-cols-2 gap-3">
+    <a href="./student-dashboard.html" class="btn chunky-flat bg-white border-2 border-slate-200 rounded-2xl py-4 text-center font-display font-bold text-lg">
+      Nghỉ một chút
+    </a>
+    <a href="./student-practice.html" class="btn chunky-sun bg-[var(--sun)] text-[var(--ink)] rounded-2xl py-4 text-center font-display font-bold text-lg">
+      Tiếp tục luyện <i data-lucide="arrow-right" class="inline w-5 h-5 ml-1"></i>
+    </a>
+  </section>
+
+  <!-- Encouraging closing -->
+  <p class="text-center text-slate-500 text-sm">Giỏi quá, bạn ơi! Hẹn gặp lại ngày mai nhé 🌟</p>
+
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

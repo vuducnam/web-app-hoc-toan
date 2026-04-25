@@ -1,0 +1,293 @@
+// Prisma 7 schema — Math SGK
+// Generator: ESM prisma-client → src/generated/prisma
+// Import in app code via: import { prisma } from "@/lib/prisma"
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// In Prisma 7, the connection URL is configured in prisma.config.ts (datasource.url),
+// NOT here. The schema only declares the provider for type mapping.
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  STUDENT
+  PARENT
+}
+
+enum MasteryLevel {
+  NOT_STARTED
+  FAMILIAR
+  PROFICIENT
+  MASTERED
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum AnswerFormat {
+  NUMERIC
+  FRACTION
+  DECIMAL
+  TEXT
+  MULTIPLE_CHOICE
+}
+
+// ---------------------------------------------------------------------------
+// Auth — User
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  // Students may use a short username; parents may use email only
+  username     String?  @unique
+  email        String?  @unique
+  pinHash      String?  // 4-6 digit PIN for students (bcryptjs)
+  passwordHash String?  // full password for parents
+  role         Role     @default(STUDENT)
+  name         String
+  avatarUrl    String?
+  // 1-to-many: one parent → many children (MVP; see unresolved Q#1 in plan)
+  parentId     String?
+  parent       User?    @relation("ParentChildren", fields: [parentId], references: [id])
+  children     User[]   @relation("ParentChildren")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Auth.js relations
+  accounts Account[]
+  sessions Session[]
+
+  // Progress relations
+  skillProgress SkillProgress[]
+  attempts      Attempt[]
+  userBadges    UserBadge[]
+  dailyGoals    DailyGoal[]
+  streak        Streak?
+
+  @@index([parentId])
+  @@index([role])
+}
+
+// ---------------------------------------------------------------------------
+// Auth — NextAuth / Auth.js v5 (required by @auth/prisma-adapter)
+// ---------------------------------------------------------------------------
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Curriculum — Grade → Volume → Topic → Lesson → Skill
+// ---------------------------------------------------------------------------
+
+model Grade {
+  // e.g. key="g4", name="Lớp 4"
+  id      String   @id @default(cuid())
+  key     String   @unique
+  name    String
+  volumes Volume[]
+}
+
+model Volume {
+  // e.g. order=1, name="Tập 1"
+  id      String  @id @default(cuid())
+  gradeId String
+  order   Int
+  name    String
+  grade   Grade   @relation(fields: [gradeId], references: [id])
+  topics  Topic[]
+
+  @@index([gradeId])
+}
+
+model Topic {
+  id       String   @id @default(cuid())
+  volumeId String
+  order    Int
+  nameVi   String
+  volume   Volume   @relation(fields: [volumeId], references: [id])
+  lessons  Lesson[]
+
+  @@index([volumeId])
+}
+
+model Lesson {
+  id      String  @id @default(cuid())
+  topicId String
+  order   Int
+  nameVi  String
+  topic   Topic   @relation(fields: [topicId], references: [id])
+  skills  Skill[]
+
+  @@index([topicId])
+}
+
+model Skill {
+  // key is the canonical slug: e.g. "g4-add-sub-100k-carry"
+  id              String       @id @default(cuid())
+  lessonId        String
+  key             String       @unique
+  nameVi          String
+  // generatorKey XOR poolKey — at least one must be non-null (enforced in seed, not DB)
+  generatorKey    String?
+  poolKey         String?
+  answerFormat    AnswerFormat
+  timeEstimateSec Int          @default(60)
+  lesson          Lesson       @relation(fields: [lessonId], references: [id])
+
+  skillProgress SkillProgress[]
+  // NOTE: Attempt.skillKey is a plain String (denormalized) for append-only analytics
+  // — no FK to Skill.key to allow schema drift without blocking history
+
+  @@index([lessonId])
+}
+
+// ---------------------------------------------------------------------------
+// Progress
+// ---------------------------------------------------------------------------
+
+model SkillProgress {
+  id                    String       @id @default(cuid())
+  userId                String
+  // Denormalized slug — fast lookup without JOIN, never changes after skill creation
+  skillKey              String
+  masteryLevel          MasteryLevel @default(NOT_STARTED)
+  totalAttempts         Int          @default(0)
+  correctAttempts       Int          @default(0)
+  currentStreak         Int          @default(0)
+  longestStreak         Int          @default(0)
+  lastPracticedAt       DateTime?
+  lastDifficulty        Difficulty?
+  // Spaced-repetition scheduling (Phase 05 populates; no cron job in MVP)
+  nextReviewAt          DateTime?
+  daysIntervalUntilReview Int        @default(0)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillKey], references: [key])
+
+  @@unique([userId, skillKey])
+  @@index([nextReviewAt])
+  @@index([userId])
+}
+
+model Attempt {
+  id              String     @id @default(cuid())
+  userId          String
+  // Denormalized — append-only analytics log; no FK to Skill
+  skillKey        String
+  // seedrandom seed string passed back from client on submit
+  seed            String
+  submittedAnswer String
+  correct         Boolean
+  difficulty      Difficulty
+  elapsedMs       Int
+  createdAt       DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, skillKey, seed])
+}
+
+// ---------------------------------------------------------------------------
+// Gamification
+// ---------------------------------------------------------------------------
+
+model Badge {
+  // key e.g. "streak-7", "mastered-10"
+  id       String      @id @default(cuid())
+  key      String      @unique
+  nameVi   String
+  descVi   String
+  tier     String      // "bronze" | "silver" | "gold" — free text for flexibility
+  category String      // "streak" | "mastery" | "speed" | "volume"
+  criteria Json        // structured rule set for badge engine
+
+  userBadges UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeKey  String
+  earnedAt  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeKey], references: [key])
+
+  @@unique([userId, badgeKey])
+  @@index([userId])
+}
+
+model DailyGoal {
+  id           String   @id @default(cuid())
+  userId       String
+  // Date-only column (no time component)
+  date         DateTime @db.Date
+  targetMin    Int      @default(15)
+  completedMin Int      @default(0)
+  xpEarned     Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+model Streak {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  currentDays    Int      @default(0)
+  longestDays    Int      @default(0)
+  lastActiveDate DateTime @db.Date
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

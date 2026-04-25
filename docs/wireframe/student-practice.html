@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Luyện tập — Phân số</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<!-- KaTeX for math -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --brand-50:#e6faf7; --sun:#f0b429; --sun-dark:#a17a14; --coral:#ff3366; --ink:#0f172a; }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .font-mono { font-family: "JetBrains Mono", monospace; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .btn:active, .opt:active { transform: translateY(3px); box-shadow: none !important; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- TOP BAR: progress dots + exit -->
+<header class="max-w-5xl mx-auto px-5 pt-5 pb-3 flex items-center gap-4">
+  <a href="./student-dashboard.html" class="text-slate-500 hover:text-slate-800">
+    <i data-lucide="x" class="w-6 h-6"></i>
+  </a>
+  <!-- progress dots: 10 slots -->
+  <div class="flex-1 flex gap-1.5 items-center">
+    <div class="flex-1 h-2 rounded-full bg-[var(--brand)]"></div>
+    <div class="flex-1 h-2 rounded-full bg-[var(--brand)]"></div>
+    <div class="flex-1 h-2 rounded-full bg-[var(--brand)]"></div>
+    <div class="flex-1 h-2 rounded-full bg-[var(--brand)]"></div>
+    <div class="flex-1 h-2 rounded-full bg-[var(--sun)] ring-2 ring-[var(--sun)]/30"></div>
+    <div class="flex-1 h-2 rounded-full bg-slate-200"></div>
+    <div class="flex-1 h-2 rounded-full bg-slate-200"></div>
+    <div class="flex-1 h-2 rounded-full bg-slate-200"></div>
+    <div class="flex-1 h-2 rounded-full bg-slate-200"></div>
+    <div class="flex-1 h-2 rounded-full bg-slate-200"></div>
+  </div>
+  <span class="text-sm font-bold text-slate-600">5/10</span>
+  <div class="flex items-center gap-1 bg-white chunky-flat rounded-full px-3 py-1">
+    <i data-lucide="flame" class="w-4 h-4 text-[var(--coral)]"></i>
+    <span class="font-bold text-sm">4 đúng liên tiếp</span>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-5 pb-10 grid md:grid-cols-[1fr_260px] gap-6">
+
+  <!-- QUESTION AREA -->
+  <section class="bg-white rounded-3xl chunky-flat p-6 md:p-10">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="text-xs font-bold bg-[var(--brand-50)] text-[var(--brand-dark)] px-2.5 py-1 rounded-full">Chủ đề 10 · Phân số</span>
+      <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">Rút gọn</span>
+    </div>
+
+    <h2 class="font-display text-2xl md:text-3xl font-bold">Rút gọn phân số sau về tối giản:</h2>
+
+    <!-- Math display via KaTeX -->
+    <div class="my-10 text-center">
+      <span class="text-5xl md:text-6xl">$$\dfrac{12}{18}$$</span>
+    </div>
+
+    <!-- Fraction input -->
+    <div class="max-w-xs mx-auto">
+      <p class="text-center text-sm text-slate-600 mb-3">Điền phân số rút gọn:</p>
+      <div class="flex flex-col items-center gap-1">
+        <input type="text" placeholder="tử" class="w-32 text-center font-mono text-3xl font-bold py-3 rounded-2xl border-2 border-slate-200 focus:border-[var(--brand)] focus:outline-none" />
+        <div class="w-28 h-1 bg-[var(--ink)] rounded"></div>
+        <input type="text" placeholder="mẫu" class="w-32 text-center font-mono text-3xl font-bold py-3 rounded-2xl border-2 border-slate-200 focus:border-[var(--brand)] focus:outline-none" />
+      </div>
+    </div>
+
+    <!-- OR multiple choice fallback -->
+    <div class="mt-8 border-t border-dashed border-slate-200 pt-6">
+      <p class="text-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">hoặc chọn đáp án</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button class="opt chunky-flat bg-white rounded-2xl py-4 font-mono text-xl font-bold hover:bg-slate-50">$\dfrac{2}{3}$</button>
+        <button class="opt chunky-flat bg-white rounded-2xl py-4 font-mono text-xl font-bold hover:bg-slate-50">$\dfrac{6}{9}$</button>
+        <button class="opt chunky-flat bg-white rounded-2xl py-4 font-mono text-xl font-bold hover:bg-slate-50">$\dfrac{3}{4}$</button>
+        <button class="opt chunky-flat bg-white rounded-2xl py-4 font-mono text-xl font-bold hover:bg-slate-50">$\dfrac{4}{6}$</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 flex flex-wrap gap-3 justify-between items-center">
+      <div class="flex gap-2">
+        <button class="btn chunky-flat bg-white border-2 border-slate-200 rounded-2xl px-4 py-2.5 font-semibold text-sm flex items-center gap-2">
+          <i data-lucide="lightbulb" class="w-4 h-4 text-[var(--sun)]"></i> Trợ giúp
+        </button>
+        <button class="btn chunky-flat bg-white border-2 border-slate-200 rounded-2xl px-4 py-2.5 font-semibold text-sm text-slate-500">
+          Bỏ qua
+        </button>
+      </div>
+      <button class="btn chunky-brand bg-[var(--brand)] text-white font-display font-bold px-8 py-3 rounded-2xl text-lg">
+        Kiểm tra <i data-lucide="check" class="inline w-5 h-5 ml-1"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- SIDE PANEL: Mimi thinking -->
+  <aside class="bg-gradient-to-b from-[var(--brand-50)] to-white rounded-3xl chunky-flat p-5 text-center h-fit">
+    <!-- annotation: Mimi 'thinking' state SVG 120px -->
+    <div class="w-28 h-28 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold">MIMI<br/>(thinking)</div>
+    <p class="font-display font-bold mt-3">Cùng suy nghĩ nào!</p>
+    <p class="text-sm text-slate-600 mt-1">Bạn có thể chia cả tử và mẫu cho cùng một số.</p>
+
+    <div class="mt-5 border-t border-slate-200 pt-4 text-left">
+      <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+        <span>Đã đúng</span><span class="font-bold text-[var(--brand-dark)]">4/4</span>
+      </div>
+      <div class="h-2 bg-white rounded-full overflow-hidden border border-slate-200">
+        <div class="h-full bg-[var(--brand)]" style="width:100%"></div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+        <span class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3 text-[var(--sun)]" fill="currentColor"></i>Điểm XP</span>
+        <span class="font-bold">+60</span>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

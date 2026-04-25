@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bảng điều khiển học sinh — Math SGK</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --brand-50:#e6faf7; --sun:#f0b429; --sun-dark:#a17a14; --coral:#ff3366; --ink:#0f172a;
+    --m0:#e5e7eb; --m1:#fcd34d; --m2:#34d399; --m3:#0cbbab;
+  }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .btn:active, .card:active { transform: translateY(3px); box-shadow: none !important; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- HEADER with Mimi + streak + XP -->
+<header class="max-w-5xl mx-auto px-5 pt-6 pb-4 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-[var(--brand)] grid place-items-center text-white font-display font-bold">M</div>
+    <span class="font-display text-lg font-bold">Math SGK</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-1.5 bg-white chunky-flat rounded-full px-3 py-1.5">
+      <i data-lucide="flame" class="w-4 h-4 text-[var(--coral)]"></i>
+      <span class="font-bold text-sm">7</span>
+    </div>
+    <div class="flex items-center gap-1.5 bg-white chunky-flat rounded-full px-3 py-1.5">
+      <i data-lucide="star" class="w-4 h-4 text-[var(--sun)]" fill="currentColor"></i>
+      <span class="font-bold text-sm">1,240</span>
+    </div>
+    <div class="w-10 h-10 rounded-full bg-[var(--sun)]/80 grid place-items-center font-bold text-white">BB</div>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-5 pb-20 space-y-6">
+
+  <!-- GREETING + DAILY GOAL -->
+  <section class="bg-gradient-to-br from-[var(--brand-50)] to-white rounded-3xl chunky-flat p-6 grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
+    <!-- annotation: Mimi 'happy' 100px -->
+    <div class="w-24 h-24 rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold">MIMI<br/>(happy)</div>
+    <div>
+      <h1 class="font-display text-3xl font-bold">Chào Bảo, sẵn sàng chưa?</h1>
+      <p class="text-slate-600 mt-1">Hôm nay bạn đã làm <b>8/10 câu</b>. Cố thêm 2 câu nữa để hoàn thành mục tiêu!</p>
+      <!-- daily goal bar -->
+      <div class="mt-3 h-3 bg-white rounded-full overflow-hidden border border-slate-200">
+        <div class="h-full bg-[var(--sun)] rounded-full" style="width:80%"></div>
+      </div>
+    </div>
+    <a href="./student-practice.html" class="btn chunky-sun bg-[var(--sun)] text-[var(--ink)] font-display font-bold px-6 py-4 rounded-2xl text-lg whitespace-nowrap">
+      Tiếp tục học <i data-lucide="arrow-right" class="inline w-5 h-5 ml-1"></i>
+    </a>
+  </section>
+
+  <!-- QUICK ACTIONS -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <button class="card chunky-flat bg-white rounded-2xl p-4 text-left hover:bg-slate-50">
+      <i data-lucide="zap" class="w-6 h-6 text-[var(--sun)]"></i>
+      <div class="font-bold mt-2">Luyện nhanh</div>
+      <div class="text-xs text-slate-500">10 câu bất kỳ</div>
+    </button>
+    <button class="card chunky-flat bg-white rounded-2xl p-4 text-left hover:bg-slate-50">
+      <i data-lucide="target" class="w-6 h-6 text-[var(--brand)]"></i>
+      <div class="font-bold mt-2">Điểm yếu</div>
+      <div class="text-xs text-slate-500">Luyện điểm yếu</div>
+    </button>
+    <button class="card chunky-flat bg-white rounded-2xl p-4 text-left hover:bg-slate-50">
+      <i data-lucide="award" class="w-6 h-6 text-[var(--coral)]"></i>
+      <div class="font-bold mt-2">Huy chương</div>
+      <div class="text-xs text-slate-500">5/16 đã mở</div>
+    </button>
+    <button class="card chunky-flat bg-white rounded-2xl p-4 text-left hover:bg-slate-50">
+      <i data-lucide="book-open" class="w-6 h-6 text-slate-700"></i>
+      <div class="font-bold mt-2">Ôn tập</div>
+      <div class="text-xs text-slate-500">Chủ đề đã học</div>
+    </button>
+  </section>
+
+  <!-- TOPICS -->
+  <section>
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-display text-2xl font-bold">Chủ đề</h2>
+      <div class="flex gap-2 text-sm">
+        <button class="px-3 py-1 rounded-full bg-[var(--brand)] text-white font-semibold">Lớp 4</button>
+        <button class="px-3 py-1 rounded-full border border-slate-200 font-semibold">Lớp 5</button>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <!-- topic card 1 — current -->
+      <a href="./student-practice.html" class="card chunky-flat bg-white rounded-2xl p-5 block border-2 border-[var(--brand)]/30">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold text-[var(--brand-dark)]">Chủ đề 10 · Tập 2</span>
+            <h3 class="font-display text-xl font-bold mt-1">Phân số</h3>
+            <p class="text-sm text-slate-500 mt-1">Bài 53-58 · 6 kỹ năng</p>
+          </div>
+          <span class="text-xs font-bold bg-[var(--m2)]/20 text-green-700 px-2.5 py-1 rounded-full">Thành thạo</span>
+        </div>
+        <!-- mastery 4-bucket bar -->
+        <div class="mt-4 flex h-2 rounded-full overflow-hidden">
+          <div class="flex-1 bg-[var(--m3)]"></div>
+          <div class="flex-1 bg-[var(--m3)]"></div>
+          <div class="flex-1 bg-[var(--m2)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-slate-500">
+          <span>3/4 kỹ năng thuần thục</span>
+          <span class="font-bold text-[var(--brand-dark)]">Tiếp tục →</span>
+        </div>
+      </a>
+
+      <!-- topic card 2 -->
+      <a href="#" class="card chunky-flat bg-white rounded-2xl p-5 block">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold text-slate-500">Chủ đề 11 · Tập 2</span>
+            <h3 class="font-display text-xl font-bold mt-1">Cộng, trừ phân số</h3>
+            <p class="text-sm text-slate-500 mt-1">Bài 59-62 · 2 kỹ năng</p>
+          </div>
+          <span class="text-xs font-bold bg-[var(--m1)]/30 text-amber-800 px-2.5 py-1 rounded-full">Quen thuộc</span>
+        </div>
+        <div class="mt-4 flex h-2 rounded-full overflow-hidden">
+          <div class="flex-1 bg-[var(--m1)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-slate-500">
+          <span>1/4 kỹ năng</span><span class="font-bold">Bắt đầu →</span>
+        </div>
+      </a>
+
+      <!-- topic card 3 — locked -->
+      <div class="card bg-white/60 rounded-2xl p-5 opacity-60 border border-dashed border-slate-300">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold text-slate-500">Chủ đề 12 · Tập 2</span>
+            <h3 class="font-display text-xl font-bold mt-1 text-slate-500">Nhân, chia phân số</h3>
+            <p class="text-sm text-slate-500 mt-1">Mở khoá khi xong CD 11</p>
+          </div>
+          <i data-lucide="lock" class="w-5 h-5 text-slate-400"></i>
+        </div>
+      </div>
+
+      <!-- topic card 4 -->
+      <a href="#" class="card chunky-flat bg-white rounded-2xl p-5 block">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold text-slate-500">Chủ đề 6 · Tập 1</span>
+            <h3 class="font-display text-xl font-bold mt-1">Đường vuông góc, song song</h3>
+            <p class="text-sm text-slate-500 mt-1">Bài 27-32</p>
+          </div>
+          <span class="text-xs font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">Chưa học</span>
+        </div>
+        <div class="mt-4 flex h-2 rounded-full overflow-hidden">
+          <div class="flex-1 bg-[var(--m0)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+          <div class="flex-1 bg-[var(--m0)]"></div>
+        </div>
+        <div class="mt-2 flex justify-between text-xs text-slate-500">
+          <span>0/4 kỹ năng</span><span class="font-bold">Khám phá →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- RECENT BADGES -->
+  <section>
+    <h2 class="font-display text-2xl font-bold mb-3">Huy chương gần đây</h2>
+    <div class="flex gap-3 overflow-x-auto pb-2">
+      <div class="flex-shrink-0 w-28 bg-white chunky-flat rounded-2xl p-3 text-center border-2 border-[var(--sun)]">
+        <div class="w-14 h-14 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-bold">🏆</div>
+        <div class="text-xs font-bold mt-2">Một Tuần</div>
+        <div class="text-[10px] text-amber-700 font-bold">BẠC</div>
+      </div>
+      <div class="flex-shrink-0 w-28 bg-white chunky-flat rounded-2xl p-3 text-center border-2 border-orange-400">
+        <div class="w-14 h-14 mx-auto rounded-full bg-orange-400 grid place-items-center text-white font-bold">⚡</div>
+        <div class="text-xs font-bold mt-2">Tính Nhanh</div>
+        <div class="text-[10px] text-orange-700 font-bold">ĐỒNG</div>
+      </div>
+      <div class="flex-shrink-0 w-28 bg-slate-50 rounded-2xl p-3 text-center opacity-60">
+        <div class="w-14 h-14 mx-auto rounded-full bg-slate-300 grid place-items-center text-slate-500">?</div>
+        <div class="text-xs font-bold mt-2 text-slate-500">Chưa mở</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

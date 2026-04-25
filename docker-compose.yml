@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mathsgk-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mathsgk
+      POSTGRES_PASSWORD: mathsgk
+      POSTGRES_DB: mathsgk
+    ports:
+      - "5432:5432"
+    volumes:
+      - mathsgk_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "mathsgk"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mathsgk_pgdata:

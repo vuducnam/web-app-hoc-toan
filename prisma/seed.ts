@@ -1,0 +1,205 @@
+// Idempotent curriculum seed — runs via `npm run db:seed`
+// Strategy: upsert by natural key for Grade/Skill/Badge;
+//           find-or-create by (parentId + order) for Volume/Topic/Lesson
+// Safe to re-run: second run produces zero new rows.
+
+// Load .env before prisma client initializes (tsx runs outside Next.js env loader)
+import "dotenv/config";
+import { prisma } from "../src/lib/prisma";
+import { Prisma } from "../src/generated/prisma/client";
+import { grade4 } from "./seed-data/grade-4";
+import { grade5 } from "./seed-data/grade-5";
+import { badges } from "./seed-data/badges";
+import type { SeedGrade, SeedVolume, SeedTopic, SeedLesson, SeedSkill } from "./seed-data/types";
+
+// ---------------------------------------------------------------------------
+// Upsert helpers — Volume/Topic/Lesson use find-or-create by positional key
+// ---------------------------------------------------------------------------
+
+async function upsertVolume(gradeId: string, v: SeedVolume) {
+  const existing = await prisma.volume.findFirst({
+    where: { gradeId, order: v.order },
+  });
+  if (existing) {
+    return prisma.volume.update({
+      where: { id: existing.id },
+      data: { name: v.name },
+    });
+  }
+  return prisma.volume.create({
+    data: { gradeId, order: v.order, name: v.name },
+  });
+}
+
+async function upsertTopic(volumeId: string, t: SeedTopic) {
+  const existing = await prisma.topic.findFirst({
+    where: { volumeId, order: t.order },
+  });
+  if (existing) {
+    return prisma.topic.update({
+      where: { id: existing.id },
+      data: { nameVi: t.nameVi },
+    });
+  }
+  return prisma.topic.create({
+    data: { volumeId, order: t.order, nameVi: t.nameVi },
+  });
+}
+
+async function upsertLesson(topicId: string, l: SeedLesson) {
+  const existing = await prisma.lesson.findFirst({
+    where: { topicId, order: l.order },
+  });
+  if (existing) {
+    return prisma.lesson.update({
+      where: { id: existing.id },
+      data: { nameVi: l.nameVi },
+    });
+  }
+  return prisma.lesson.create({
+    data: { topicId, order: l.order, nameVi: l.nameVi },
+  });
+}
+
+// Runtime assertion: every skill must have exactly one of generatorKey/poolKey
+function assertSkillKeyXor(skill: SeedSkill): void {
+  const hasGen = "generatorKey" in skill && skill.generatorKey != null;
+  const hasPool = "poolKey" in skill && skill.poolKey != null;
+  if (hasGen === hasPool) {
+    throw new Error(
+      `Skill "${skill.key}" must have exactly one of generatorKey or poolKey (XOR). ` +
+        `Got generatorKey=${String((skill as Record<string, unknown>).generatorKey)}, ` +
+        `poolKey=${String((skill as Record<string, unknown>).poolKey)}`
+    );
+  }
+}
+
+async function upsertSkill(lessonId: string, s: SeedSkill) {
+  assertSkillKeyXor(s);
+
+  const data = {
+    lessonId,
+    nameVi: s.nameVi,
+    answerFormat: s.answerFormat,
+    timeEstimateSec: s.timeEstimateSec,
+    generatorKey: "generatorKey" in s ? (s.generatorKey ?? null) : null,
+    poolKey: "poolKey" in s ? (s.poolKey ?? null) : null,
+  };
+
+  return prisma.skill.upsert({
+    where: { key: s.key },
+    create: { key: s.key, ...data },
+    update: data,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Grade seeder — orchestrates Volume → Topic → Lesson → Skill
+// ---------------------------------------------------------------------------
+
+async function seedGrade(g: SeedGrade): Promise<{ skills: number }> {
+  const grade = await prisma.grade.upsert({
+    where: { key: g.key },
+    create: { key: g.key, name: g.name },
+    update: { name: g.name },
+  });
+
+  let skillCount = 0;
+
+  for (const v of g.volumes) {
+    const volume = await upsertVolume(grade.id, v);
+
+    for (const t of v.topics) {
+      const topic = await upsertTopic(volume.id, t);
+
+      for (const l of t.lessons) {
+        const lesson = await upsertLesson(topic.id, l);
+
+        for (const s of l.skills) {
+          await upsertSkill(lesson.id, s);
+          skillCount++;
+        }
+      }
+    }
+  }
+
+  return { skills: skillCount };
+}
+
+// ---------------------------------------------------------------------------
+// Badge seeder
+// ---------------------------------------------------------------------------
+
+async function seedBadges(): Promise<number> {
+  let count = 0;
+  for (const b of badges) {
+    await prisma.badge.upsert({
+      where: { key: b.key },
+      create: {
+        key: b.key,
+        nameVi: b.nameVi,
+        descVi: b.descVi,
+        tier: b.tier,
+        category: b.category,
+        // Cast: SeedBadge.criteria is Record<string,unknown>; Prisma Json accepts this at runtime
+        criteria: b.criteria as Prisma.InputJsonValue,
+      },
+      update: {
+        nameVi: b.nameVi,
+        descVi: b.descVi,
+        tier: b.tier,
+        category: b.category,
+        criteria: b.criteria as Prisma.InputJsonValue,
+      },
+    });
+    count++;
+  }
+  return count;
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+async function main() {
+  console.log("Seeding curriculum...");
+
+  const g4Result = await seedGrade(grade4);
+  console.log(`  Grade 4: ${g4Result.skills} skills seeded`);
+
+  const g5Result = await seedGrade(grade5);
+  console.log(`  Grade 5: ${g5Result.skills} skills seeded`);
+
+  const totalSkills = g4Result.skills + g5Result.skills;
+  console.log(`  Total skills: ${totalSkills}`);
+
+  const badgeCount = await seedBadges();
+  console.log(`  Badges: ${badgeCount} seeded`);
+
+  // Verify counts from DB
+  const dbSkillCount = await prisma.skill.count();
+  const dbBadgeCount = await prisma.badge.count();
+  console.log(`\nDB verification:`);
+  console.log(`  Skills in DB: ${dbSkillCount}`);
+  console.log(`  Badges in DB: ${dbBadgeCount}`);
+
+  if (dbBadgeCount !== 16) {
+    throw new Error(`Expected 16 badges, got ${dbBadgeCount}`);
+  }
+  if (dbSkillCount < 50 || dbSkillCount > 65) {
+    throw new Error(
+      `Expected 50-65 skills, got ${dbSkillCount}. Check seed data.`
+    );
+  }
+
+  console.log("\nSeed complete.");
+}
+
+main()
+  .catch((e) => {
+    console.error("Seed failed:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

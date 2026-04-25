@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated Prisma client (auto-generated, not our code)
+    "src/generated/**",
+    // Claude Code harness internals (CommonJS hooks/skills, not app code)
+    ".claude/**",
+    // Test fixtures and config
+    "**/*.cjs",
+    // Test coverage output
+    "coverage/**",
   ]),
 ]);
 

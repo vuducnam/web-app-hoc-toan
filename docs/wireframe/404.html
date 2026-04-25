@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Không tìm thấy trang — Math SGK</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --sun:#f0b429; --sun-dark:#a17a14; --ink:#0f172a; }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .btn:active { transform: translateY(3px); box-shadow: none !important; }
+</style>
+</head>
+<body class="min-h-screen grid place-items-center p-6">
+
+<div class="max-w-md w-full text-center">
+  <!-- annotation: Mimi 'thinking' state SVG 160px — tilted head + floating ? -->
+  <div class="w-40 h-40 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold relative">
+    MIMI<br/>(thinking)
+    <span class="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-white chunky-flat grid place-items-center font-display text-xl font-bold text-[var(--brand-dark)]">?</span>
+  </div>
+
+  <!-- Big 404 in display font -->
+  <h1 class="font-display text-7xl font-bold mt-6 text-[var(--brand-dark)]">404</h1>
+  <h2 class="font-display text-2xl font-bold mt-1">Mimi không tìm thấy trang này</h2>
+  <p class="text-slate-600 mt-2">
+    Chắc bạn đã đi lạc đường rồi. Không sao, quay về trang chính nhé!
+  </p>
+
+  <!-- CTAs -->
+  <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="./student-dashboard.html" class="btn chunky-sun bg-[var(--sun)] text-[var(--ink)] font-display font-bold px-6 py-3.5 rounded-2xl">
+      <i data-lucide="home" class="inline w-5 h-5 mr-1"></i> Về trang chính
+    </a>
+    <button onclick="history.back()" class="btn chunky-flat bg-white border-2 border-slate-200 font-semibold px-6 py-3.5 rounded-2xl">
+      <i data-lucide="arrow-left" class="inline w-5 h-5 mr-1"></i> Quay lại
+    </button>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="mt-10 bg-white chunky-flat rounded-2xl p-5 text-left">
+    <div class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-3">Bạn có thể thử</div>
+    <ul class="space-y-2 text-sm">
+      <li><a href="./student-dashboard.html" class="flex items-center gap-2 text-[var(--brand-dark)] hover:underline">
+        <i data-lucide="book-open" class="w-4 h-4"></i> Tiếp tục luyện tập
+      </a></li>
+      <li><a href="#" class="flex items-center gap-2 text-[var(--brand-dark)] hover:underline">
+        <i data-lucide="award" class="w-4 h-4"></i> Xem huy chương của bạn
+      </a></li>
+      <li><a href="./landing.html" class="flex items-center gap-2 text-[var(--brand-dark)] hover:underline">
+        <i data-lucide="help-circle" class="w-4 h-4"></i> Trang giới thiệu
+      </a></li>
+    </ul>
+  </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

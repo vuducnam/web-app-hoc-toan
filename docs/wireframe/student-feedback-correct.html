@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Làm đúng rồi!</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --sun:#f0b429; --sun-dark:#a17a14; --coral:#ff3366; --ink:#0f172a; --success:#22c55e; }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); overflow-x: hidden; }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .font-mono { font-family: "JetBrains Mono", monospace; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .btn:active { transform: translateY(3px); box-shadow: none !important; }
+  .glow-correct { box-shadow: 0 0 32px rgba(34,197,94,.35), 0 5px 0 0 rgba(0,0,0,.12); }
+
+  @keyframes bounce-in { 0% { transform: scale(.5); opacity:0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); opacity:1; } }
+  .bounce-in { animation: bounce-in .6s cubic-bezier(.34,1.56,.64,1) both; }
+
+  /* confetti — decorative dots simulating confetti spawn */
+  .confetti { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: fall 1.2s ease-out forwards; }
+  @keyframes fall { 0% { transform: translateY(-40px) rotate(0); opacity:1; } 100% { transform: translateY(160px) rotate(360deg); opacity:0; } }
+  @media (prefers-reduced-motion: reduce) { .bounce-in, .confetti { animation: none !important; } }
+</style>
+</head>
+<body class="min-h-screen grid place-items-center p-4 relative">
+
+<!-- annotation: confetti spawns 20 dots randomly; example 6 placed -->
+<span class="confetti bg-[var(--coral)]"    style="top:15%;left:20%"></span>
+<span class="confetti bg-[var(--sun)]"      style="top:10%;left:70%;animation-delay:.1s"></span>
+<span class="confetti bg-[var(--brand)]"    style="top:22%;left:50%;animation-delay:.2s"></span>
+<span class="confetti bg-[var(--success)]"  style="top:18%;left:35%;animation-delay:.3s"></span>
+<span class="confetti bg-[var(--coral)]"    style="top:28%;left:80%;animation-delay:.15s"></span>
+<span class="confetti bg-[var(--sun)]"      style="top:14%;left:10%;animation-delay:.25s"></span>
+
+<!-- Celebration card -->
+<div class="max-w-lg w-full bg-white rounded-3xl glow-correct p-8 text-center bounce-in border-4 border-[var(--success)]/20">
+
+  <!-- annotation: Mimi 'cheering' state SVG 160px -->
+  <div class="w-40 h-40 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold ring-8 ring-[var(--success)]/20 text-lg">
+    MIMI<br/>(cheering)
+  </div>
+
+  <!-- Encouraging phrase (rotated random from pool of 6) -->
+  <!-- pool: "Tuyệt vời lắm!" | "Bạn giỏi quá!" | "Siêu sao!" | "Chính xác rồi!" | "Làm tốt lắm!" | "Em rất khéo!" -->
+  <h1 class="font-display text-4xl font-bold mt-4 text-[var(--brand-dark)]">Tuyệt vời lắm!</h1>
+
+  <p class="mt-2 text-slate-600">Đáp án chính xác</p>
+
+  <!-- Answer recap -->
+  <div class="mt-5 bg-[var(--success)]/10 rounded-2xl p-4 flex items-center justify-center gap-3">
+    <i data-lucide="check-circle-2" class="w-6 h-6 text-[var(--success)]" fill="#dcfce7"></i>
+    <span class="font-mono text-2xl font-bold">$\dfrac{12}{18} = \dfrac{2}{3}$</span>
+  </div>
+
+  <!-- XP earned -->
+  <div class="mt-5 flex items-center justify-center gap-4">
+    <div class="flex items-center gap-2 bg-[var(--sun)]/20 rounded-full px-4 py-2">
+      <i data-lucide="star" class="w-5 h-5 text-[var(--sun-dark)]" fill="currentColor"></i>
+      <span class="font-bold text-[var(--sun-dark)]">+15 XP</span>
+    </div>
+    <div class="flex items-center gap-2 bg-[var(--coral)]/10 rounded-full px-4 py-2">
+      <i data-lucide="flame" class="w-5 h-5 text-[var(--coral)]"></i>
+      <span class="font-bold text-[var(--coral)]">+1 chuỗi đúng</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <button class="btn chunky-sun bg-[var(--sun)] text-[var(--ink)] font-display font-bold w-full py-4 rounded-2xl text-lg mt-6">
+    Câu tiếp theo <i data-lucide="arrow-right" class="inline w-5 h-5 ml-1"></i>
+  </button>
+
+  <!-- Tiny hint -->
+  <p class="text-xs text-slate-400 mt-3">Nhấn <kbd class="font-mono font-bold">Space</kbd> để tiếp tục</p>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

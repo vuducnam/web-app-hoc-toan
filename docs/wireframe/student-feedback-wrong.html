@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thử lại nhé</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --sun:#f0b429; --sun-dark:#a17a14; --coral:#ff3366; --ink:#0f172a; }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .font-mono { font-family: "JetBrains Mono", monospace; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .btn:active { transform: translateY(3px); box-shadow: none !important; }
+
+  /* GENTLE shake — NOT scary; slight amplitude, horizontal only */
+  @keyframes gentle-shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+  .shake-gentle { animation: gentle-shake .4s cubic-bezier(.36,.07,.19,.97) both; }
+  @media (prefers-reduced-motion: reduce) { .shake-gentle { animation: none !important; } }
+</style>
+</head>
+<body class="min-h-screen grid place-items-center p-4">
+
+<!-- Gentle feedback card — NO red banner, NO "SAI" in big text -->
+<div class="max-w-lg w-full bg-white rounded-3xl chunky-flat p-8 text-center shake-gentle border-2 border-amber-200">
+
+  <!-- annotation: Mimi 'sad' state SVG 140px — droopy eyes, NO tears -->
+  <div class="w-36 h-36 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold">
+    MIMI<br/>(sad)
+  </div>
+
+  <!-- Encouraging, NOT punitive copy — rotated from pool of 5 -->
+  <!-- pool: "Chưa đúng — thử lại nhé" | "Gần đó rồi, cố lên!" | "Sai rồi, nhưng em có thể làm tốt hơn" | "Hãy thử một lần nữa" | "Bạn sẽ làm đúng lần này, tôi tin!" -->
+  <h1 class="font-display text-3xl font-bold mt-4 text-slate-700">Chưa đúng — thử lại nhé</h1>
+
+  <p class="mt-2 text-slate-500 text-sm">Không sao đâu, ai cũng cần luyện tập</p>
+
+  <!-- Your answer vs attempted display — subtle amber tint, NO red -->
+  <div class="mt-5 bg-amber-50 rounded-2xl p-4 text-left">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bạn trả lời</span>
+      <span class="font-mono text-xl font-bold text-slate-600">$\dfrac{6}{9}$</span>
+    </div>
+    <div class="border-t border-amber-200 mt-2 pt-2 flex items-center justify-between">
+      <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Gợi ý</span>
+      <span class="text-sm text-slate-600">Bạn có thể chia tiếp tử & mẫu cho <b class="text-[var(--brand-dark)]">3</b></span>
+    </div>
+  </div>
+
+  <!-- Expandable explanation -->
+  <details class="mt-4 text-left bg-[var(--brand)]/5 rounded-2xl p-4 group">
+    <summary class="flex items-center gap-2 cursor-pointer font-bold text-[var(--brand-dark)] text-sm">
+      <i data-lucide="chevron-right" class="w-4 h-4 transition group-open:rotate-90"></i>
+      Xem cách giải chi tiết
+    </summary>
+    <div class="mt-3 text-sm text-slate-700 space-y-2">
+      <p>Bước 1: Tìm ước chung lớn nhất của 12 và 18 là <b>6</b>.</p>
+      <p>Bước 2: Chia cả tử và mẫu cho 6: $\dfrac{12 \div 6}{18 \div 6} = \dfrac{2}{3}$</p>
+      <p class="text-[var(--brand-dark)] font-bold">Vậy kết quả tối giản là $\dfrac{2}{3}$</p>
+    </div>
+  </details>
+
+  <!-- Actions -->
+  <div class="mt-6 flex gap-3">
+    <button class="btn chunky-flat bg-white border-2 border-slate-200 rounded-2xl px-5 py-3 font-semibold flex-1 text-slate-600">
+      Bỏ qua câu này
+    </button>
+    <button class="btn chunky-brand bg-[var(--brand)] text-white font-display font-bold px-6 py-3 rounded-2xl flex-1">
+      Làm lại
+    </button>
+  </div>
+
+  <p class="text-xs text-slate-400 mt-4">Câu này sẽ xuất hiện lại để bạn luyện thêm</p>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Đăng nhập học sinh — Math SGK</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root { --paper:#fffdf7; --brand:#0cbbab; --brand-dark:#067a70; --sun:#f0b429; --sun-dark:#a17a14; --ink:#0f172a; }
+  body { background: var(--paper); font-family: Nunito, sans-serif; color: var(--ink); }
+  .font-display { font-family: Fredoka, sans-serif; }
+  .font-mono { font-family: "JetBrains Mono", monospace; }
+  .chunky-brand { box-shadow: 0 5px 0 0 var(--brand-dark); }
+  .chunky-flat { box-shadow: 0 5px 0 0 rgba(0,0,0,.12); }
+  .chunky-sun { box-shadow: 0 5px 0 0 var(--sun-dark); }
+  .btn:active, .key:active { transform: translateY(3px); box-shadow: none !important; }
+</style>
+</head>
+<body class="min-h-screen grid place-items-center p-6">
+
+<a href="./landing.html" class="fixed top-6 left-6 text-slate-500 hover:text-slate-800 flex items-center gap-2">
+  <i data-lucide="arrow-left" class="w-5 h-5"></i> Trang chủ
+</a>
+
+<div class="w-full max-w-md">
+  <!-- Mimi greeting -->
+  <div class="text-center mb-6">
+    <!-- annotation: Mimi 'happy' state SVG, 120px -->
+    <div class="w-28 h-28 mx-auto rounded-full bg-[var(--sun)] grid place-items-center text-white font-display font-bold ring-4 ring-[var(--sun)]/20">MIMI<br/>(happy)</div>
+    <h1 class="font-display text-3xl font-bold mt-4">Xin chào bạn!</h1>
+    <p class="text-slate-600 mt-1">Nhập tên và mã 4 số để vào học</p>
+  </div>
+
+  <!-- Card -->
+  <div class="bg-white rounded-3xl chunky-flat p-6">
+    <!-- Username -->
+    <label class="block mb-4">
+      <span class="font-bold text-sm text-slate-700">Tên đăng nhập</span>
+      <input type="text" placeholder="vd: baobao" autofocus
+        class="mt-1.5 w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-[var(--brand)] focus:outline-none text-lg font-semibold" />
+    </label>
+
+    <!-- PIN display -->
+    <div class="mb-4">
+      <span class="font-bold text-sm text-slate-700">Mã 4 số</span>
+      <div class="mt-1.5 flex gap-3 justify-center">
+        <!-- 4 slots -->
+        <div class="w-14 h-16 rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)]/5 grid place-items-center font-mono text-3xl font-bold text-[var(--brand-dark)]">•</div>
+        <div class="w-14 h-16 rounded-2xl border-2 border-[var(--brand)] bg-[var(--brand)]/5 grid place-items-center font-mono text-3xl font-bold text-[var(--brand-dark)]">•</div>
+        <div class="w-14 h-16 rounded-2xl border-2 border-slate-200 grid place-items-center"></div>
+        <div class="w-14 h-16 rounded-2xl border-2 border-slate-200 grid place-items-center"></div>
+      </div>
+    </div>
+
+    <!-- Keypad — big tap targets -->
+    <div class="grid grid-cols-3 gap-3 mt-6">
+      <!-- 1-9 -->
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">1</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">2</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">3</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">4</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">5</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">6</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">7</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">8</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">9</button>
+      <!-- bottom row: clear, 0, delete -->
+      <button class="key chunky-flat bg-white rounded-2xl h-16 grid place-items-center hover:bg-slate-50 text-slate-500 text-sm font-bold">Xoá</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 font-mono text-2xl font-bold hover:bg-slate-50">0</button>
+      <button class="key chunky-flat bg-white rounded-2xl h-16 grid place-items-center hover:bg-slate-50 text-slate-500">
+        <i data-lucide="delete" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Submit -->
+    <a href="./student-dashboard.html" class="btn chunky-sun bg-[var(--sun)] text-[var(--ink)] font-display font-bold w-full py-4 rounded-2xl text-lg text-center block mt-6">
+      Vào học nào!
+    </a>
+  </div>
+
+  <p class="text-center text-xs text-slate-500 mt-6">
+    Quên mã? Hãy nhờ bố mẹ giúp nhé.
+  </p>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>
