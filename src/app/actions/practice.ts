@@ -41,9 +41,14 @@ export type {
  * Generate the next question for a skill.
  * Strips expectedAnswer before returning — the ONLY path a Question leaves the server.
  * Returns seed + difficulty so the client can echo them back on submitAnswer.
+ *
+ * `difficultyOverride`: optional manual difficulty selection (1|2|3) from client UI.
+ * When provided, takes precedence over mastery-derived difficulty. Other values
+ * (null/undefined/out-of-range) fall back to mastery-based.
  */
 export async function getNextQuestion(
   skillKey: string,
+  difficultyOverride?: GenDifficulty | null,
 ): Promise<(SafeQuestion & { seed: string; difficulty: GenDifficulty }) | QuestionError> {
   // 1. Verify STUDENT session
   const user = await verifyStudent();
@@ -57,9 +62,13 @@ export async function getNextQuestion(
     return { error: "stub", message: "Bài đang được chuẩn bị" };
   }
 
-  // 3. Derive difficulty from current mastery level
+  // 3. Resolve difficulty: explicit client override (validated) wins over mastery default.
   const progress = await loadProgress(user.id, skillKey);
-  const difficulty = nextDifficulty(progress.masteryLevel);
+  const masteryDifficulty = nextDifficulty(progress.masteryLevel);
+  const difficulty: GenDifficulty =
+    difficultyOverride === 1 || difficultyOverride === 2 || difficultyOverride === 3
+      ? difficultyOverride
+      : masteryDifficulty;
 
   // 4. Generate seed + question; catch stub / not-implemented errors gracefully
   const seed = crypto.randomUUID();

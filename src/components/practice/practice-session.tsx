@@ -8,6 +8,7 @@ import { submitAnswer, getNextQuestion } from "@/app/actions/practice-client-act
 import { QuestionCard } from "./question-card";
 import { ProgressDots, type DotState } from "./progress-dots";
 import { ActionBar } from "./action-bar";
+import { DifficultySelector, type DifficultyChoice } from "./difficulty-selector";
 import { FeedbackOverlay, ShakeWrapper, type FeedbackState } from "./feedback-overlay";
 import { IdleHintBubble } from "./idle-hint-bubble";
 import type { MasteryLevel } from "@/components/ui/mastery-pill";
@@ -83,6 +84,8 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
   const [pendingAnswer, setPendingAnswer] = useState<string>("");
   const [isPending, startTransition] = useTransition();
   const [errorToast, setErrorToast] = useState<string | null>(null);
+  // Manual difficulty override — null = Auto (mastery-derived). Applies to NEXT question.
+  const [difficultyChoice, setDifficultyChoice] = useState<DifficultyChoice>(null);
   const sessionId = useRef<string>(randomSessionId());
   // Tracks current mastery so we can pass "before" level to level-up banner
   const currentMasteryRef = useRef<MasteryLevel>("NOT_STARTED");
@@ -101,7 +104,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
       return;
     }
     startTransition(async () => {
-      const next = await getNextQuestion(skillKey);
+      const next = await getNextQuestion(skillKey, difficultyChoice);
       if ("error" in next) {
         setErrorToast("Không thể tải câu tiếp theo. Vui lòng thử lại.");
         return;
@@ -110,7 +113,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
       resetTimer();
       setPendingAnswer("");
     });
-  }, [state.answered, skillKey, router]);
+  }, [state.answered, skillKey, router, difficultyChoice]);
 
   async function handleSubmit(userAnswer: string) {
     if (isPending || state.feedback) return;
@@ -165,7 +168,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
       return;
     }
     startTransition(async () => {
-      const next = await getNextQuestion(skillKey);
+      const next = await getNextQuestion(skillKey, difficultyChoice);
       if ("error" in next) {
         setErrorToast("Không thể tải câu tiếp theo.");
         return;
@@ -214,11 +217,16 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
 
       {/* Question card — wrapped in ShakeWrapper for wrong-answer animation */}
       <div className="relative bg-white rounded-3xl shadow-chunky border border-brand-100 p-6 md:p-10">
-        {/* Skill label */}
-        <div className="mb-4">
+        {/* Skill label + difficulty selector */}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <span className="text-xs font-bold bg-brand-50 text-brand-700 px-2.5 py-1 rounded-full">
             {skillName}
           </span>
+          <DifficultySelector
+            value={difficultyChoice}
+            onChange={setDifficultyChoice}
+            disabled={isLocked}
+          />
         </div>
 
         <ShakeWrapper

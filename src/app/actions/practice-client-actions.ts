@@ -15,6 +15,7 @@ import type { QuestionError, SubmitAnswerInput, SubmitAnswerResult } from "./pra
 /** Next question — duplicated from practice.ts to avoid circular proxy chain. */
 export async function getNextQuestion(
   skillKey: string,
+  difficultyOverride?: GenDifficulty | null,
 ): Promise<(SafeQuestion & { seed: string; difficulty: GenDifficulty }) | QuestionError> {
   const user = await verifyStudent();
   const skill = await prisma.skill.findUnique({ where: { key: skillKey } });
@@ -23,7 +24,11 @@ export async function getNextQuestion(
     return { error: "stub", message: "Bài đang được chuẩn bị" };
   }
   const progress = await loadProgress(user.id, skillKey);
-  const difficulty = nextDifficulty(progress.masteryLevel);
+  const masteryDifficulty = nextDifficulty(progress.masteryLevel);
+  const difficulty: GenDifficulty =
+    difficultyOverride === 1 || difficultyOverride === 2 || difficultyOverride === 3
+      ? difficultyOverride
+      : masteryDifficulty;
   const seed = crypto.randomUUID();
   try {
     const generator = getGenerator(skill.generatorKey);
