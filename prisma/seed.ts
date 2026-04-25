@@ -10,6 +10,7 @@ import { Prisma } from "../src/generated/prisma/client";
 import { grade4 } from "./seed-data/grade-4";
 import { grade5 } from "./seed-data/grade-5";
 import { badges } from "./seed-data/badges";
+import { examPaperSeeds } from "./seed-data/exam-papers";
 import type { SeedGrade, SeedVolume, SeedTopic, SeedLesson, SeedSkill } from "./seed-data/types";
 
 // ---------------------------------------------------------------------------
@@ -132,6 +133,59 @@ async function seedGrade(g: SeedGrade): Promise<{ skills: number }> {
 }
 
 // ---------------------------------------------------------------------------
+// Exam paper seeder - 8 standardized papers for G4+G5
+// ---------------------------------------------------------------------------
+
+async function seedExamPapers(): Promise<number> {
+  let count = 0;
+  for (const paper of examPaperSeeds) {
+    const grade = await prisma.grade.findUnique({ where: { key: paper.gradeKey } });
+    if (!grade) {
+      throw new Error(`Grade not found for key=${paper.gradeKey}`);
+    }
+    // Validate every skillPool entry has a Skill row with a generatorKey
+    for (const slot of paper.structure) {
+      const skills = await prisma.skill.findMany({
+        where: { generatorKey: { in: slot.skillPool } },
+        select: { generatorKey: true },
+      });
+      const found = new Set(skills.map((s) => s.generatorKey));
+      const missing = slot.skillPool.filter((k) => !found.has(k));
+      if (missing.length > 0) {
+        throw new Error(
+          `ExamPaper "${paper.key}" slot ${slot.slotNo}: skills not in DB: ${missing.join(", ")}`,
+        );
+      }
+    }
+    // Verify pointWeight sum equals totalPoints (allow 0.01 rounding tolerance)
+    const sum = paper.structure.reduce((s, x) => s + x.pointWeight, 0);
+    if (Math.abs(sum - paper.totalPoints) > 0.01) {
+      throw new Error(
+        `ExamPaper "${paper.key}" pointWeight sum=${sum} != totalPoints=${paper.totalPoints}`,
+      );
+    }
+    const data = {
+      key: paper.key,
+      gradeId: grade.id,
+      examType: paper.examType,
+      nameVi: paper.nameVi,
+      durationMinutes: paper.durationMinutes,
+      totalQuestions: paper.totalQuestions,
+      totalPoints: paper.totalPoints,
+      structure: paper.structure as unknown as Prisma.InputJsonValue,
+      isActive: true,
+    };
+    await prisma.examPaper.upsert({
+      where: { key: paper.key },
+      create: data,
+      update: data,
+    });
+    count++;
+  }
+  return count;
+}
+
+// ---------------------------------------------------------------------------
 // Badge seeder
 // ---------------------------------------------------------------------------
 
@@ -181,12 +235,17 @@ async function main() {
   const badgeCount = await seedBadges();
   console.log(`  Badges: ${badgeCount} seeded`);
 
+  const examPaperCount = await seedExamPapers();
+  console.log(`  Exam papers: ${examPaperCount} seeded`);
+
   // Verify counts from DB
   const dbSkillCount = await prisma.skill.count();
   const dbBadgeCount = await prisma.badge.count();
+  const dbExamCount = await prisma.examPaper.count();
   console.log(`\nDB verification:`);
   console.log(`  Skills in DB: ${dbSkillCount}`);
   console.log(`  Badges in DB: ${dbBadgeCount}`);
+  console.log(`  Exam papers in DB: ${dbExamCount}`);
 
   if (dbBadgeCount !== 16) {
     throw new Error(`Expected 16 badges, got ${dbBadgeCount}`);
@@ -195,6 +254,9 @@ async function main() {
     throw new Error(
       `Expected 50-100 skills, got ${dbSkillCount}. Check seed data.`
     );
+  }
+  if (dbExamCount !== 8) {
+    throw new Error(`Expected 8 exam papers, got ${dbExamCount}`);
   }
 
   console.log("\nSeed complete.");

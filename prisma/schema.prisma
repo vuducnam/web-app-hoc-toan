@@ -43,6 +43,26 @@ enum AnswerFormat {
   MULTIPLE_CHOICE
 }
 
+enum ExamType {
+  MID_SEM_1
+  END_SEM_1
+  MID_SEM_2
+  END_OF_YEAR
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  IN_PROGRESS
+  SUBMITTED
+  EXPIRED
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EXPIRED
+}
+
 // ---------------------------------------------------------------------------
 // Auth — User
 // ---------------------------------------------------------------------------
@@ -77,6 +97,11 @@ model User {
   userBadges    UserBadge[]
   dailyGoals    DailyGoal[]
   streak        Streak?
+
+  // Exam relations
+  examAttempts        ExamAttempt[]
+  studentAssignments  ExamAssignment[] @relation("StudentAssignments")
+  parentAssignments   ExamAssignment[] @relation("ParentAssignments")
 
   @@index([parentId])
   @@index([role])
@@ -132,11 +157,12 @@ model VerificationToken {
 
 model Grade {
   // e.g. key="g4", name="Lớp 4"
-  id      String   @id @default(cuid())
-  key     String   @unique
-  name    String
-  volumes Volume[]
-  users   User[]
+  id         String      @id @default(cuid())
+  key        String      @unique
+  name       String
+  volumes    Volume[]
+  users      User[]
+  examPapers ExamPaper[]
 }
 
 model Volume {
@@ -303,4 +329,99 @@ model Streak {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Exam System — TT 27/2020 standardized exam papers (MID/END semester + year)
+// ---------------------------------------------------------------------------
+
+model ExamPaper {
+  // Stable slug e.g. "g4-giua-ky-1"
+  id              String   @id @default(cuid())
+  key             String   @unique
+  gradeId         String
+  examType        ExamType
+  nameVi          String
+  durationMinutes Int
+  totalQuestions  Int
+  totalPoints     Decimal  @db.Decimal(4, 2) @default(10.00)
+  // Json array of ExamSlot { slotNo, difficulty M1-M4, questionType MC|NUMERIC, pointWeight, skillPool[] }
+  structure       Json
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  grade       Grade            @relation(fields: [gradeId], references: [id])
+  attempts    ExamAttempt[]
+  assignments ExamAssignment[]
+
+  @@index([gradeId, examType, isActive])
+}
+
+model ExamAssignment {
+  id           String           @id @default(cuid())
+  studentId    String
+  assignedById String
+  examPaperId  String
+  assignedAt   DateTime         @default(now())
+  dueAt        DateTime?
+  status       AssignmentStatus @default(ASSIGNED)
+
+  student    User          @relation("StudentAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+  assignedBy User          @relation("ParentAssignments", fields: [assignedById], references: [id])
+  examPaper  ExamPaper     @relation(fields: [examPaperId], references: [id])
+  attempts   ExamAttempt[]
+
+  @@index([studentId, status])
+  @@index([assignedById])
+}
+
+model ExamAttempt {
+  id            String        @id @default(cuid())
+  studentId     String
+  examPaperId   String
+  assignmentId  String?
+  attemptNumber Int           @default(1)
+  // 16-char SHA-256 hash slice — deterministic generation key
+  seed          String
+  startedAt     DateTime      @default(now())
+  submittedAt   DateTime?
+  timeSpentSec  Int           @default(0)
+  totalScore    Decimal       @db.Decimal(4, 2) @default(0)
+  correctCount  Int           @default(0)
+  totalCount    Int
+  status        AttemptStatus @default(IN_PROGRESS)
+  // { byDifficulty: {M1: {correct, total}, ...}, weakTopics: [{topicId, accuracy}] }
+  summaryJson   Json?
+
+  student    User            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  examPaper  ExamPaper       @relation(fields: [examPaperId], references: [id])
+  assignment ExamAssignment? @relation(fields: [assignmentId], references: [id])
+  answers    ExamAnswer[]
+
+  @@unique([studentId, examPaperId, attemptNumber])
+  @@index([studentId, status])
+  @@index([studentId, submittedAt])
+}
+
+model ExamAnswer {
+  id             String  @id @default(cuid())
+  attemptId      String
+  slotNo         Int
+  skillKey       String
+  difficulty     String  // 'M1' | 'M2' | 'M3' | 'M4'
+  questionType   String  // 'MC' | 'NUMERIC'
+  questionText   String  @db.Text
+  expectedAnswer String
+  studentAnswer  String?
+  // For MC: array of {label: 'A'|'B'|'C'|'D', value: string}
+  choices        Json?
+  pointWeight    Decimal @db.Decimal(3, 2)
+  pointEarned    Decimal @db.Decimal(3, 2) @default(0)
+  isCorrect      Boolean @default(false)
+
+  attempt ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, slotNo])
+  @@index([attemptId])
+  @@index([skillKey])
 }

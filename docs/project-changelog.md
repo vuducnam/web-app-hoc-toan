@@ -2,6 +2,29 @@
 
 > Release notes and significant changes. See `development-roadmap.md` for planned phases.
 
+## v0.2.0 — Exam Paper System (2026-04-25)
+
+**Status:** SHIPPED — 8 phases complete. 1111 project tests pass. Full G4+G5 exam coverage.
+
+### What Shipped
+
+Standardized exam paper system aligned with TT 27/2020 (M1=40%, M2=30%, M3=20%, M4=10% matrix).
+
+- **8 ExamPaper records** (G4+G5 × MID_SEM_1, END_SEM_1, MID_SEM_2, END_OF_YEAR), durations 30-40 minutes
+- **4 new Prisma models**: `ExamPaper`, `ExamAssignment`, `ExamAttempt`, `ExamAnswer` + 3 enums
+- **Per-student seeded generation**: SHA-256(`studentId|paperId|attemptNumber`) drives deterministic question selection from skill pools
+- **Hybrid format**: 60% MC (M1+M2) + 40% NUMERIC (M3+M4); MC choices built via 8-family handcrafted distractors mimicking common student errors
+- **Pure exam engine** (`src/lib/exam/`): `generateAttempt`, `scoreAttempt`, `compareAnswer`, `computeWeakTopics`
+- **4 server actions** (`src/app/actions/exam-*`): start (cooldown, transaction, sanitize), saveProgress (autosave), submit (score, summary), assign (parent → child guard)
+- **Student UI**: 4 routes (list, intro, attempt with timer/paginator/autosave, result with score + M1-M4 breakdown + weak-topic CTA)
+- **Parent UI**: 3 routes (child exam list, assign form, attempt detail)
+- **Tests**: 92 new unit tests covering engine, distractors, scoring, weak-topic detection
+- **Smoke verified**: All 8 papers generate cleanly with proper 4-choice MC payload
+
+### Files added
+
+`src/lib/exam/` (engine + distractors), `src/app/actions/exam-*.ts`, `src/components/exam/*`, `src/components/parent/exam/*`, `src/app/(student)/student/exam/*`, `src/app/(parent)/parent/child/[id]/exam/*`, `prisma/seed-data/exam-papers.ts`, `tests/unit/exam/*`.
+
 ## v0.1.0 — MVP Foundation (2026-04-25)
 
 **Status:** SHIPPED — All 12 phases complete. Quality gates all green. Ready for production.
