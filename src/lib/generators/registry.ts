@@ -77,6 +77,20 @@ import { speedDistanceTime } from "./word-problems/speed-distance-time";
 import { ratioConcept } from "./word-problems/ratio-concept";
 import { ratioWordProblems } from "./word-problems/ratio-word-problems";
 
+// --- G4 word-problem generators (5) ---
+import { wordAddSub } from "./word-problems/word-add-sub";
+import { wordMultiplyDivide } from "./word-problems/word-multiply-divide";
+import { wordUnitConversion } from "./word-problems/word-unit-conversion";
+import { wordRectangleArea } from "./word-problems/word-rectangle-area";
+import { wordFractions } from "./word-problems/word-fractions";
+
+// --- G5 word-problem generators (5) ---
+import { wordDecimals } from "./word-problems/word-decimals";
+import { wordPercent } from "./word-problems/word-percent";
+import { wordCircleTriangleArea } from "./word-problems/word-circle-triangle-area";
+import { word3dVolume } from "./word-problems/word-3d-volume";
+import { wordYearReview } from "./word-problems/word-year-review";
+
 // --- Phase 14a: G5 geometry composite review (1) ---
 import { geometryReview } from "./reviews/geometry-review";
 
@@ -167,6 +181,20 @@ const liveGenerators: Record<string, Generator> = {
   "speed-distance-time": speedDistanceTime,
   "ratio-concept": ratioConcept,
   "ratio-word-problems": ratioWordProblems,
+
+  // --- G4 word-problem generators (5) ---
+  "word-add-sub": wordAddSub,
+  "word-multiply-divide": wordMultiplyDivide,
+  "word-unit-conversion": wordUnitConversion,
+  "word-rectangle-area": wordRectangleArea,
+  "word-fractions": wordFractions,
+
+  // --- G5 word-problem generators (5) ---
+  "word-decimals": wordDecimals,
+  "word-percent": wordPercent,
+  "word-circle-triangle-area": wordCircleTriangleArea,
+  "word-3d-volume": word3dVolume,
+  "word-year-review": wordYearReview,
 
   // --- Phase 14a: G5 geometry composite (1) ---
   "geometry-review": geometryReview,

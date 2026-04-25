@@ -191,9 +191,9 @@ async function main() {
   if (dbBadgeCount !== 16) {
     throw new Error(`Expected 16 badges, got ${dbBadgeCount}`);
   }
-  if (dbSkillCount < 50 || dbSkillCount > 65) {
+  if (dbSkillCount < 50 || dbSkillCount > 100) {
     throw new Error(
-      `Expected 50-65 skills, got ${dbSkillCount}. Check seed data.`
+      `Expected 50-100 skills, got ${dbSkillCount}. Check seed data.`
     );
   }
 
