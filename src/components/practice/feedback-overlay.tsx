@@ -36,10 +36,10 @@ interface FeedbackOverlayProps {
 }
 
 // Durations in ms
-// Correct answers auto-advance, but with enough delay (3s) for the student to
-// read the inline answer + explanation panel. They can also click "Tiếp theo"
-// to skip the wait. Wrong answers DO NOT auto-advance — manual click required.
-const CORRECT_DISMISS_MS = 3000;
+// Correct answers auto-advance, but with generous delay (8s) for the student to
+// read the inline answer + explanation panel. They can click "Tiếp theo"
+// to skip the wait early. Wrong answers DO NOT auto-advance — manual click required.
+const CORRECT_DISMISS_MS = 8000;
 const LEVEL_UP_EXTRA_MS = 800;
 
 /**
