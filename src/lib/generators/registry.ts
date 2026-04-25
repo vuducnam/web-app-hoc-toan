@@ -1,6 +1,6 @@
 import "server-only";
 // Generator registry — maps every generatorKey from the curriculum to a Generator instance.
-// Phase 13 (2026-04-25): expanded liveGenerators from 10 → 44 across 4 tiers
+// Phase 13 + 14a (2026-04-25): expanded liveGenerators from 10 → 56 (44 + 12 Phase 14a)
 //   (number-sense, arithmetic, fractions, decimals, measurement, geometry, composites).
 // Stub generators: remaining curriculum keys throw NotImplementedError at generate() time,
 //   so the UI can surface "coming soon" cleanly without a missing-key crash at lookup.
@@ -59,6 +59,27 @@ import { yearReviewArithmetic } from "./reviews/year-review-arithmetic";
 import { yearReviewFractions } from "./reviews/year-review-fractions";
 import { yearReviewComprehensive } from "./reviews/year-review-comprehensive";
 
+// --- Phase 14a: G5 geometry/measurement formula generators (5) ---
+import { triangleArea } from "./geometry/triangle-area";
+import { trapezoidArea } from "./geometry/trapezoid-area";
+import { boxSurfaceArea } from "./geometry/box-surface-area";
+import { cylinderVolume } from "./geometry/cylinder-volume";
+import { circleCircumferenceArea } from "./geometry/circle-circumference-area";
+
+// --- Phase 14a: G4 concept MC generators (4) ---
+import { angleClassify } from "./concept/angle-classify";
+import { parallelPerpendicular } from "./concept/parallel-perpendicular";
+import { parallelogramRhombus } from "./concept/parallelogram-rhombus";
+import { probabilityIntro } from "./concept/probability-intro";
+
+// --- Phase 14a: G5 word-problem generators (3) ---
+import { speedDistanceTime } from "./word-problems/speed-distance-time";
+import { ratioConcept } from "./word-problems/ratio-concept";
+import { ratioWordProblems } from "./word-problems/ratio-word-problems";
+
+// --- Phase 14a: G5 geometry composite review (1) ---
+import { geometryReview } from "./reviews/geometry-review";
+
 import { makeStub } from "./stub";
 import type { Generator } from "./types";
 
@@ -71,7 +92,8 @@ import type { Generator } from "./types";
 const STUB_KEYS: readonly string[] = [];
 
 // ---------------------------------------------------------------------------
-// Build registry — 44 live + 0 stubs = 44 known keys (matches seed generatorKey count)
+// Build registry — 57 live + 0 stubs = 57 known keys (Phase 14a converts 12 poolKey→generatorKey;
+// geometry-review composite = +1 = 58 after composite added)
 // ---------------------------------------------------------------------------
 const liveGenerators: Record<string, Generator> = {
   // --- Pre-Phase 13 (10) ---
@@ -127,6 +149,27 @@ const liveGenerators: Record<string, Generator> = {
   "year-review-arithmetic": yearReviewArithmetic,
   "year-review-fractions": yearReviewFractions,
   "year-review-comprehensive": yearReviewComprehensive,
+
+  // --- Phase 14a: G5 geometry/measurement formula (5) ---
+  "triangle-area": triangleArea,
+  "trapezoid-area": trapezoidArea,
+  "box-surface-area": boxSurfaceArea,
+  "cylinder-volume": cylinderVolume,
+  "circle-circumference-area": circleCircumferenceArea,
+
+  // --- Phase 14a: G4 concept MC (4) ---
+  "angle-classify": angleClassify,
+  "parallel-perpendicular": parallelPerpendicular,
+  "parallelogram-rhombus": parallelogramRhombus,
+  "probability-intro": probabilityIntro,
+
+  // --- Phase 14a: G5 word problems (3) ---
+  "speed-distance-time": speedDistanceTime,
+  "ratio-concept": ratioConcept,
+  "ratio-word-problems": ratioWordProblems,
+
+  // --- Phase 14a: G5 geometry composite (1) ---
+  "geometry-review": geometryReview,
 };
 
 const stubGenerators: Record<string, Generator> = Object.fromEntries(
