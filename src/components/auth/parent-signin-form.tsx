@@ -77,6 +77,12 @@ export function ParentSigninForm() {
       </form>
 
       <p className="text-sm text-gray-500">
+        Chưa có tài khoản?{" "}
+        <a href="/parent/signup" className="text-blue-500 hover:underline">
+          Đăng ký
+        </a>
+      </p>
+      <p className="text-sm text-gray-500">
         Học sinh?{" "}
         <a href="/student/signin" className="text-blue-500 hover:underline">
           Đăng nhập tại đây

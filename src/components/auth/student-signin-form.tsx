@@ -1,7 +1,7 @@
 "use client";
 // Student signin form — username input + 4-digit PIN keypad.
 // Uses useActionState to bind to the signInStudent server action.
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { signInStudent, type SigninState } from "@/app/actions/auth-signin";
 
 // 3×4 PIN keypad layout: rows of [1-9], [backspace, 0, submit]
@@ -30,13 +30,14 @@ export function StudentSigninForm() {
     }
   }
 
-  // Build a FormData and dispatch the action when the hidden input is submitted
+  // Build a FormData and dispatch the action when the hidden input is submitted.
+  // Server actions called from useActionState must run inside a transition.
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
     fd.set("pin", pin);
-    formAction(fd);
+    startTransition(() => formAction(fd));
   }
 
   return (

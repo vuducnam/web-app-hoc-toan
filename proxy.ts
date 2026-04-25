@@ -12,17 +12,44 @@ import { NextResponse } from "next/server";
 // Lightweight auth helper — edge-safe config only, no adapter.
 const { auth } = NextAuth(authConfig);
 
+// Public auth routes — accessible WITHOUT a session.
+// Anything else under /student/* or /parent/* requires the matching role.
+const PUBLIC_AUTH_PATHS = [
+  "/student/signin",
+  "/parent/signin",
+  "/parent/signup",
+];
+
+function isPublicAuthPath(pathname: string): boolean {
+  return PUBLIC_AUTH_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
 export default auth(function proxy(req: NextAuthRequest) {
   const { nextUrl } = req;
   const pathname = nextUrl.pathname;
   const role = req.auth?.user?.role;
 
-  // --- Redirect already-authenticated users away from signin pages ---
-  if (pathname.startsWith("/student/signin") && role === "STUDENT") {
+  // --- Redirect already-authenticated users away from auth pages ---
+  // Includes signup so a logged-in parent visiting /parent/signup goes home.
+  if (
+    role === "STUDENT" &&
+    (pathname === "/student/signin" || pathname.startsWith("/student/signin/"))
+  ) {
     return NextResponse.redirect(new URL("/student", nextUrl));
   }
-  if (pathname.startsWith("/parent/signin") && role === "PARENT") {
+  if (
+    role === "PARENT" &&
+    (pathname === "/parent/signin" ||
+      pathname === "/parent/signup" ||
+      pathname.startsWith("/parent/signin/") ||
+      pathname.startsWith("/parent/signup/"))
+  ) {
     return NextResponse.redirect(new URL("/parent", nextUrl));
+  }
+
+  // --- Public auth routes are always reachable ---
+  if (isPublicAuthPath(pathname)) {
+    return NextResponse.next();
   }
 
   // --- Protect /student/* routes ---
@@ -53,6 +80,5 @@ export const config = {
   matcher: [
     "/student/:path*",
     "/parent/:path*",
-    "/(auth)/:path*",
   ],
 };
