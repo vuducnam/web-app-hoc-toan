@@ -20,6 +20,7 @@ const TIME_SEC: Record<number, number> = { 1: 45, 2: 60, 3: 60 };
 function generateD1(rng: ReturnType<typeof makeRng>): {
   problemText: string;
   expectedAnswer: number;
+  explanation: string;
 } {
   // Randomly pick conversion type: giờ→phút, phút→giờ (divisible), phút→giây, giây→phút (divisible)
   const type = rng.int(0, 3);
@@ -27,21 +28,39 @@ function generateD1(rng: ReturnType<typeof makeRng>): {
   if (type === 0) {
     // giờ → phút
     const hours = rng.int(1, 9);
-    return { problemText: `Đổi: ${hours} giờ = ? phút`, expectedAnswer: hours * 60 };
+    const ans = hours * 60;
+    return {
+      problemText: `Đổi: ${hours} giờ = ? phút`,
+      expectedAnswer: ans,
+      explanation: `$${hours}\\,\\text{giờ} = ${ans}\\,\\text{phút}$. Đổi: $1\\,\\text{giờ} = 60\\,\\text{phút}$, nên $${hours} \\times 60 = ${ans}$.`,
+    };
   } else if (type === 1) {
     // phút → giờ (only multiples of 60)
     const hours = rng.int(1, 9);
     const minutes = hours * 60;
-    return { problemText: `Đổi: ${minutes} phút = ? giờ`, expectedAnswer: hours };
+    return {
+      problemText: `Đổi: ${minutes} phút = ? giờ`,
+      expectedAnswer: hours,
+      explanation: `$${minutes}\\,\\text{phút} = ${hours}\\,\\text{giờ}$. Đổi: $60\\,\\text{phút} = 1\\,\\text{giờ}$, nên $${minutes} \\div 60 = ${hours}$.`,
+    };
   } else if (type === 2) {
     // phút → giây
     const mins = rng.int(1, 9);
-    return { problemText: `Đổi: ${mins} phút = ? giây`, expectedAnswer: mins * 60 };
+    const ans = mins * 60;
+    return {
+      problemText: `Đổi: ${mins} phút = ? giây`,
+      expectedAnswer: ans,
+      explanation: `$${mins}\\,\\text{phút} = ${ans}\\,\\text{giây}$. Đổi: $1\\,\\text{phút} = 60\\,\\text{giây}$, nên $${mins} \\times 60 = ${ans}$.`,
+    };
   } else {
     // giây → phút (only multiples of 60)
     const mins = rng.int(1, 9);
     const secs = mins * 60;
-    return { problemText: `Đổi: ${secs} giây = ? phút`, expectedAnswer: mins };
+    return {
+      problemText: `Đổi: ${secs} giây = ? phút`,
+      expectedAnswer: mins,
+      explanation: `$${secs}\\,\\text{giây} = ${mins}\\,\\text{phút}$. Đổi: $60\\,\\text{giây} = 1\\,\\text{phút}$, nên $${secs} \\div 60 = ${mins}$.`,
+    };
   }
 }
 
@@ -50,6 +69,7 @@ function generateD1(rng: ReturnType<typeof makeRng>): {
 function generateD2(rng: ReturnType<typeof makeRng>): {
   problemText: string;
   expectedAnswer: number;
+  explanation: string;
 } {
   // Randomly pick composite type: H giờ M phút → phút, or P phút S giây → giây
   const useHourMinute = rng.bool();
@@ -61,6 +81,9 @@ function generateD2(rng: ReturnType<typeof makeRng>): {
     return {
       problemText: `Đổi: ${hours} giờ ${mins} phút = ? phút`,
       expectedAnswer: totalMinutes,
+      explanation:
+        `$${hours}\\,\\text{giờ}\\;${mins}\\,\\text{phút} = ${totalMinutes}\\,\\text{phút}$.\n\n` +
+        `$${hours} \\times 60 + ${mins} = ${hours * 60} + ${mins} = ${totalMinutes}$.`,
     };
   } else {
     const mins = rng.int(1, 9);
@@ -69,6 +92,9 @@ function generateD2(rng: ReturnType<typeof makeRng>): {
     return {
       problemText: `Đổi: ${mins} phút ${secs} giây = ? giây`,
       expectedAnswer: totalSeconds,
+      explanation:
+        `$${mins}\\,\\text{phút}\\;${secs}\\,\\text{giây} = ${totalSeconds}\\,\\text{giây}$.\n\n` +
+        `$${mins} \\times 60 + ${secs} = ${mins * 60} + ${secs} = ${totalSeconds}$.`,
     };
   }
 }
@@ -78,6 +104,7 @@ function generateD2(rng: ReturnType<typeof makeRng>): {
 function generateD3(rng: ReturnType<typeof makeRng>): {
   problemText: string;
   expectedAnswer: number;
+  explanation: string;
 } {
   // sum or diff of two times expressed in "H giờ M phút", answer in phút
   const isSum = rng.bool();
@@ -87,13 +114,18 @@ function generateD3(rng: ReturnType<typeof makeRng>): {
     const m1 = rng.int(0, 59);
     const h2 = rng.int(0, 5);
     const m2 = rng.int(0, 59);
-    const total = (h1 * 60 + m1) + (h2 * 60 + m2);
+    const t1 = h1 * 60 + m1;
+    const t2 = h2 * 60 + m2;
+    const total = t1 + t2;
 
     const part1 = formatHourMin(h1, m1);
     const part2 = formatHourMin(h2, m2);
     return {
       problemText: `${part1} + ${part2} = ? phút`,
       expectedAnswer: total,
+      explanation:
+        `Đổi về phút: $${part1} = ${t1}\\,\\text{phút}$; $${part2} = ${t2}\\,\\text{phút}$.\n\n` +
+        `Tổng: $${t1} + ${t2} = ${total}\\,\\text{phút}$.`,
     };
   } else {
     // Ensure positive result: pick larger first
@@ -114,6 +146,9 @@ function generateD3(rng: ReturnType<typeof makeRng>): {
     return {
       problemText: `${part1} - ${part2} = ? phút`,
       expectedAnswer: diff,
+      explanation:
+        `Đổi về phút: $${part1} = ${total1}\\,\\text{phút}$; $${part2} = ${safeTotal2}\\,\\text{phút}$.\n\n` +
+        `Hiệu: $${total1} - ${safeTotal2} = ${diff}\\,\\text{phút}$.`,
     };
   }
 }
@@ -133,7 +168,7 @@ export const timeMeasurement: Generator<number> = {
     const d = difficulty as 1 | 2 | 3;
     const rng = makeRng(seed);
 
-    const { problemText, expectedAnswer } =
+    const { problemText, expectedAnswer, explanation } =
       d === 1 ? generateD1(rng) :
       d === 2 ? generateD2(rng) :
                 generateD3(rng);
@@ -144,6 +179,7 @@ export const timeMeasurement: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

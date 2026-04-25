@@ -21,6 +21,7 @@ export const decimalMultiply: Generator<number> = {
 
     let a: number, b: number, answer: number, aStr: string, bStr: string;
 
+    let answerPlaces: number;
     if (d === 1) {
       // 1-place decimal × integer
       const rawA = rng.int(1, 99);
@@ -29,6 +30,7 @@ export const decimalMultiply: Generator<number> = {
       answer = round(a * b, 1);
       aStr = toVnFixed(a, 1);
       bStr = String(b);
+      answerPlaces = 1;
     } else if (d === 2) {
       // 1-place × 1-place
       const rawA = rng.int(1, 99);
@@ -38,6 +40,7 @@ export const decimalMultiply: Generator<number> = {
       answer = round(a * b, 2);
       aStr = toVnFixed(a, 1);
       bStr = toVnFixed(b, 1);
+      answerPlaces = 2;
     } else {
       // 2-place × 1-place
       const rawA = rng.int(1, 99);
@@ -47,7 +50,10 @@ export const decimalMultiply: Generator<number> = {
       answer = round(a * b, 3);
       aStr = toVnFixed(a, 2);
       bStr = toVnFixed(b, 1);
+      answerPlaces = 3;
     }
+
+    const ansStr = toVnFixed(answer, answerPlaces);
 
     return {
       id: `${skillKey}-${seed}`,
@@ -55,6 +61,9 @@ export const decimalMultiply: Generator<number> = {
       problemText: `${aStr} × ${bStr} = ?`,
       answerFormat: "decimal",
       expectedAnswer: answer,
+      explanation:
+        `$${aStr} \\times ${bStr} = ${ansStr}$.\n\n` +
+        `Nhân như số tự nhiên rồi đặt dấu phẩy ở kết quả sao cho số chữ số thập phân bằng tổng số chữ số thập phân của hai thừa số.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

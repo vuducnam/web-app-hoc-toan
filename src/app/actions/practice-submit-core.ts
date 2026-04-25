@@ -4,6 +4,7 @@
 // without needing a real Auth.js session.
 import { getGenerator } from "@/lib/generators/registry";
 import type { Difficulty as GenDifficulty } from "@/lib/generators/types";
+import { formatExpectedAnswer } from "@/lib/practice/format-expected-answer";
 import { evaluateMastery } from "@/lib/mastery/evaluate-mastery";
 import { computeNextReview } from "@/lib/mastery/compute-next-review";
 import { numericToPrismaDifficulty, type MasteryLevel } from "@/lib/mastery/types";
@@ -56,10 +57,14 @@ export async function submitAnswerCore(
 
   // 3. Re-generate server-side to recover expectedAnswer, then validate
   let correct: boolean;
+  let correctAnswer = "";
+  let explanation = "";
   try {
     const generator = getGenerator(skill.generatorKey);
     const q = generator.generate({ seed, difficulty, skillKey });
     correct = generator.validate(userAnswer, q);
+    correctAnswer = formatExpectedAnswer(q.expectedAnswer, q.answerFormat);
+    explanation = q.explanation ?? "";
   } catch (err) {
     if (err instanceof Error && err.message.startsWith("NotImplemented")) {
       return { error: "stub", message: "Bài đang được chuẩn bị" };
@@ -193,6 +198,8 @@ export async function submitAnswerCore(
       safeElapsedMs,
       evalResult.currentStreak,
     ),
+    correctAnswer,
+    explanation,
     xpEarned: totalXp,
     newBadges: newBadgeKeys,
     dailyGoalCompleted: goal.completed,

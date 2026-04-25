@@ -27,12 +27,16 @@ export const massConversion: Generator<number> = {
     const d = difficulty as 1 | 2 | 3;
     const rng = makeRng(seed);
 
-    const { problemText, expectedAnswer } = generateConversion(
+    const { problemText, expectedAnswer, fromUnit, toUnit, value } = generateConversion(
       rng,
       MASS_TABLE,
       d,
       "Đổi",
     );
+
+    const fromRatio = MASS_TABLE.units.find((u) => u.name === fromUnit)?.ratio ?? 1;
+    const toRatio = MASS_TABLE.units.find((u) => u.name === toUnit)?.ratio ?? 1;
+    const factor = fromRatio / toRatio;
 
     return {
       id: `${skillKey}-${seed}`,
@@ -40,6 +44,10 @@ export const massConversion: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation:
+        `$${value}\\,\\text{${fromUnit}} = ${expectedAnswer}\\,\\text{${toUnit}}$.\n\n` +
+        `Đổi: $1\\,\\text{${fromUnit}} = ${factor}\\,\\text{${toUnit}}$, ` +
+        `nên $${value} \\times ${factor} = ${expectedAnswer}$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

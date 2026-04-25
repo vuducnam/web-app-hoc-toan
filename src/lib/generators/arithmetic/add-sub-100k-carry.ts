@@ -74,12 +74,18 @@ export const addSub100kCarry: Generator<number> = {
     const { a, b, op } = tryGenerate(rng, d);
     const answer = op === "+" ? a + b : a - b;
 
+    const opNote = op === "+" ? "cộng có nhớ" : "trừ có mượn";
+    const explanation =
+      `Đặt tính rồi tính: $${a} ${op} ${b} = ${answer}$.\n\n` +
+      `Nhóm cùng hàng và ${opNote} từng cột từ phải sang trái.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${a} ${op} ${b} = ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

@@ -18,17 +18,25 @@ export const capacityConversion: Generator<number> = {
     let problemText: string;
     let expectedAnswer: number;
 
+    let explanation: string;
+
     if (d === 1) {
       // l → ml, value 1-10
       const value = rng.int(1, 10);
       expectedAnswer = value * FACTOR;
       problemText = `Đổi: ${value} l = ? ml`;
+      explanation =
+        `$${value}\\,\\text{l} = ${expectedAnswer}\\,\\text{ml}$.\n\n` +
+        `Đổi: $1\\,\\text{l} = ${FACTOR}\\,\\text{ml}$, nên $${value} \\times ${FACTOR} = ${expectedAnswer}$.`;
     } else if (d === 2) {
       // ml → l, value must be multiple of 1000, range 1000-9000
       const multiplier = rng.int(1, 9);
       const value = multiplier * FACTOR;
       expectedAnswer = multiplier;
       problemText = `Đổi: ${value} ml = ? l`;
+      explanation =
+        `$${value}\\,\\text{ml} = ${expectedAnswer}\\,\\text{l}$.\n\n` +
+        `Đổi: $1\\,\\text{l} = ${FACTOR}\\,\\text{ml}$, nên $${value} \\div ${FACTOR} = ${expectedAnswer}$.`;
     } else {
       // D3: mixed direction, larger values
       const goLargeToSmall = rng.bool();
@@ -37,12 +45,18 @@ export const capacityConversion: Generator<number> = {
         const value = rng.int(10, 99);
         expectedAnswer = value * FACTOR;
         problemText = `Đổi: ${value} l = ? ml`;
+        explanation =
+          `$${value}\\,\\text{l} = ${expectedAnswer}\\,\\text{ml}$.\n\n` +
+          `Đổi: $1\\,\\text{l} = ${FACTOR}\\,\\text{ml}$, nên $${value} \\times ${FACTOR} = ${expectedAnswer}$.`;
       } else {
         // ml → l, value multiple of 1000, range 10000-99000
         const multiplier = rng.int(10, 99);
         const value = multiplier * FACTOR;
         expectedAnswer = multiplier;
         problemText = `Đổi: ${value} ml = ? l`;
+        explanation =
+          `$${value}\\,\\text{ml} = ${expectedAnswer}\\,\\text{l}$.\n\n` +
+          `Đổi: $1\\,\\text{l} = ${FACTOR}\\,\\text{ml}$, nên $${value} \\div ${FACTOR} = ${expectedAnswer}$.`;
       }
     }
 
@@ -52,6 +66,7 @@ export const capacityConversion: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

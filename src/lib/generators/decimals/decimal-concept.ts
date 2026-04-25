@@ -20,22 +20,38 @@ export const decimalConcept: Generator<number> = {
     let problemText: string;
     let expectedAnswer: number;
 
+    let explanation: string;
+
     if (d === 1) {
       // n/10 → decimal
       const num = rng.int(1, 9);
       problemText = `${num}/10 = ?`;
       expectedAnswer = num / 10;
+      const ansStr = `0{,}${num}`;
+      explanation =
+        `$\\frac{${num}}{10} = ${ansStr}$.\n\n` +
+        `Mẫu số 10 tương ứng với hàng phần mười: chữ số ${num} nằm ở vị trí đầu tiên sau dấu phẩy.`;
     } else if (d === 2) {
       // n/100 → decimal (includes cases like 30/100 = 0,30)
       const num = rng.int(1, 99);
       problemText = `${num}/100 = ?`;
       expectedAnswer = Math.round(num) / 100;
+      const intPart = Math.floor(num / 100);
+      const fracPart = num % 100;
+      const fracStr = fracPart < 10 ? `0${fracPart}` : `${fracPart}`;
+      const ansStr = intPart > 0 ? `${intPart}{,}${fracStr}` : `0{,}${fracStr}`;
+      explanation =
+        `$\\frac{${num}}{100} = ${ansStr}$.\n\n` +
+        `Mẫu số 100 tương ứng với hàng phần trăm: ${num} gồm ${Math.floor(num / 10)} phần mười và ${num % 10} phần trăm.`;
     } else {
       // D3: mixed "a và b/10" → a + b/10
       const whole = rng.int(1, 9);
       const frac = rng.int(1, 9);
       problemText = `${whole} và ${frac}/10 = ?`;
       expectedAnswer = whole + frac / 10;
+      explanation =
+        `$${whole}\\frac{${frac}}{10} = ${whole}{,}${frac}$.\n\n` +
+        `Phần nguyên là ${whole}, phần thập phân là ${frac} phần mười, viết gộp thành ${whole}{,}${frac}.`;
     }
 
     return {
@@ -44,6 +60,7 @@ export const decimalConcept: Generator<number> = {
       problemText,
       answerFormat: "decimal",
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

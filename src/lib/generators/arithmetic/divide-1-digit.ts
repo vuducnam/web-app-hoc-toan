@@ -58,12 +58,21 @@ export const divide1Digit: Generator<number> = {
     // Store remainder in metadata for validate() use
     const problemText = `${dividend} ÷ ${divisor} = ?`;
 
+    // Explanation: show verification with remainder if non-zero
+    const explanation = remainder > 0
+      ? `$${dividend} \\div ${divisor} = ${quotient}$ dư $${remainder}$.\n\n` +
+        `Vì $${quotient} \\times ${divisor} + ${remainder} = ${dividend}$ và $${remainder} < ${divisor}$.`
+      : `Đáp án: $${quotient}$.\n\n` +
+        `Vì $${quotient} \\times ${divisor} = ${dividend}$, ` +
+        `nên $${dividend} \\div ${divisor} = ${quotient}$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText,
       answerFormat: "numeric",
       expectedAnswer: quotient,
+      explanation,
       metadata: {
         difficulty: d,
         seed,

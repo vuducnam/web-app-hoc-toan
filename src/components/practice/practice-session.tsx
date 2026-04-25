@@ -155,6 +155,8 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
         leveledUp: result.leveledUp,
         newMasteryLevel: result.newMasteryLevel,
         encouragementKey: result.encouragementKey,
+        correctAnswer: result.correctAnswer,
+        explanation: result.explanation,
       },
     });
     setPendingAnswer("");

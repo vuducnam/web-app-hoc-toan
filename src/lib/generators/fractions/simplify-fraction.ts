@@ -35,6 +35,9 @@ export const simplifyFraction: Generator<Fraction> = {
       problemLatex: `\\frac{${num}}{${den}}`,
       answerFormat: "fraction",
       expectedAnswer: answer,
+      explanation:
+        `$\\frac{${num}}{${den}} = \\frac{${num} \\div ${k}}{${den} \\div ${k}} = \\frac{${answer.num}}{${answer.den}}$.\n\n` +
+        `ƯCLN của ${num} và ${den} là ${k}. Chia cả tử số và mẫu số cho ${k} để rút gọn.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

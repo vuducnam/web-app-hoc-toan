@@ -66,6 +66,8 @@ export const triangleArea: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation:
+        `$S = \\dfrac{a \\times h}{2} = \\dfrac{${a} \\times ${h}}{2} = ${expectedAnswer}\\,\\text{cm}^2$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

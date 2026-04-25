@@ -36,6 +36,8 @@ export const rectangularPrismVolume: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation:
+        `$V = a \\times b \\times c = ${a} \\times ${b} \\times ${c} = ${expectedAnswer}\\,\\text{cm}^3$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

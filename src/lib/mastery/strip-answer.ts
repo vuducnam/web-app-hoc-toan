@@ -4,23 +4,23 @@
 import type { Question } from "@/lib/generators/types";
 
 /**
- * A Question with expectedAnswer removed — safe to send to the client.
+ * A Question with expectedAnswer + explanation removed — safe to send to the client.
  * `seed` and numeric `difficulty` are added by the server action caller
  * so the client can echo them back on submit.
  */
-export type SafeQuestion<T = unknown> = Omit<Question<T>, "expectedAnswer">;
+export type SafeQuestion<T = unknown> = Omit<Question<T>, "expectedAnswer" | "explanation">;
 
 /**
- * Strip `expectedAnswer` (and any `solutionHint` field that generators may add)
+ * Strip `expectedAnswer`, `explanation`, and any legacy `solutionHint` field
  * from a Question before returning it to the client.
  *
  * CODE REVIEW RULE: any `return` that includes a Question MUST go through this helper.
  * Phase 12 test asserts that `JSON.stringify(result)` does not contain "expectedAnswer".
  */
 export function stripAnswer<T>(q: Question<T>): SafeQuestion<T> {
-  // Destructure to exclude expectedAnswer; also drop solutionHint if present
+  // Destructure to exclude both; also drop solutionHint if present (legacy)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { expectedAnswer, ...safe } = q as Question<T> & { solutionHint?: unknown };
+  const { expectedAnswer, explanation, ...safe } = q as Question<T> & { solutionHint?: unknown };
   // Remove solutionHint if a generator added it
   delete (safe as { solutionHint?: unknown }).solutionHint;
   return safe as SafeQuestion<T>;

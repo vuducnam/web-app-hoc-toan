@@ -39,6 +39,13 @@ export interface Question<T = number | Fraction | string> {
   choices?: string[];
   /** SERVER ONLY — Phase 05 strips before sending to client. */
   expectedAnswer: T;
+  /**
+   * Optional Markdown + KaTeX explanation of how to solve the problem.
+   * SERVER ONLY — strip-answer must drop this before sending Question to client.
+   * Re-emerges in SubmitAnswerResult after the user submits, so they can learn from mistakes.
+   * Generators may produce this; if absent, UI falls back to "Đáp án đúng: X" only.
+   */
+  explanation?: string;
   metadata: {
     difficulty: Difficulty;
     seed: string;

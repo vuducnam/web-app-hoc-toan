@@ -65,6 +65,9 @@ export const fractionSubtract: Generator<Fraction> = {
       problemLatex: `\\frac{${an1}}{${ad1}} - \\frac{${an2}}{${ad2}} = ?`,
       answerFormat: "fraction",
       expectedAnswer: answer,
+      explanation:
+        `$\\frac{${an1}}{${ad1}} - \\frac{${an2}}{${ad2}} = \\frac{${answer.num}}{${answer.den}}$.\n\n` +
+        `Quy đồng mẫu số rồi trừ tử số, sau đó rút gọn nếu cần.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

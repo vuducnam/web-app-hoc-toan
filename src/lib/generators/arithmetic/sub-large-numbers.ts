@@ -51,12 +51,18 @@ export const subLargeNumbers: Generator<number> = {
     // Ensure a >= b (already guaranteed by max/min above)
     const answer = a! - b!;
 
+    const explanation =
+      `Đặt tính rồi tính: $${a!} - ${b!} = ${answer}$.\n\n` +
+      `Thẳng hàng các chữ số cùng hàng, trừ từ phải sang trái, ` +
+      `mượn từ hàng kế tiếp nếu chữ số trên nhỏ hơn chữ số dưới.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${a!} - ${b!} = ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

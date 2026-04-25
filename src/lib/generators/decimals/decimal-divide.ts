@@ -25,6 +25,7 @@ export const decimalDivide: Generator<number> = {
     let dividend: number, divisor: number, quotient: number;
     let dividendStr: string, divisorStr: string;
 
+    let quotientPlaces: number;
     if (d === 1) {
       // quotient: 1 dp decimal, divisor: integer [2,9]
       // dividend = quotient × divisor → exact
@@ -33,6 +34,7 @@ export const decimalDivide: Generator<number> = {
       dividend = round(quotient * divisor, 1);
       dividendStr = toVnFixed(dividend, 1);
       divisorStr = String(divisor);
+      quotientPlaces = 1;
     } else if (d === 2) {
       // quotient: 1 dp, divisor: 1 dp decimal ≥ 0.1
       quotient = round(rng.int(1, 99) / 10, 1);
@@ -40,6 +42,7 @@ export const decimalDivide: Generator<number> = {
       dividend = round(quotient * divisor, 2);
       dividendStr = toVnFixed(dividend, 2);
       divisorStr = toVnFixed(divisor, 1);
+      quotientPlaces = 1;
     } else {
       // quotient: 2 dp, divisor: 1 dp decimal
       quotient = round(rng.int(1, 99) / 100, 2);
@@ -47,7 +50,10 @@ export const decimalDivide: Generator<number> = {
       dividend = round(quotient * divisor, 3);
       dividendStr = toVnFixed(dividend, 3);
       divisorStr = toVnFixed(divisor, 1);
+      quotientPlaces = 2;
     }
+
+    const quotientStr = toVnFixed(quotient, quotientPlaces);
 
     return {
       id: `${skillKey}-${seed}`,
@@ -55,6 +61,9 @@ export const decimalDivide: Generator<number> = {
       problemText: `${dividendStr} ÷ ${divisorStr} = ?`,
       answerFormat: "decimal",
       expectedAnswer: quotient,
+      explanation:
+        `$${dividendStr} \\div ${divisorStr} = ${quotientStr}$.\n\n` +
+        `Chia như số tự nhiên, sau đó đặt dấu phẩy ở thương sao cho phù hợp với vị trí dấu phẩy của số bị chia.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

@@ -50,12 +50,34 @@ export const sixDigitNumbers: Generator<number> = {
     const n = generateNumber(rng, d);
     const words = numberToVietnameseWords(n);
 
+    // Build explanation: decompose 6-digit number into place-value groups
+    const hundredThousands = Math.floor(n / 100_000);
+    const tenThousands = Math.floor((n % 100_000) / 10_000);
+    const thousands = Math.floor((n % 10_000) / 1_000);
+    const hundreds = Math.floor((n % 1_000) / 100);
+    const tens = Math.floor((n % 100) / 10);
+    const ones = n % 10;
+
+    const parts: string[] = [];
+    if (hundredThousands > 0) parts.push(`$${hundredThousands}$ trăm nghìn`);
+    if (tenThousands > 0) parts.push(`$${tenThousands}$ chục nghìn`);
+    if (thousands > 0) parts.push(`$${thousands}$ nghìn`);
+    if (hundreds > 0) parts.push(`$${hundreds}$ trăm`);
+    if (tens > 0) parts.push(`$${tens}$ chục`);
+    if (ones > 0) parts.push(`$${ones}$ đơn vị`);
+
+    const explanation =
+      `Đáp án: $${n}$.\n\n` +
+      `Phân tích: ${parts.join(", ")}, ` +
+      `gộp lại thành số $${n}$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `Viết số: ${words} = ?`,
       answerFormat: "numeric",
       expectedAnswer: n,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

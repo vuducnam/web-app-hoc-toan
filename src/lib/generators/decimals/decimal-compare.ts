@@ -79,6 +79,9 @@ export const decimalCompare: Generator<string> = {
       answerFormat: "multiple-choice",
       choices: [...CHOICES],
       expectedAnswer: answer,
+      explanation:
+        `$${aStr} ${answer} ${bStr}$.\n\n` +
+        `So sánh phần nguyên trước, nếu bằng nhau thì so sánh từng chữ số phần thập phân từ trái sang phải.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

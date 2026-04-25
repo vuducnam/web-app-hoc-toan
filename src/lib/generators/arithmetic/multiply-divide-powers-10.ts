@@ -66,12 +66,23 @@ export const multiplyDividePowers10: Generator<number> = {
     const d = difficulty as 1 | 2 | 3;
     const { base, power, op, answer } = generateConfig(rng, d);
 
+    // Explanation: describe the zero-appending / removing rule
+    const zeros = Math.log10(power); // number of zeros in power (1, 2, or 3)
+    const explanation = op === "×"
+      ? `Đáp án: $${answer}$.\n\n` +
+        `Nhân với $${power}$ (${zeros} chữ số $0$): ` +
+        `thêm $${zeros}$ chữ số $0$ vào cuối $${base}$ được $${answer}$.`
+      : `Đáp án: $${answer}$.\n\n` +
+        `Chia cho $${power}$ (${zeros} chữ số $0$): ` +
+        `bỏ $${zeros}$ chữ số $0$ ở cuối $${base}$ được $${answer}$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${base} ${op} ${power} = ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

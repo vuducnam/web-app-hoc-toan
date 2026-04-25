@@ -23,36 +23,38 @@ export const decimalPowers10: Generator<number> = {
     const rng = makeRng(seed);
     const d = difficulty as 1 | 2 | 3;
 
-    let operand: number, multiplier: number, answer: number;
-    let operandStr: string, multiplierStr: string;
+    let operand: number, answer: number;
+    let operandStr: string, problemText: string, explanation: string;
+    let answerPlaces: number;
 
     if (d === 1) {
       // × 10 or × 100 with 1-2 dp source
       const pow = rng.pick([10, 100] as const);
       const places = pow === 10 ? 1 : 2;
       operand = round(rng.int(1, 99) / Math.pow(10, places), places);
-      multiplier = pow;
-      answer = round(operand * multiplier, Math.max(0, places - (pow === 10 ? 1 : 2)));
+      answer = round(operand * pow, Math.max(0, places - (pow === 10 ? 1 : 2)));
+      answerPlaces = Math.max(0, places - (pow === 10 ? 1 : 2));
       operandStr = toVnFixed(operand, places);
-      multiplierStr = String(multiplier);
+      const ansStr = toVnFixed(answer, answerPlaces);
+      const shift = pow === 10 ? 1 : 2;
+      problemText = `${operandStr} × ${pow} = ?`;
+      explanation =
+        `$${operandStr} \\times ${pow} = ${ansStr}$.\n\n` +
+        `Nhân với ${pow} bằng cách dịch dấu phẩy sang phải ${shift} chữ số.`;
     } else if (d === 2) {
       // ÷ 10 or ÷ 100 with 1-2 dp source
       const pow = rng.pick([10, 100] as const);
       operand = round(rng.int(10, 999) / 10, 1);
-      multiplier = pow;
       const resultPlaces = pow === 10 ? 2 : 3;
-      answer = round(operand / multiplier, resultPlaces);
+      answer = round(operand / pow, resultPlaces);
+      answerPlaces = resultPlaces;
       operandStr = toVnFixed(operand, 1);
-      multiplierStr = String(multiplier);
-      // Use ÷ notation
-      return {
-        id: `${skillKey}-${seed}`,
-        skillKey,
-        problemText: `${operandStr} ÷ ${multiplierStr} = ?`,
-        answerFormat: "decimal",
-        expectedAnswer: answer,
-        metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
-      };
+      const ansStr = toVnFixed(answer, answerPlaces);
+      const shift = pow === 10 ? 1 : 2;
+      problemText = `${operandStr} ÷ ${pow} = ?`;
+      explanation =
+        `$${operandStr} \\div ${pow} = ${ansStr}$.\n\n` +
+        `Chia cho ${pow} bằng cách dịch dấu phẩy sang trái ${shift} chữ số.`;
     } else {
       // D3: pick from × 0,1 / × 0,01 / ÷ 1000
       const op = rng.pick(["x0.1", "x0.01", "div1000"] as const);
@@ -61,43 +63,38 @@ export const decimalPowers10: Generator<number> = {
 
       if (op === "x0.1") {
         answer = round(operand * 0.1, 2);
-        return {
-          id: `${skillKey}-${seed}`,
-          skillKey,
-          problemText: `${operandStr} × 0,1 = ?`,
-          answerFormat: "decimal",
-          expectedAnswer: answer,
-          metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
-        };
+        answerPlaces = 2;
+        const ansStr = toVnFixed(answer, answerPlaces);
+        problemText = `${operandStr} × 0,1 = ?`;
+        explanation =
+          `$${operandStr} \\times 0{,}1 = ${ansStr}$.\n\n` +
+          `Nhân với 0,1 tương đương chia cho 10: dịch dấu phẩy sang trái 1 chữ số.`;
       } else if (op === "x0.01") {
         answer = round(operand * 0.01, 3);
-        return {
-          id: `${skillKey}-${seed}`,
-          skillKey,
-          problemText: `${operandStr} × 0,01 = ?`,
-          answerFormat: "decimal",
-          expectedAnswer: answer,
-          metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
-        };
+        answerPlaces = 3;
+        const ansStr = toVnFixed(answer, answerPlaces);
+        problemText = `${operandStr} × 0,01 = ?`;
+        explanation =
+          `$${operandStr} \\times 0{,}01 = ${ansStr}$.\n\n` +
+          `Nhân với 0,01 tương đương chia cho 100: dịch dấu phẩy sang trái 2 chữ số.`;
       } else {
         answer = round(operand / 1000, 4);
-        return {
-          id: `${skillKey}-${seed}`,
-          skillKey,
-          problemText: `${operandStr} ÷ 1000 = ?`,
-          answerFormat: "decimal",
-          expectedAnswer: answer,
-          metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
-        };
+        answerPlaces = 4;
+        const ansStr = toVnFixed(answer, answerPlaces);
+        problemText = `${operandStr} ÷ 1000 = ?`;
+        explanation =
+          `$${operandStr} \\div 1000 = ${ansStr}$.\n\n` +
+          `Chia cho 1000 bằng cách dịch dấu phẩy sang trái 3 chữ số.`;
       }
     }
 
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
-      problemText: `${operandStr} × ${multiplierStr} = ?`,
+      problemText,
       answerFormat: "decimal",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

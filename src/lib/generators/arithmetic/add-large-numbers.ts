@@ -25,12 +25,18 @@ export const addLargeNumbers: Generator<number> = {
     const b = rng.int(bMin, bMax);
     const answer = a + b;
 
+    const explanation =
+      `Đặt tính rồi tính: $${a} + ${b} = ${answer}$.\n\n` +
+      `Thẳng hàng các chữ số cùng hàng, cộng từ phải sang trái, ` +
+      `nhớ sang hàng kế tiếp nếu tổng cột $\\geq 10$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${a} + ${b} = ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

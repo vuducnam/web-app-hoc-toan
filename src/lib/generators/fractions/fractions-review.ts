@@ -46,6 +46,7 @@ export const fractionsReview: Generator<Fraction> = {
       problemLatex: subQuestion.problemLatex,
       answerFormat: "fraction",
       expectedAnswer: subQuestion.expectedAnswer,
+      explanation: subQuestion.explanation,
       metadata: {
         difficulty: d,
         seed,

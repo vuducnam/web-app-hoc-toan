@@ -47,6 +47,9 @@ export const fractionMultiply: Generator<Fraction> = {
       problemLatex: `\\frac{${n1}}{${d1}} \\times \\frac{${n2}}{${d2}} = ?`,
       answerFormat: "fraction",
       expectedAnswer: answer,
+      explanation:
+        `$\\frac{${n1}}{${d1}} \\times \\frac{${n2}}{${d2}} = \\frac{${n1} \\times ${n2}}{${d1} \\times ${d2}} = \\frac{${answer.num}}{${answer.den}}$.\n\n` +
+        `Nhân tử số với tử số, mẫu số với mẫu số, rồi rút gọn kết quả.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

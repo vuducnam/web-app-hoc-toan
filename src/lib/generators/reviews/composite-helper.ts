@@ -53,6 +53,7 @@ export function makeCompositeReview<T>(opts: CompositeOpts): Generator<T> {
         answerFormat,
         choices: subQuestion.choices,
         expectedAnswer: subQuestion.expectedAnswer,
+        explanation: subQuestion.explanation,
         metadata: {
           ...subQuestion.metadata,
           difficulty: d,

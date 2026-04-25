@@ -45,6 +45,8 @@ export const percentOfWhole: Generator<number> = {
       problemText: `${pct}% của ${whole} là ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation:
+        `$${pct}\\% \\text{ của } ${whole} = \\frac{${pct}}{100} \\times ${whole} = ${answer}$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

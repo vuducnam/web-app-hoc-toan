@@ -73,6 +73,8 @@ export const fractionCompare: Generator<string> = {
     }
 
     const answer = compareSymbol(n1, d1, n2, d2);
+    const left = n1 * d2;
+    const right = n2 * d1;
 
     return {
       id: `${skillKey}-${seed}`,
@@ -82,6 +84,9 @@ export const fractionCompare: Generator<string> = {
       answerFormat: "multiple-choice",
       choices: [...CHOICES],
       expectedAnswer: answer,
+      explanation:
+        `$\\frac{${n1}}{${d1}} ${answer} \\frac{${n2}}{${d2}}$.\n\n` +
+        `Nhân chéo: $${n1} \\times ${d2} = ${left}$ và $${n2} \\times ${d1} = ${right}$, nên ${left} ${answer} ${right}.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

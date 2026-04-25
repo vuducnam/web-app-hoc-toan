@@ -57,6 +57,9 @@ export const fractionAdd: Generator<Fraction> = {
       problemLatex: `\\frac{${n1}}{${d1}} + \\frac{${n2}}{${d2}} = ?`,
       answerFormat: "fraction",
       expectedAnswer: answer,
+      explanation:
+        `$\\frac{${n1}}{${d1}} + \\frac{${n2}}{${d2}} = \\frac{${answer.num}}{${answer.den}}$.\n\n` +
+        `Quy đồng mẫu số rồi cộng tử số với nhau, sau đó rút gọn nếu cần.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

@@ -42,6 +42,14 @@ export const angleClassify: Generator<string> = {
 
     const expectedAnswer = classify(angle);
 
+    // Build the reason clause based on the classification
+    const reasonMap: Record<string, string> = {
+      nhọn: `$0° < ${angle}° < 90°$ nên là góc **nhọn**.`,
+      vuông: `$${angle}° = 90°$ nên là góc **vuông**.`,
+      tù: `$90° < ${angle}° < 180°$ nên là góc **tù**.`,
+      bẹt: `$${angle}° = 180°$ nên là góc **bẹt**.`,
+    };
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
@@ -49,6 +57,9 @@ export const angleClassify: Generator<string> = {
       answerFormat: "multiple-choice",
       choices: [...CHOICES],
       expectedAnswer,
+      explanation:
+        `Góc $${angle}°$ là góc **${expectedAnswer}**.\n\n` +
+        reasonMap[expectedAnswer],
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

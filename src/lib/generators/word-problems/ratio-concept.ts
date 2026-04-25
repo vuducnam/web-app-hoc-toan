@@ -67,6 +67,7 @@ export const ratioConcept: Generator<number> = {
 
     let problemText: string;
     let expectedAnswer: number;
+    let explanation: string;
 
     if (templateType === "class-ratio") {
       const [a, b] = rng.pick(RATIOS[d]);
@@ -74,6 +75,9 @@ export const ratioConcept: Generator<number> = {
       const total = multiplier * (a + b);
       expectedAnswer = multiplier * a; // count of "nam"
       problemText = `Tỉ số nam và nữ trong lớp là ${a}:${b}. Biết lớp có ${total} bạn. Hỏi lớp có bao nhiêu bạn nam?`;
+      explanation =
+        `Tổng số phần: $${a} + ${b} = ${a + b}$.\n\n` +
+        `Số nam: $${total} \\times \\dfrac{${a}}{${a + b}} = ${expectedAnswer}\\,\\text{bạn}$.`;
     } else if (templateType === "juice-mix") {
       const k = rng.pick(JUICE_K[d]); // total parts
       const total = rng.pick(JUICE_TOTALS[d]);
@@ -81,11 +85,16 @@ export const ratioConcept: Generator<number> = {
       const adjustedTotal = Math.floor(total / k) * k;
       expectedAnswer = adjustedTotal / k; // cam = 1/k of total
       problemText = `Tỉ lệ pha nước cam là 1 phần cam và ${k - 1} phần nước. Cần pha ${adjustedTotal} ml nước cam. Hỏi cần bao nhiêu ml cam?`;
+      explanation =
+        `Tổng số phần: $1 + ${k - 1} = ${k}$.\n\n` +
+        `Lượng cam: $${adjustedTotal} \\times \\dfrac{1}{${k}} = ${expectedAnswer}\\,\\text{ml}$.`;
     } else {
       // simple-ratio: "Tỉ số của a và b là?"
       const [a, b] = rng.pick(SIMPLE_PAIRS[d]);
       expectedAnswer = a / b;
       problemText = `Tỉ số của ${a} và ${b} là bao nhiêu?`;
+      explanation =
+        `Tỉ số của $${a}$ và $${b}$ là $\\dfrac{${a}}{${b}} = ${expectedAnswer}$.`;
     }
 
     return {
@@ -94,6 +103,7 @@ export const ratioConcept: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

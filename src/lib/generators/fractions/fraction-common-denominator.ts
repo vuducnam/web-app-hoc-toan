@@ -50,6 +50,9 @@ export const fractionCommonDenominator: Generator<string> = {
     const n2 = rng.int(1, d2 - 1);
 
     const answer = buildAnswer(n1, d1, n2, d2);
+    const lcd = lcm(d1, d2);
+    const rn1 = (n1 * lcd) / d1;
+    const rn2 = (n2 * lcd) / d2;
 
     return {
       id: `${skillKey}-${seed}`,
@@ -58,6 +61,9 @@ export const fractionCommonDenominator: Generator<string> = {
       problemLatex: `\\frac{${n1}}{${d1}} \\quad \\frac{${n2}}{${d2}}`,
       answerFormat: "text",
       expectedAnswer: answer,
+      explanation:
+        `BCNN của ${d1} và ${d2} là ${lcd}. ` +
+        `$\\frac{${n1}}{${d1}} = \\frac{${rn1}}{${lcd}}$ và $\\frac{${n2}}{${d2}} = \\frac{${rn2}}{${lcd}}$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

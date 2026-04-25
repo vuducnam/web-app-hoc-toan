@@ -26,12 +26,22 @@ export const rounding: Generator<number> = {
     const n = rng.int(min, max);
     const rounded = Math.round(n / unit) * unit;
 
+    // Explanation: show the deciding digit and rounding rule
+    const decidingDigit = Math.floor(n / (unit / 10)) % 10; // digit just below rounding position
+    const ruleText = decidingDigit >= 5
+      ? `Chữ số liền bên phải hàng ${unitName} là $${decidingDigit} \\geq 5$, nên làm tròn lên.`
+      : `Chữ số liền bên phải hàng ${unitName} là $${decidingDigit} < 5$, nên làm tròn xuống.`;
+    const explanation =
+      `Đáp án: $${rounded}$.\n\n${ruleText} ` +
+      `Vậy $${n}$ làm tròn đến hàng ${unitName} được $${rounded}$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `Làm tròn số ${n} đến hàng ${unitName}: ?`,
       answerFormat: "numeric",
       expectedAnswer: rounded,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

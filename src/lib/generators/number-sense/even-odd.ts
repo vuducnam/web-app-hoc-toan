@@ -26,6 +26,12 @@ export const evenOdd: Generator<string> = {
     const isEven = n % 2 === 0;
     const expectedAnswer = isEven ? "Số chẵn" : "Số lẻ";
 
+    // Explanation: point to last digit as the deciding factor
+    const lastDigit = n % 10;
+    const explanation = isEven
+      ? `Đáp án: Số chẵn.\n\nChữ số tận cùng của $${n}$ là $${lastDigit}$, là số chẵn nên $${n}$ là **số chẵn**.`
+      : `Đáp án: Số lẻ.\n\nChữ số tận cùng của $${n}$ là $${lastDigit}$, là số lẻ nên $${n}$ là **số lẻ**.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
@@ -33,6 +39,7 @@ export const evenOdd: Generator<string> = {
       answerFormat: "multiple-choice",
       choices: [...CHOICES],
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

@@ -25,6 +25,10 @@ export interface SubmitAnswerResult {
   leveledUp: boolean;
   newMasteryLevel: MasteryLevel;
   encouragementKey: EncouragementKey;
+  /** Correct answer, formatted for display (e.g. "42", "3/4", "3,14", "nhọn"). */
+  correctAnswer: string;
+  /** Optional Markdown + KaTeX explanation. Empty string when generator does not provide one. */
+  explanation: string;
   // Phase 11 — gamification fields
   xpEarned: number;
   newBadges: string[];

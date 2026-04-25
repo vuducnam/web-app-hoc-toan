@@ -58,6 +58,7 @@ export const naturalNumbersReview: Generator<number> = {
       problemLatex: subQuestion.problemLatex,
       answerFormat: "numeric",
       expectedAnswer: subQuestion.expectedAnswer,
+      explanation: subQuestion.explanation,
       // Spread sub-metadata first so format-specific fields (divisor, remainder) propagate;
       // then override identity fields with composite values.
       metadata: {

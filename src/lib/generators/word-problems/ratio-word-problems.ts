@@ -61,6 +61,7 @@ export const ratioWordProblems: Generator<number> = {
 
     let problemText: string;
     let expectedAnswer: number;
+    let explanation: string;
 
     if (templateType === "sum-ratio") {
       const [a, b] = rng.pick(RATIOS[d]);
@@ -68,11 +69,15 @@ export const ratioWordProblems: Generator<number> = {
       const total = m * (a + b);
       const smaller = m * Math.min(a, b);
       const larger = m * Math.max(a, b);
+      const bigPart = Math.max(a, b);
+      const smallPart = Math.min(a, b);
       // Ask for the smaller number
       expectedAnswer = smaller;
-      problemText = `Hai số có tổng là ${total}. Tỉ số của số lớn và số bé là ${Math.max(a, b)}:${Math.min(a, b)}. Tìm số bé.`;
-      // Sanity: larger + smaller = total
+      problemText = `Hai số có tổng là ${total}. Tỉ số của số lớn và số bé là ${bigPart}:${smallPart}. Tìm số bé.`;
       void larger;
+      explanation =
+        `Tổng số phần: $${bigPart} + ${smallPart} = ${bigPart + smallPart}$.\n\n` +
+        `Số bé: $${total} \\times \\dfrac{${smallPart}}{${bigPart + smallPart}} = ${smaller}$.`;
     } else if (templateType === "rectangle") {
       const k = rng.pick(RECT_K[d]);
       const pm = rng.pick(PERIMETER_MULT[d]);
@@ -81,14 +86,22 @@ export const ratioWordProblems: Generator<number> = {
       const P = pm * twoTimesKPlus1;
       expectedAnswer = pm; // width = P / (2(k+1)) = pm
       problemText = `Một hình chữ nhật có chiều dài gấp ${k} lần chiều rộng và có chu vi là ${P} m. Tính chiều rộng của hình chữ nhật (m).`;
+      explanation =
+        `Đặt chiều rộng là $w$, chiều dài là $${k}w$.\n\n` +
+        `Chu vi: $2(${k}w + w) = 2 \\times ${k + 1}w = ${P}$, suy ra $w = \\dfrac{${P}}{${twoTimesKPlus1}} = ${pm}\\,\\text{m}$.`;
     } else {
       // split-larger: divide total into a:b, find larger part
       const [a, b] = rng.pick(RATIOS[d]);
       const m = rng.pick(MULTIPLIERS[d]);
       const total = m * (a + b);
       const largerPart = m * Math.max(a, b);
+      const bigPart = Math.max(a, b);
+      const smallPart = Math.min(a, b);
       expectedAnswer = largerPart;
-      problemText = `Chia ${total} thành 2 phần theo tỉ lệ ${Math.max(a, b)}:${Math.min(a, b)}. Phần lớn hơn là bao nhiêu?`;
+      problemText = `Chia ${total} thành 2 phần theo tỉ lệ ${bigPart}:${smallPart}. Phần lớn hơn là bao nhiêu?`;
+      explanation =
+        `Tổng số phần: $${bigPart} + ${smallPart} = ${bigPart + smallPart}$.\n\n` +
+        `Phần lớn hơn: $${total} \\times \\dfrac{${bigPart}}{${bigPart + smallPart}} = ${largerPart}$.`;
     }
 
     return {
@@ -97,6 +110,7 @@ export const ratioWordProblems: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

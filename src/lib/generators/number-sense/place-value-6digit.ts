@@ -61,12 +61,20 @@ export const placeValue6digit: Generator<number> = {
         ? `Trong số ${n}, giá trị của chữ số ${digit} ở ${placeName} là ?`
         : `Trong số ${n}, chữ số ở ${placeName} có giá trị là ?`;
 
+    // Explanation: show digit × place-value unit
+    const placeUnit = Math.pow(10, pos);
+    const explanation =
+      `Đáp án: $${placeValue}$.\n\n` +
+      `Chữ số $${digit}$ ở ${placeName} có giá trị là ` +
+      `$${digit} \\times ${placeUnit} = ${placeValue}$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText,
       answerFormat: "numeric",
       expectedAnswer: placeValue,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

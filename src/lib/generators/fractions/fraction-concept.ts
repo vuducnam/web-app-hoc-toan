@@ -24,24 +24,35 @@ export const fractionConcept: Generator<Fraction> = {
     let problemText: string;
     let expectedAnswer: Fraction;
 
+    let explanation: string;
+
     if (d === 1) {
       // Proper fraction: numerator < denominator
       const den = rng.int(3, 9);
       const num = rng.int(1, den - 1);
       problemText = `${num} : ${den} = ?`;
       expectedAnswer = { num, den };
+      explanation =
+        `$${num} : ${den} = \\frac{${num}}{${den}}$.\n\n` +
+        `Phép chia ${num} : ${den} viết dưới dạng phân số có tử số là ${num} và mẫu số là ${den}.`;
     } else if (d === 2) {
       // Improper fraction: numerator > denominator
       const den = rng.int(2, 7);
       const num = rng.int(den + 1, den + den);
       problemText = `${num} : ${den} = ?`;
       expectedAnswer = { num, den };
+      explanation =
+        `$${num} : ${den} = \\frac{${num}}{${den}}$.\n\n` +
+        `Đây là phân số lớn hơn 1 vì tử số (${num}) lớn hơn mẫu số (${den}).`;
     } else {
       // D3: word problem — 1/b
       const den = rng.int(3, 10);
       const obj = rng.pick(OBJECTS);
       problemText = `Một ${obj} chia đều cho ${den} người, mỗi người được mấy phần?`;
       expectedAnswer = { num: 1, den };
+      explanation =
+        `Mỗi người được $\\frac{1}{${den}}$ ${obj}.\n\n` +
+        `Chia đều 1 ${obj} cho ${den} người, mỗi người nhận được 1 trong ${den} phần bằng nhau.`;
     }
 
     return {
@@ -50,6 +61,7 @@ export const fractionConcept: Generator<Fraction> = {
       problemText,
       answerFormat: "fraction",
       expectedAnswer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

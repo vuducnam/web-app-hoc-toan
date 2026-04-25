@@ -33,12 +33,19 @@ export const divide2Digit: Generator<number> = {
       dividend = divisor * quotient;
     }
 
+    // All divisions here are exact (no remainder)
+    const explanation =
+      `Đáp án: $${quotient}$.\n\n` +
+      `Vì $${quotient} \\times ${divisor} = ${dividend}$, ` +
+      `nên $${dividend} \\div ${divisor} = ${quotient}$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${dividend} ÷ ${divisor} = ?`,
       answerFormat: "numeric",
       expectedAnswer: quotient,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

@@ -10,6 +10,8 @@ import { ConfettiBurst } from "@/components/feedback/confetti-burst";
 import { LevelUpBanner } from "@/components/feedback/level-up-banner";
 import { SHAKE_ANIMATE, SHAKE_TRANSITION } from "@/components/feedback/shake-attr";
 import { pickEncouragement } from "@/lib/ui/encouragement-pool";
+import { NoteMarkdown } from "@/components/knowledge-notes/note-markdown";
+import { cn } from "@/lib/ui/cn";
 import type { MasteryLevel } from "@/components/ui/mastery-pill";
 import type { EncouragementKind } from "@/lib/ui/encouragement-pool";
 
@@ -19,6 +21,10 @@ export interface FeedbackState {
   newMasteryLevel: MasteryLevel;
   /** Encouragement key from server — maps to correct/wrong phrase pool */
   encouragementKey: string;
+  /** Server-formatted correct answer (always shown after submit). */
+  correctAnswer: string;
+  /** Optional Markdown + KaTeX explanation. Empty when unavailable. */
+  explanation: string;
 }
 
 interface FeedbackOverlayProps {
@@ -30,9 +36,10 @@ interface FeedbackOverlayProps {
 }
 
 // Durations in ms
-const CORRECT_DISMISS_MS = 1200;
-const WRONG_DISMISS_MS = 1400;
+const CORRECT_DISMISS_MS = 1500;
 const LEVEL_UP_EXTRA_MS = 800; // extra wait while level-up banner shows
+// Wrong answers do NOT auto-advance — student must click "Tiếp theo" to proceed
+// after reading the correct answer + explanation.
 
 /**
  * Full feedback overlay replacing Phase 08 stub.
@@ -61,19 +68,20 @@ export function FeedbackOverlay({
       setMimi("sad");
     }
 
-    const dismissMs = feedback.correct
-      ? CORRECT_DISMISS_MS + (feedback.leveledUp ? LEVEL_UP_EXTRA_MS : 0)
-      : WRONG_DISMISS_MS;
-
     const mimiResetMs = feedback.correct ? 800 : 1000;
-
     const mimiTimer = setTimeout(() => setMimi("idle"), mimiResetMs);
-    const advanceTimer = setTimeout(onAdvance, dismissMs);
 
-    return () => {
-      clearTimeout(mimiTimer);
-      clearTimeout(advanceTimer);
-    };
+    // Hybrid advance: correct → auto-dismiss; wrong → wait for student click on "Tiếp theo".
+    if (feedback.correct) {
+      const dismissMs = CORRECT_DISMISS_MS + (feedback.leveledUp ? LEVEL_UP_EXTRA_MS : 0);
+      const advanceTimer = setTimeout(onAdvance, dismissMs);
+      return () => {
+        clearTimeout(mimiTimer);
+        clearTimeout(advanceTimer);
+      };
+    }
+
+    return () => clearTimeout(mimiTimer);
   }, [feedback, setMimi, onAdvance]);
 
   if (!feedback) return null;
@@ -100,15 +108,77 @@ export function FeedbackOverlay({
         />
       )}
 
-      {/* Encouraging toast with Mimi avatar */}
-      <EncouragingToast
-        open={true}
-        onOpenChange={() => {/* controlled by timer */}}
-        phrase={phrase}
-        kind={kind}
-        duration={feedback.correct ? CORRECT_DISMISS_MS : WRONG_DISMISS_MS}
-      />
+      {/* Encouraging toast — only on correct answers (wrong feedback is in the inline panel below). */}
+      {feedback.correct && (
+        <EncouragingToast
+          open={true}
+          onOpenChange={() => {/* controlled by timer */}}
+          phrase={phrase}
+          kind={kind}
+          duration={CORRECT_DISMISS_MS}
+        />
+      )}
+
+      {/* Wrong-answer panel — shows correct answer + explanation + manual "Tiếp theo" button. */}
+      {!feedback.correct && (
+        <WrongFeedbackPanel
+          phrase={phrase}
+          correctAnswer={feedback.correctAnswer}
+          explanation={feedback.explanation}
+          onAdvance={onAdvance}
+        />
+      )}
     </>
+  );
+}
+
+interface WrongFeedbackPanelProps {
+  phrase: string;
+  correctAnswer: string;
+  explanation: string;
+  onAdvance: () => void;
+}
+
+/** Inline panel below the question card showing correct answer + explanation. */
+function WrongFeedbackPanel({ phrase, correctAnswer, explanation, onAdvance }: WrongFeedbackPanelProps) {
+  return (
+    <div
+      role="region"
+      aria-label="Đáp án đúng và giải thích"
+      className={cn(
+        "mt-4 rounded-3xl border-2 border-coral-300 bg-coral-50/30",
+        "p-5 md:p-6 space-y-3",
+      )}
+    >
+      <p className="text-sm font-bold text-coral-500" aria-live="polite">{phrase}</p>
+
+      <div className="space-y-1">
+        <p className="text-xs font-bold uppercase text-ink-600 tracking-wide">Đáp án đúng</p>
+        <p className="font-mono text-2xl font-bold text-ink-900">{correctAnswer}</p>
+      </div>
+
+      {explanation && (
+        <div className="space-y-1">
+          <p className="text-xs font-bold uppercase text-ink-600 tracking-wide">Giải thích</p>
+          <NoteMarkdown source={explanation} className="text-sm md:text-base" />
+        </div>
+      )}
+
+      <div className="flex justify-end pt-2">
+        <button
+          type="button"
+          onClick={onAdvance}
+          className={cn(
+            "inline-flex items-center px-6 py-2.5 rounded-2xl font-display font-bold",
+            "bg-brand-500 text-white shadow-chunky-brand transition-all",
+            "hover:bg-brand-700 active:translate-y-[3px] active:shadow-none",
+            "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-sun-500",
+          )}
+        >
+          Tiếp theo →
+        </button>
+      </div>
+    </div>
   );
 }
 

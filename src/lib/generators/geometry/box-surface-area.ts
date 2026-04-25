@@ -35,6 +35,9 @@ export const boxSurfaceArea: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation:
+        `$S = 2(ab + bc + ca) = 2(${a}\\times${b} + ${b}\\times${c} + ${c}\\times${a})$\n\n` +
+        `$= 2(${a * b} + ${b * c} + ${c * a}) = 2 \\times ${a * b + b * c + c * a} = ${expectedAnswer}\\,\\text{cm}^2$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

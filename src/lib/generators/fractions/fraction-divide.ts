@@ -50,6 +50,9 @@ export const fractionDivide: Generator<Fraction> = {
       problemLatex: `\\frac{${n1}}{${d1}} \\div \\frac{${n2}}{${d2}} = ?`,
       answerFormat: "fraction",
       expectedAnswer: answer,
+      explanation:
+        `$\\frac{${n1}}{${d1}} \\div \\frac{${n2}}{${d2}} = \\frac{${n1}}{${d1}} \\times \\frac{${d2}}{${n2}} = \\frac{${answer.num}}{${answer.den}}$.\n\n` +
+        `Chia cho một phân số bằng cách nhân với phân số đảo ngược của nó.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

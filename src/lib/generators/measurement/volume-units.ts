@@ -23,12 +23,22 @@ export const volumeUnits: Generator<number> = {
     const d = difficulty as 1 | 2 | 3;
     const rng = makeRng(seed);
 
-    const { problemText, expectedAnswer } = generateConversion(
+    const { problemText, expectedAnswer, fromUnit, toUnit, value } = generateConversion(
       rng,
       VOLUME_TABLE,
       d,
       "Đổi",
     );
+
+    const fromRatio = VOLUME_TABLE.units.find((u) => u.name === fromUnit)?.ratio ?? 1;
+    const toRatio = VOLUME_TABLE.units.find((u) => u.name === toUnit)?.ratio ?? 1;
+    const factor = fromRatio / toRatio;
+
+    // Note for students: 1 dm³ = 1 lít (link capacity to volume)
+    const linkNote =
+      fromUnit === "dm³" || toUnit === "dm³"
+        ? " Lưu ý: $1\\,\\text{dm}^3 = 1\\,\\text{lít}$."
+        : "";
 
     return {
       id: `${skillKey}-${seed}`,
@@ -36,6 +46,10 @@ export const volumeUnits: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation:
+        `$${value}\\,\\text{${fromUnit}} = ${expectedAnswer}\\,\\text{${toUnit}}$.\n\n` +
+        `Đổi: $1\\,\\text{${fromUnit}} = ${factor}\\,\\text{${toUnit}}$, ` +
+        `nên $${value} \\times ${factor} = ${expectedAnswer}$.${linkNote}`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

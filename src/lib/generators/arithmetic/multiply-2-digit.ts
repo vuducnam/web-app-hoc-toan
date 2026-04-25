@@ -26,12 +26,35 @@ export const multiply2Digit: Generator<number> = {
     }
 
     const answer = a * b;
+
+    // Explanation varies by difficulty
+    let explanation: string;
+    if (d === 1) {
+      // 2-digit × 1-digit: single partial product
+      explanation =
+        `Đặt tính: $${a} \\times ${b} = ${answer}$.\n\n` +
+        `Nhân lần lượt từng chữ số của $${a}$ với $${b}$, ` +
+        `cộng kết quả từng hàng lại.`;
+    } else {
+      // 2-digit × 2-digit or 3-digit × 2-digit: two partial products
+      const bOnes = b % 10;
+      const bTens = Math.floor(b / 10);
+      const partial1 = a * bOnes;
+      const partial2 = a * bTens;
+      explanation =
+        `Đặt tính: $${a} \\times ${b} = ${answer}$.\n\n` +
+        `Tích riêng 1: $${a} \\times ${bOnes} = ${partial1}$. ` +
+        `Tích riêng 2: $${a} \\times ${bTens} = ${partial2}$ (dịch sang trái 1 hàng). ` +
+        `Cộng lại: $${partial1} + ${partial2 * 10} = ${answer}$.`;
+    }
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${a} × ${b} = ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

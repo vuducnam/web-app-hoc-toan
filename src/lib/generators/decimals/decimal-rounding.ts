@@ -40,6 +40,11 @@ export const decimalRounding: Generator<number> = {
 
     const sourceStr = toVnFixed(source, sourcePlaces);
     const placeName = PLACE_NAMES[d];
+    const ansStr = toVnFixed(answer, targetPlaces);
+
+    // Extract the deciding digit (first digit dropped when rounding)
+    const decidingDigitRaw = Math.round(Math.abs(source) * Math.pow(10, sourcePlaces)) % 10;
+    const roundUp = decidingDigitRaw >= 5;
 
     return {
       id: `${skillKey}-${seed}`,
@@ -47,6 +52,9 @@ export const decimalRounding: Generator<number> = {
       problemText: `Làm tròn ${sourceStr} đến ${placeName}: ?`,
       answerFormat: "decimal",
       expectedAnswer: answer,
+      explanation:
+        `Làm tròn $${sourceStr}$ đến ${placeName} được $${ansStr}$.\n\n` +
+        `Chữ số quyết định là ${decidingDigitRaw} (${roundUp ? "≥ 5 nên làm tròn lên" : "< 5 nên bỏ đi"}).`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

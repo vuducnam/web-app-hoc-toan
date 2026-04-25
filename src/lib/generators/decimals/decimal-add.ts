@@ -33,6 +33,7 @@ export const decimalAdd: Generator<number> = {
 
     const aStr = toVnFixed(a, places);
     const bStr = toVnFixed(b, places);
+    const ansStr = toVnFixed(answer, places);
 
     return {
       id: `${skillKey}-${seed}`,
@@ -40,6 +41,9 @@ export const decimalAdd: Generator<number> = {
       problemText: `${aStr} + ${bStr} = ?`,
       answerFormat: "decimal",
       expectedAnswer: answer,
+      explanation:
+        `$${aStr} + ${bStr} = ${ansStr}$.\n\n` +
+        `Thẳng hàng dấu phẩy rồi cộng từng chữ số như số tự nhiên, nhớ đặt dấu phẩy ở kết quả.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

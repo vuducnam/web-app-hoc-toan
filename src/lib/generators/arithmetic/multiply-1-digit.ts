@@ -24,12 +24,18 @@ export const multiply1Digit: Generator<number> = {
     const b = rng.int(2, 9);
     const answer = a * b;
 
+    const explanation =
+      `Đặt tính: $${a} \\times ${b} = ${answer}$.\n\n` +
+      `Nhân $${b}$ lần lượt với từng chữ số của $${a}$ từ phải sang trái, ` +
+      `nhớ sang hàng kế tiếp nếu tích cột $\\geq 10$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText: `${a} × ${b} = ?`,
       answerFormat: "numeric",
       expectedAnswer: answer,
+      explanation,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
     };
   },

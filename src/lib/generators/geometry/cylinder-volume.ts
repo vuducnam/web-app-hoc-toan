@@ -35,12 +35,18 @@ export const cylinderVolume: Generator<number> = {
     const problemText =
       `Hình trụ có bán kính đáy ${r} cm, chiều cao ${h} cm. Thể tích (cm³)? (lấy π = 3,14)`;
 
+    // Format expectedAnswer with Vietnamese decimal comma
+    const answerStr = expectedAnswer.toFixed(2).replace(".", ",");
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText,
       answerFormat: "decimal",
       expectedAnswer,
+      explanation:
+        `$V = \\pi \\times r^2 \\times h = 3{,}14 \\times ${r}^2 \\times ${h}$\n\n` +
+        `$= 3{,}14 \\times ${r * r} \\times ${h} = ${answerStr}\\,\\text{cm}^3$.`,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

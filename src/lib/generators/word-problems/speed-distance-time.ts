@@ -40,16 +40,23 @@ export const speedDistanceTime: Generator<number> = {
 
     let problemText: string;
     let expectedAnswer: number;
+    let explanation: string;
 
     if (templateType === "find-speed") {
       problemText = `Một ô tô đi quãng đường ${s} km trong ${t} giờ. Hỏi vận tốc của ô tô là bao nhiêu km/giờ?`;
       expectedAnswer = v; // s / t
+      explanation =
+        `$v = \\dfrac{s}{t} = \\dfrac{${s}}{${t}} = ${v}\\,\\text{km/giờ}$.`;
     } else if (templateType === "find-distance") {
       problemText = `Một xe máy đi với vận tốc ${v} km/giờ trong ${t} giờ. Hỏi xe đi được bao nhiêu km?`;
       expectedAnswer = s; // v × t
+      explanation =
+        `$s = v \\times t = ${v} \\times ${t} = ${s}\\,\\text{km}$.`;
     } else {
       problemText = `Một tàu hỏa đi quãng đường ${s} km với vận tốc ${v} km/giờ. Hỏi tàu đi hết bao nhiêu giờ?`;
       expectedAnswer = t; // s / v
+      explanation =
+        `$t = \\dfrac{s}{v} = \\dfrac{${s}}{${v}} = ${t}\\,\\text{giờ}$.`;
     }
 
     return {
@@ -58,6 +65,7 @@ export const speedDistanceTime: Generator<number> = {
       problemText,
       answerFormat: "numeric",
       expectedAnswer,
+      explanation,
       metadata: {
         difficulty: d,
         seed,

@@ -38,12 +38,20 @@ export const circleCircumferenceArea: Generator<number> = {
       problemText = `Hình tròn có bán kính ${r} cm. Diện tích (cm²)? (lấy π = 3,14)`;
     }
 
+    // Format expectedAnswer with Vietnamese decimal comma
+    const answerStr = expectedAnswer.toFixed(2).replace(".", ",");
+
+    const explanation = isCircumference
+      ? `$C = 2 \\times \\pi \\times r = 2 \\times 3{,}14 \\times ${r} = ${answerStr}\\,\\text{cm}$.`
+      : `$S = \\pi \\times r^2 = 3{,}14 \\times ${r}^2 = 3{,}14 \\times ${r * r} = ${answerStr}\\,\\text{cm}^2$.`;
+
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
       problemText,
       answerFormat: "decimal",
       expectedAnswer,
+      explanation,
       metadata: {
         difficulty: d,
         seed,
