@@ -47,6 +47,8 @@ export const cylinderVolume: Generator<number> = {
       explanation:
         `$V = \\pi \\times r^2 \\times h = 3{,}14 \\times ${r}^2 \\times ${h}$\n\n` +
         `$= 3{,}14 \\times ${r * r} \\times ${h} = ${answerStr}\\,\\text{cm}^3$.`,
+      figure: { kind: "cylinder3d", radius: r, height: h, unit: "cm" },
+      solutionFigure: { kind: "cylinder3d", radius: r, height: h, unit: "cm", shaded: true },
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

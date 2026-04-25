@@ -11,9 +11,11 @@ import { LevelUpBanner } from "@/components/feedback/level-up-banner";
 import { SHAKE_ANIMATE, SHAKE_TRANSITION } from "@/components/feedback/shake-attr";
 import { pickEncouragement } from "@/lib/ui/encouragement-pool";
 import { NoteMarkdown } from "@/components/knowledge-notes/note-markdown";
+import { FigureRenderer } from "@/components/geometry-figures/figure-renderer";
 import { cn } from "@/lib/ui/cn";
 import type { MasteryLevel } from "@/components/ui/mastery-pill";
 import type { EncouragementKind } from "@/lib/ui/encouragement-pool";
+import type { FigureSpec } from "@/lib/generators/types";
 
 export interface FeedbackState {
   correct: boolean;
@@ -25,6 +27,8 @@ export interface FeedbackState {
   correctAnswer: string;
   /** Optional Markdown + KaTeX explanation. Empty when unavailable. */
   explanation: string;
+  /** Optional figure visualising the solution (often shaded). */
+  solutionFigure?: FigureSpec;
 }
 
 interface FeedbackOverlayProps {
@@ -126,6 +130,7 @@ export function FeedbackOverlay({
         phrase={phrase}
         correctAnswer={feedback.correctAnswer}
         explanation={feedback.explanation}
+        solutionFigure={feedback.solutionFigure}
         dismissed={dismissed}
         onDismiss={() => setDismissed(true)}
         onRestore={() => setDismissed(false)}
@@ -140,6 +145,7 @@ interface FeedbackPanelProps {
   phrase: string;
   correctAnswer: string;
   explanation: string;
+  solutionFigure?: FigureSpec;
   dismissed: boolean;
   onDismiss: () => void;
   onRestore: () => void;
@@ -153,6 +159,7 @@ function FeedbackPanel({
   phrase,
   correctAnswer,
   explanation,
+  solutionFigure,
   dismissed,
   onDismiss,
   onRestore,
@@ -226,6 +233,12 @@ function FeedbackPanel({
         <p className="text-xs font-bold uppercase text-ink-600 tracking-wide">{tone.header}</p>
         <p className="font-mono text-2xl font-bold text-ink-900">{correctAnswer}</p>
       </div>
+
+      {solutionFigure && (
+        <div className="flex justify-center">
+          <FigureRenderer spec={solutionFigure} />
+        </div>
+      )}
 
       {explanation && (
         <div className="space-y-1">

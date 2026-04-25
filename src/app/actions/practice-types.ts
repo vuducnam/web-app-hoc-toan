@@ -1,7 +1,7 @@
 // Shared types for the practice server actions.
 // Kept in a separate file so practice.ts, practice-submit-core.ts and tests
 // can all import without circular deps.
-import type { Difficulty as GenDifficulty } from "@/lib/generators/types";
+import type { Difficulty as GenDifficulty, FigureSpec } from "@/lib/generators/types";
 import type { MasteryLevel } from "@/lib/mastery/types";
 
 export type EncouragementKey =
@@ -29,6 +29,11 @@ export interface SubmitAnswerResult {
   correctAnswer: string;
   /** Optional Markdown + KaTeX explanation. Empty string when generator does not provide one. */
   explanation: string;
+  /**
+   * Optional figure that visualises the solution (often shaded). Generators may
+   * omit it; UI only renders when present.
+   */
+  solutionFigure?: FigureSpec;
   // Phase 11 — gamification fields
   xpEarned: number;
   newBadges: string[];

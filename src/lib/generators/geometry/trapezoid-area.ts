@@ -47,6 +47,8 @@ export const trapezoidArea: Generator<number> = {
       expectedAnswer,
       explanation:
         `$S = \\dfrac{(a + b) \\times h}{2} = \\dfrac{(${a} + ${b}) \\times ${h}}{2} = \\dfrac{${a + b} \\times ${h}}{2} = ${expectedAnswer}\\,\\text{cm}^2$.`,
+      figure: { kind: "trapezoid", a, b, h, unit: "cm" },
+      solutionFigure: { kind: "trapezoid", a, b, h, unit: "cm", shaded: true },
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

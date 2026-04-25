@@ -6,7 +6,7 @@ import "server-only";
 // answerFormat: numeric.
 import { makeRng } from "../seeded-rng";
 import { parseNumeric } from "../normalize/numeric";
-import type { Generator, GeneratorParams, Question } from "../types";
+import type { Generator, GeneratorParams, Question, FigureSpec } from "../types";
 
 const TIME_SEC: Record<number, number> = { 1: 60, 2: 75, 3: 90 };
 
@@ -17,6 +17,8 @@ interface Built {
   problemText: string;
   expectedAnswer: number;
   explanation: string;
+  figure: FigureSpec;
+  solutionFigure: FigureSpec;
 }
 
 // Dimension ranges per difficulty
@@ -38,6 +40,8 @@ function buildTemplate(tpl: TemplateId, rng: ReturnType<typeof makeRng>, d: 1 | 
         expectedAnswer: area,
         explanation:
           `**Bài giải:**\n\nDiện tích hình chữ nhật là:\n\n$S = ${a} \\times ${b} = ${area}$ (m²).\n\n**Đáp số:** ${area} m².`,
+        figure: { kind: "rectangle", width: a, height: b, unit: "m" },
+        solutionFigure: { kind: "rectangle", width: a, height: b, unit: "m", shaded: true },
       };
     }
     case "T2": {
@@ -51,6 +55,8 @@ function buildTemplate(tpl: TemplateId, rng: ReturnType<typeof makeRng>, d: 1 | 
         expectedAnswer: perim,
         explanation:
           `**Bài giải:**\n\nChu vi mảnh đất hình chữ nhật là:\n\n$C = 2 \\times (${a} + ${b}) = 2 \\times ${a + b} = ${perim}$ (m).\n\n**Đáp số:** ${perim} m.`,
+        figure: { kind: "rectangle", width: a, height: b, unit: "m" },
+        solutionFigure: { kind: "rectangle", width: a, height: b, unit: "m" },
       };
     }
     case "T3": {
@@ -66,6 +72,9 @@ function buildTemplate(tpl: TemplateId, rng: ReturnType<typeof makeRng>, d: 1 | 
         explanation:
           `**Bài giải:**\n\nNửa chu vi hình chữ nhật là:\n\n$${perim} \\div 2 = ${perim / 2}$ (m).\n\n` +
           `Chiều rộng sân vườn là:\n\n$${perim / 2} - ${a} = ${b}$ (m).\n\n**Đáp số:** ${b} m.`,
+        // Show all given info: length on the bottom edge, "?" on the side, perimeter as caption above.
+        figure: { kind: "rectangle", width: a, height: "?", unit: "m", perimeter: perim },
+        solutionFigure: { kind: "rectangle", width: a, height: b, unit: "m", perimeter: perim, shaded: true },
       };
     }
     case "T4": {
@@ -78,6 +87,8 @@ function buildTemplate(tpl: TemplateId, rng: ReturnType<typeof makeRng>, d: 1 | 
         expectedAnswer: area,
         explanation:
           `**Bài giải:**\n\nDiện tích sân trường hình vuông là:\n\n$S = ${s} \\times ${s} = ${area}$ (m²).\n\n**Đáp số:** ${area} m².`,
+        figure: { kind: "rectangle", width: s, height: s, unit: "m", isSquare: true },
+        solutionFigure: { kind: "rectangle", width: s, height: s, unit: "m", isSquare: true, shaded: true },
       };
     }
     case "T5": {
@@ -90,6 +101,8 @@ function buildTemplate(tpl: TemplateId, rng: ReturnType<typeof makeRng>, d: 1 | 
         expectedAnswer: perim,
         explanation:
           `**Bài giải:**\n\nChu vi mảnh vườn hình vuông là:\n\n$C = 4 \\times ${s} = ${perim}$ (m).\n\n**Đáp số:** ${perim} m.`,
+        figure: { kind: "rectangle", width: s, height: s, unit: "m", isSquare: true },
+        solutionFigure: { kind: "rectangle", width: s, height: s, unit: "m", isSquare: true },
       };
     }
   }
@@ -111,6 +124,8 @@ export const wordRectangleArea: Generator<number> = {
       answerFormat: "numeric",
       expectedAnswer: built.expectedAnswer,
       explanation: built.explanation,
+      figure: built.figure,
+      solutionFigure: built.solutionFigure,
       metadata: {
         difficulty: d,
         seed,

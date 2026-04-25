@@ -157,6 +157,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
         encouragementKey: result.encouragementKey,
         correctAnswer: result.correctAnswer,
         explanation: result.explanation,
+        solutionFigure: result.solutionFigure,
       },
     });
     setPendingAnswer("");

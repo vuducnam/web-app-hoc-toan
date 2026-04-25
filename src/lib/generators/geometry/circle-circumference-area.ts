@@ -52,6 +52,11 @@ export const circleCircumferenceArea: Generator<number> = {
       answerFormat: "decimal",
       expectedAnswer,
       explanation,
+      figure: { kind: "circle", radius: r, show: "radius", unit: "cm" },
+      // Shade only for area variant — circumference is a length, shading would mislead.
+      solutionFigure: isCircumference
+        ? { kind: "circle", radius: r, show: "radius", unit: "cm" }
+        : { kind: "circle", radius: r, show: "radius", unit: "cm", shaded: true },
       metadata: {
         difficulty: d,
         seed,

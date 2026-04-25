@@ -7,7 +7,15 @@ import "server-only";
 // answerFormat: numeric; expectedAnswer: integer.
 import { makeRng } from "../seeded-rng";
 import { parseNumeric } from "../normalize/numeric";
-import type { Generator, GeneratorParams, Question } from "../types";
+import type { Generator, GeneratorParams, Question, FigureSpec } from "../types";
+
+interface Built {
+  problemText: string;
+  expectedAnswer: number;
+  explanation: string;
+  figure?: FigureSpec;
+  solutionFigure?: FigureSpec;
+}
 
 const TIME_SEC: Record<number, number> = { 1: 90, 2: 90, 3: 90 };
 
@@ -42,34 +50,32 @@ const CAPACITIES: Record<number, number[]> = {
 
 // --- Template builders ---
 
-function buildCube(s: number): {
-  problemText: string; expectedAnswer: number; explanation: string;
-} {
+function buildCube(s: number): Built {
   const V = s * s * s;
   return {
     problemText: `Thùng cát hình lập phương có cạnh ${s} dm. Tính thể tích thùng cát đó.`,
     expectedAnswer: V,
     explanation:
       `**Bài giải:**\n\nThể tích hình lập phương là:\n\n$V = a^3 = ${s}^3 = ${s} \\times ${s} \\times ${s} = ${V}$ (dm³).\n\n**Đáp số:** ${V} dm³.`,
+    figure: { kind: "rectPrism3d", a: s, b: s, c: s, unit: "dm" },
+    solutionFigure: { kind: "rectPrism3d", a: s, b: s, c: s, unit: "dm", shaded: true },
   };
 }
 
-function buildBox(a: number, b: number, c: number): {
-  problemText: string; expectedAnswer: number; explanation: string;
-} {
+function buildBox(a: number, b: number, c: number): Built {
   const V = a * b * c;
   return {
     problemText: `Bể cá hình hộp chữ nhật có chiều dài ${a} dm, chiều rộng ${b} dm và chiều cao ${c} dm. Tính thể tích bể cá đó.`,
     expectedAnswer: V,
     explanation:
       `**Bài giải:**\n\nThể tích hình hộp chữ nhật là:\n\n$V = a \\times b \\times c = ${a} \\times ${b} \\times ${c} = ${V}$ (dm³).\n\n**Đáp số:** ${V} dm³.`,
+    figure: { kind: "rectPrism3d", a, b, c, unit: "dm" },
+    solutionFigure: { kind: "rectPrism3d", a, b, c, unit: "dm", shaded: true },
   };
 }
 
-function buildCapacity(V: number): {
-  problemText: string; expectedAnswer: number; explanation: string;
-} {
-  // V dm³ = V lít
+function buildCapacity(V: number): Built {
+  // V dm³ = V lít — pure unit conversion, no figure (volume given as a number).
   return {
     problemText: `Biết $1\\,\\text{dm}^3 = 1$ lít. Bể chứa nước có thể tích ${V} dm³. Hỏi bể chứa được bao nhiêu lít nước?`,
     expectedAnswer: V,
@@ -78,15 +84,15 @@ function buildCapacity(V: number): {
   };
 }
 
-function buildBoxToLiters(a: number, b: number, c: number): {
-  problemText: string; expectedAnswer: number; explanation: string;
-} {
+function buildBoxToLiters(a: number, b: number, c: number): Built {
   const V = a * b * c;
   return {
     problemText: `Bể nước hình hộp chữ nhật dài ${a} dm, rộng ${b} dm, cao ${c} dm. Biết $1\\,\\text{dm}^3 = 1$ lít. Bể chứa được bao nhiêu lít nước?`,
     expectedAnswer: V,
     explanation:
       `**Bài giải:**\n\nThể tích bể nước là:\n\n$V = ${a} \\times ${b} \\times ${c} = ${V}$ (dm³).\n\nVì $1\\,\\text{dm}^3 = 1$ lít, bể chứa được:\n\n$${V}$ lít nước.\n\n**Đáp số:** ${V} lít.`,
+    figure: { kind: "rectPrism3d", a, b, c, unit: "dm" },
+    solutionFigure: { kind: "rectPrism3d", a, b, c, unit: "dm", shaded: true },
   };
 }
 
@@ -106,7 +112,7 @@ export const word3dVolume: Generator<number> = {
 
     const tmplId = rng.pick(TEMPLATES[d]);
 
-    let result: { problemText: string; expectedAnswer: number; explanation: string };
+    let result: Built;
 
     if (tmplId === "cube") {
       const s = rng.pick(CUBE_SIDES[d]);
@@ -134,6 +140,8 @@ export const word3dVolume: Generator<number> = {
       answerFormat: "numeric",
       expectedAnswer: result.expectedAnswer,
       explanation: result.explanation,
+      figure: result.figure,
+      solutionFigure: result.solutionFigure,
       metadata: {
         difficulty: d,
         seed,

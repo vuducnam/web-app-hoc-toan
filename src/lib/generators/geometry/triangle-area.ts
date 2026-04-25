@@ -68,6 +68,8 @@ export const triangleArea: Generator<number> = {
       expectedAnswer,
       explanation:
         `$S = \\dfrac{a \\times h}{2} = \\dfrac{${a} \\times ${h}}{2} = ${expectedAnswer}\\,\\text{cm}^2$.`,
+      figure: { kind: "triangle", base: a, height: h, unit: "cm" },
+      solutionFigure: { kind: "triangle", base: a, height: h, unit: "cm", shaded: true },
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

@@ -38,6 +38,8 @@ export const rectangularPrismVolume: Generator<number> = {
       expectedAnswer,
       explanation:
         `$V = a \\times b \\times c = ${a} \\times ${b} \\times ${c} = ${expectedAnswer}\\,\\text{cm}^3$.`,
+      figure: { kind: "rectPrism3d", a, b, c, unit: "cm" },
+      solutionFigure: { kind: "rectPrism3d", a, b, c, unit: "cm", shaded: true },
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

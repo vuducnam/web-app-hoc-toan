@@ -350,6 +350,7 @@ export const grade5: SeedGrade = {
               nameVi: "Diện tích hình tam giác",
               knowledgeNoteRemember:
                 "### Diện tích hình tam giác\n\n" +
+                "::figure{kind=triangle base=a height=h}\n\n" +
                 "$$S = \\frac{a \\times h}{2}$$\n\n" +
                 "Trong đó:\n" +
                 "- $a$ là độ dài **đáy**\n" +
@@ -377,6 +378,7 @@ export const grade5: SeedGrade = {
               nameVi: "Diện tích hình thang",
               knowledgeNoteRemember:
                 "### Diện tích hình thang\n\n" +
+                "::figure{kind=trapezoid a=a b=b h=h}\n\n" +
                 "$$S = \\frac{(a + b) \\times h}{2}$$\n\n" +
                 "Trong đó:\n" +
                 "- $a$, $b$ là độ dài hai **đáy** (song song nhau)\n" +
@@ -404,6 +406,7 @@ export const grade5: SeedGrade = {
               nameVi: "Chu vi và diện tích hình tròn",
               knowledgeNoteRemember:
                 "### Hình tròn\n\n" +
+                "::figure{kind=circle radius=r show=radius}\n\n" +
                 "Ký hiệu: $r$ = bán kính, $d = 2r$ = đường kính, $\\pi \\approx 3{,}14$.\n\n" +
                 "$$C = 2 \\times \\pi \\times r = \\pi \\times d$$\n" +
                 "$$S = \\pi \\times r^2$$\n\n" +
@@ -596,6 +599,7 @@ export const grade5: SeedGrade = {
               nameVi: "Thể tích hình hộp chữ nhật",
               knowledgeNoteRemember:
                 "### Thể tích hình hộp chữ nhật\n\n" +
+                "::figure{kind=rectPrism3d a=a b=b c=c}\n\n" +
                 "$$V = a \\times b \\times c$$\n\n" +
                 "Trong đó $a$, $b$, $c$ là chiều dài, chiều rộng, chiều cao.\n\n" +
                 "**Ví dụ:** Hộp dài $8\\,\\text{cm}$, rộng $5\\,\\text{cm}$, cao $3\\,\\text{cm}$:\n" +
@@ -637,6 +641,7 @@ export const grade5: SeedGrade = {
               nameVi: "Diện tích toàn phần hình hộp chữ nhật",
               knowledgeNoteRemember:
                 "### Diện tích toàn phần hình hộp chữ nhật\n\n" +
+                "::figure{kind=rectPrismNet a=a b=b c=c}\n\n" +
                 "Hộp chữ nhật có 6 mặt, gồm 3 cặp mặt đối diện bằng nhau:\n\n" +
                 "$$S_{\\text{tp}} = 2 \\times (a \\times b + b \\times c + a \\times c)$$\n\n" +
                 "Trong đó $a$ = dài, $b$ = rộng, $c$ = cao.\n\n" +
@@ -663,6 +668,7 @@ export const grade5: SeedGrade = {
               nameVi: "Thể tích hình lăng trụ và hình trụ",
               knowledgeNoteRemember:
                 "### Thể tích hình trụ\n\n" +
+                "::figure{kind=cylinder3d radius=r height=h}\n\n" +
                 "Hình trụ có đáy là hình tròn bán kính $r$ và chiều cao $h$:\n\n" +
                 "$$V = \\pi \\times r^2 \\times h$$\n\n" +
                 "Với $\\pi \\approx 3{,}14$.\n\n" +

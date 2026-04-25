@@ -8,7 +8,16 @@ import "server-only";
 import { makeRng } from "../seeded-rng";
 import { parseNumeric } from "../normalize/numeric";
 import { parseVnDecimal, equalsWithTolerance, toVnFixed } from "../normalize/decimal";
-import type { Generator, GeneratorParams, Question, AnswerFormat } from "../types";
+import type { Generator, GeneratorParams, Question, AnswerFormat, FigureSpec } from "../types";
+
+interface Built {
+  problemText: string;
+  expectedAnswer: number;
+  explanation: string;
+  answerFormat: AnswerFormat;
+  figure: FigureSpec;
+  solutionFigure: FigureSpec;
+}
 
 const TIME_SEC: Record<number, number> = { 1: 90, 2: 90, 3: 90 };
 const PI = 3.14;
@@ -53,9 +62,7 @@ const CIRCLE_RADII: number[] = [1, 2, 3, 4, 5];
 
 // --- Template builders ---
 
-function buildTriangle(a: number, h: number, d: number): {
-  problemText: string; expectedAnswer: number; explanation: string; answerFormat: AnswerFormat;
-} {
+function buildTriangle(a: number, h: number, d: number): Built {
   const S = (a * h) / 2;
   const context = d === 1
     ? `Mảnh vườn hình tam giác có đáy ${a} m và chiều cao ${h} m. Tính diện tích mảnh vườn đó.`
@@ -66,12 +73,12 @@ function buildTriangle(a: number, h: number, d: number): {
     answerFormat: "numeric",
     explanation:
       `**Bài giải:**\n\nDiện tích hình tam giác là:\n\n$S = \\dfrac{a \\times h}{2} = \\dfrac{${a} \\times ${h}}{2} = ${S}$ (m²).\n\n**Đáp số:** ${S} m².`,
+    figure: { kind: "triangle", base: a, height: h, unit: "m" },
+    solutionFigure: { kind: "triangle", base: a, height: h, unit: "m", shaded: true },
   };
 }
 
-function buildTrapezoid(a: number, b: number, h: number): {
-  problemText: string; expectedAnswer: number; explanation: string; answerFormat: AnswerFormat;
-} {
+function buildTrapezoid(a: number, b: number, h: number): Built {
   const S = ((a + b) * h) / 2;
   return {
     problemText: `Mảnh đất hình thang có đáy lớn ${a} m, đáy bé ${b} m và chiều cao ${h} m. Tính diện tích mảnh đất đó.`,
@@ -79,12 +86,12 @@ function buildTrapezoid(a: number, b: number, h: number): {
     answerFormat: "numeric",
     explanation:
       `**Bài giải:**\n\nDiện tích hình thang là:\n\n$S = \\dfrac{(a + b) \\times h}{2} = \\dfrac{(${a} + ${b}) \\times ${h}}{2} = \\dfrac{${a + b} \\times ${h}}{2} = ${S}$ (m²).\n\n**Đáp số:** ${S} m².`,
+    figure: { kind: "trapezoid", a, b, h, unit: "m" },
+    solutionFigure: { kind: "trapezoid", a, b, h, unit: "m", shaded: true },
   };
 }
 
-function buildCircle(r: number): {
-  problemText: string; expectedAnswer: number; explanation: string; answerFormat: AnswerFormat;
-} {
+function buildCircle(r: number): Built {
   const S = round2(PI * r * r);
   const sStr = toVnFixed(S, 2);
   return {
@@ -93,6 +100,8 @@ function buildCircle(r: number): {
     answerFormat: "decimal",
     explanation:
       `**Bài giải:**\n\nDiện tích hình tròn là:\n\n$S = \\pi \\times r^2 = 3{,}14 \\times ${r}^2 = 3{,}14 \\times ${r * r} = ${sStr}$ (cm²).\n\n**Đáp số:** ${sStr} cm².`,
+    figure: { kind: "circle", radius: r, show: "radius", unit: "cm" },
+    solutionFigure: { kind: "circle", radius: r, show: "radius", unit: "cm", shaded: true },
   };
 }
 
@@ -102,12 +111,7 @@ export const wordCircleTriangleArea: Generator<number> = {
     const rng = makeRng(seed);
     const d = difficulty as 1 | 2 | 3;
 
-    let result: {
-      problemText: string;
-      expectedAnswer: number;
-      explanation: string;
-      answerFormat: AnswerFormat;
-    };
+    let result: Built;
 
     if (d === 1) {
       // D1: triangle only
@@ -152,6 +156,8 @@ export const wordCircleTriangleArea: Generator<number> = {
       answerFormat: result.answerFormat,
       expectedAnswer: result.expectedAnswer,
       explanation: result.explanation,
+      figure: result.figure,
+      solutionFigure: result.solutionFigure,
       metadata: {
         difficulty: d,
         seed,

@@ -3,7 +3,7 @@
 // submitAnswerCore is exported so Phase 12 tests can call it with an explicit userId
 // without needing a real Auth.js session.
 import { getGenerator } from "@/lib/generators/registry";
-import type { Difficulty as GenDifficulty } from "@/lib/generators/types";
+import type { Difficulty as GenDifficulty, FigureSpec } from "@/lib/generators/types";
 import { formatExpectedAnswer } from "@/lib/practice/format-expected-answer";
 import { evaluateMastery } from "@/lib/mastery/evaluate-mastery";
 import { computeNextReview } from "@/lib/mastery/compute-next-review";
@@ -59,12 +59,14 @@ export async function submitAnswerCore(
   let correct: boolean;
   let correctAnswer = "";
   let explanation = "";
+  let solutionFigure: FigureSpec | undefined;
   try {
     const generator = getGenerator(skill.generatorKey);
     const q = generator.generate({ seed, difficulty, skillKey });
     correct = generator.validate(userAnswer, q);
     correctAnswer = formatExpectedAnswer(q.expectedAnswer, q.answerFormat);
     explanation = q.explanation ?? "";
+    solutionFigure = q.solutionFigure;
   } catch (err) {
     if (err instanceof Error && err.message.startsWith("NotImplemented")) {
       return { error: "stub", message: "Bài đang được chuẩn bị" };
@@ -200,6 +202,7 @@ export async function submitAnswerCore(
     ),
     correctAnswer,
     explanation,
+    solutionFigure,
     xpEarned: totalXp,
     newBadges: newBadgeKeys,
     dailyGoalCompleted: goal.completed,

@@ -38,6 +38,9 @@ export const boxSurfaceArea: Generator<number> = {
       explanation:
         `$S = 2(ab + bc + ca) = 2(${a}\\times${b} + ${b}\\times${c} + ${c}\\times${a})$\n\n` +
         `$= 2(${a * b} + ${b * c} + ${c * a}) = 2 \\times ${a * b + b * c + c * a} = ${expectedAnswer}\\,\\text{cm}^2$.`,
+      // Problem visual = 3D prism so student sees the box; solution visual = net so they see all 6 faces.
+      figure: { kind: "rectPrism3d", a, b, c, unit: "cm" },
+      solutionFigure: { kind: "rectPrismNet", a, b, c, unit: "cm" },
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME_SEC[d] },
     };
   },

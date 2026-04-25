@@ -3,6 +3,55 @@
 
 export type Difficulty = 1 | 2 | 3;
 
+/**
+ * A geometric dimension. `number` for concrete generated values, `string` for
+ * symbolic labels (e.g. "a", "h", "?") used by knowledge-note theory figures
+ * and "unknown side" word problems.
+ */
+export type Dim = number | string;
+
+/**
+ * Discriminated union describing every static SVG figure the system can render.
+ * Generators emit a `figure` (matches the problem statement) and optionally a
+ * `solutionFigure` (often `shaded` to highlight the area being computed).
+ *
+ * 2D kinds (Phase 02): triangle, trapezoid, rectangle (kiêm vuông), circle.
+ * 3D kinds (Phase 03): cylinder3d, cylinderNet, rectPrism3d (kiêm cube), rectPrismNet.
+ */
+export type FigureSpec =
+  | { kind: "triangle"; base: Dim; height: Dim; unit?: string; shaded?: boolean }
+  | { kind: "trapezoid"; a: Dim; b: Dim; h: Dim; unit?: string; shaded?: boolean }
+  | {
+      kind: "rectangle";
+      width: Dim;
+      height: Dim;
+      unit?: string;
+      /** Force aria-label to say "hình vuông" even when width ≠ height (rare; usually let auto-detect handle it). */
+      isSquare?: boolean;
+      shaded?: boolean;
+      /** Optional perimeter label rendered above the figure (e.g. "Chu vi = 42 m") — for problems that give the perimeter as input. */
+      perimeter?: Dim;
+    }
+  | {
+      kind: "circle";
+      radius: Dim;
+      /** What to draw + label on the diameter line. Defaults to "radius". */
+      show?: "radius" | "diameter";
+      unit?: string;
+      shaded?: boolean;
+    }
+  | { kind: "cylinder3d"; radius: Dim; height: Dim; unit?: string; shaded?: boolean }
+  | { kind: "cylinderNet"; radius: Dim; height: Dim; unit?: string }
+  | {
+      kind: "rectPrism3d";
+      a: Dim;
+      b: Dim;
+      c: Dim;
+      unit?: string;
+      shaded?: boolean;
+    }
+  | { kind: "rectPrismNet"; a: Dim; b: Dim; c: Dim; unit?: string };
+
 export type AnswerFormat =
   | "numeric"
   | "fraction"
@@ -46,6 +95,18 @@ export interface Question<T = number | Fraction | string> {
    * Generators may produce this; if absent, UI falls back to "Đáp án đúng: X" only.
    */
   explanation?: string;
+  /**
+   * Optional static figure that accompanies the problem text (rendered above it
+   * in the QuestionCard). Safe to send to client.
+   */
+  figure?: FigureSpec;
+  /**
+   * Optional figure that accompanies the explanation in the FeedbackPanel —
+   * usually a shaded variant of `figure`, or a different kind (e.g. cylinder net
+   * to visualise surface area). SERVER ONLY — strip-answer drops this before
+   * sending Question to client; it re-emerges in SubmitAnswerResult.
+   */
+  solutionFigure?: FigureSpec;
   metadata: {
     difficulty: Difficulty;
     seed: string;
