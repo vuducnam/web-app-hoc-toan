@@ -109,6 +109,20 @@ html {
   50%      { box-shadow: 0 0 0 10px rgb(240 180 41 / 0); }
 }
 
+/* Submit-moment ring pulses — fire on the question card right after answer.
+   Green = correct (mastery-2), red = wrong (coral-500). Outline grows then fades. */
+@keyframes ring-flash-correct {
+  0%   { box-shadow: 0 0 0 0   rgb(16 185 129 / .60); }
+  60%  { box-shadow: 0 0 0 12px rgb(16 185 129 / 0); }
+  100% { box-shadow: 0 0 0 0   rgb(16 185 129 / 0); }
+}
+
+@keyframes ring-flash-wrong {
+  0%   { box-shadow: 0 0 0 0   rgb(255 51 102 / .55); }
+  60%  { box-shadow: 0 0 0 12px rgb(255 51 102 / 0); }
+  100% { box-shadow: 0 0 0 0   rgb(255 51 102 / 0); }
+}
+
 /* Reduced motion — kill ambient loops, leave functional ones short */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

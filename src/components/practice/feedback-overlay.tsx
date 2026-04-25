@@ -113,20 +113,40 @@ export function FeedbackOverlay({
 }
 
 /**
- * Wrapper for the question card that applies a shake animation on wrong answers.
- * Import and use in practice-session.tsx around <QuestionCard>.
+ * Wrapper for the question card that applies a shake animation on wrong answers
+ * AND a brief border/ring flash at the moment of submission.
+ *   flash="correct" → green ring pulse (~500ms)
+ *   flash="wrong"   → red ring pulse + shake (~600ms)
+ *   flash=null      → idle, no animation
+ * The flash key forces the keyframe animation to restart on every submit so a
+ * second wrong answer in a row still pulses visibly.
  */
 export function ShakeWrapper({
   shake,
+  flash,
+  flashKey,
   children,
 }: {
   shake: boolean;
+  flash?: "correct" | "wrong" | null;
+  /** Bump this value (e.g. question seed) to force-restart the flash keyframe. */
+  flashKey?: string | number;
   children: React.ReactNode;
 }) {
+  const flashClass =
+    flash === "correct"
+      ? "animate-[ring-flash-correct_500ms_ease-out] rounded-3xl"
+      : flash === "wrong"
+        ? "animate-[ring-flash-wrong_600ms_ease-out] rounded-3xl"
+        : "";
+
   return (
     <motion.div
+      // key forces remount of the animation when a new flash starts
+      key={flash ? `${flash}-${flashKey ?? ""}` : "idle"}
       animate={shake ? SHAKE_ANIMATE : { x: 0 }}
       transition={shake ? SHAKE_TRANSITION : { duration: 0 }}
+      className={flashClass}
     >
       {children}
     </motion.div>

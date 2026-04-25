@@ -9,9 +9,11 @@ import { QuestionCard } from "./question-card";
 import { ProgressDots, type DotState } from "./progress-dots";
 import { ActionBar } from "./action-bar";
 import { FeedbackOverlay, ShakeWrapper, type FeedbackState } from "./feedback-overlay";
+import { IdleHintBubble } from "./idle-hint-bubble";
 import type { MasteryLevel } from "@/components/ui/mastery-pill";
 import { EncouragingToast } from "@/components/ui/encouraging-toast";
 import { randomSessionId } from "@/lib/practice/random-session-id";
+import { useIdleHint } from "@/lib/practice/use-idle-hint";
 import type { SafeQuestion } from "@/lib/mastery/strip-answer";
 import type { Difficulty } from "@/lib/generators/types";
 
@@ -181,6 +183,15 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
 
   const isLocked = isPending || state.feedback !== null;
 
+  // Idle nudge — soft prompt at 45s, deep prompt at 90s; resets on new question or any input.
+  const idlePhase = useIdleHint(state.current.seed, isLocked);
+
+  // Submit-moment ring flash signal — derived from feedback, keyed by seed so every
+  // new feedback (even a second wrong in a row) restarts the keyframe.
+  const flashKind: "correct" | "wrong" | null = state.feedback
+    ? state.feedback.correct ? "correct" : "wrong"
+    : null;
+
   return (
     <div className="space-y-4">
       {/* Progress header */}
@@ -210,7 +221,11 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
           </span>
         </div>
 
-        <ShakeWrapper shake={state.feedback?.correct === false}>
+        <ShakeWrapper
+          shake={state.feedback?.correct === false}
+          flash={flashKind}
+          flashKey={state.current.seed}
+        >
           <QuestionCard
             question={state.current}
             onAnswer={(v) => {
@@ -230,6 +245,9 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
           disabled={isLocked}
           answerEmpty={pendingAnswer === ""}
         />
+
+        {/* Soft idle nudge — only renders after 45s of inactivity, resets per question. */}
+        <IdleHintBubble phase={idlePhase} />
       </div>
 
       {/* Feedback overlay — full Phase 09 version with confetti + level-up banner */}
