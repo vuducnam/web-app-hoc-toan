@@ -36,10 +36,11 @@ interface FeedbackOverlayProps {
 }
 
 // Durations in ms
-const CORRECT_DISMISS_MS = 1500;
-const LEVEL_UP_EXTRA_MS = 800; // extra wait while level-up banner shows
-// Wrong answers do NOT auto-advance — student must click "Tiếp theo" to proceed
-// after reading the correct answer + explanation.
+// Correct answers auto-advance, but with enough delay (3s) for the student to
+// read the inline answer + explanation panel. They can also click "Tiếp theo"
+// to skip the wait. Wrong answers DO NOT auto-advance — manual click required.
+const CORRECT_DISMISS_MS = 3000;
+const LEVEL_UP_EXTRA_MS = 800;
 
 /**
  * Full feedback overlay replacing Phase 08 stub.
@@ -108,52 +109,45 @@ export function FeedbackOverlay({
         />
       )}
 
-      {/* Encouraging toast — only on correct answers (wrong feedback is in the inline panel below). */}
-      {feedback.correct && (
-        <EncouragingToast
-          open={true}
-          onOpenChange={() => {/* controlled by timer */}}
-          phrase={phrase}
-          kind={kind}
-          duration={CORRECT_DISMISS_MS}
-        />
-      )}
-
-      {/* Wrong-answer panel — shows correct answer + explanation + manual "Tiếp theo" button. */}
-      {!feedback.correct && (
-        <WrongFeedbackPanel
-          phrase={phrase}
-          correctAnswer={feedback.correctAnswer}
-          explanation={feedback.explanation}
-          onAdvance={onAdvance}
-        />
-      )}
+      {/* Inline panel — ALWAYS shown after submit. Correct = green/brand, wrong = coral.
+          Both render correctAnswer + explanation; correct auto-advances at 3s. */}
+      <FeedbackPanel
+        correct={feedback.correct}
+        phrase={phrase}
+        correctAnswer={feedback.correctAnswer}
+        explanation={feedback.explanation}
+        onAdvance={onAdvance}
+      />
     </>
   );
 }
 
-interface WrongFeedbackPanelProps {
+interface FeedbackPanelProps {
+  correct: boolean;
   phrase: string;
   correctAnswer: string;
   explanation: string;
   onAdvance: () => void;
 }
 
-/** Inline panel below the question card showing correct answer + explanation. */
-function WrongFeedbackPanel({ phrase, correctAnswer, explanation, onAdvance }: WrongFeedbackPanelProps) {
+/** Inline panel below the question card. Always shows correct answer + explanation. */
+function FeedbackPanel({ correct, phrase, correctAnswer, explanation, onAdvance }: FeedbackPanelProps) {
+  const tone = correct
+    ? { wrap: "border-bubble-mint-300 bg-bubble-mint-300/10", label: "text-bubble-mint-500", header: "Đáp án" }
+    : { wrap: "border-coral-300 bg-coral-50/30", label: "text-coral-500", header: "Đáp án đúng" };
+
   return (
     <div
       role="region"
-      aria-label="Đáp án đúng và giải thích"
-      className={cn(
-        "mt-4 rounded-3xl border-2 border-coral-300 bg-coral-50/30",
-        "p-5 md:p-6 space-y-3",
-      )}
+      aria-label={correct ? "Đáp án và giải thích" : "Đáp án đúng và giải thích"}
+      className={cn("mt-4 rounded-3xl border-2 p-5 md:p-6 space-y-3", tone.wrap)}
     >
-      <p className="text-sm font-bold text-coral-500" aria-live="polite">{phrase}</p>
+      <p className={cn("text-sm font-bold", tone.label)} aria-live="polite">
+        {correct ? "✓ " : ""}{phrase}
+      </p>
 
       <div className="space-y-1">
-        <p className="text-xs font-bold uppercase text-ink-600 tracking-wide">Đáp án đúng</p>
+        <p className="text-xs font-bold uppercase text-ink-600 tracking-wide">{tone.header}</p>
         <p className="font-mono text-2xl font-bold text-ink-900">{correctAnswer}</p>
       </div>
 
