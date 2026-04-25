@@ -45,6 +45,8 @@ export interface SkillProgressShape {
   longestStreak: number;
   lastPracticedAt: Date | null;
   lastDifficulty: PrismaDifficulty | null;
+  /** Parent-set override applied by getNextQuestion; null = use mastery-derived default. */
+  preferredDifficulty: PrismaDifficulty | null;
   nextReviewAt: Date | null;
   daysIntervalUntilReview: number;
 }

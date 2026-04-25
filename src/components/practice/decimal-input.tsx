@@ -13,7 +13,7 @@ const inputClass =
   " placeholder:text-ink-300";
 
 /** Decimal answer input; normalises Vietnamese comma separator to dot on submit. */
-export function DecimalInput({ onAnswer, disabled, autoFocus = true }: AnswerInputProps) {
+export function DecimalInput({ onAnswer, onChange, disabled, autoFocus = true }: AnswerInputProps) {
   const [value, setValue] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 
@@ -36,6 +36,7 @@ export function DecimalInput({ onAnswer, disabled, autoFocus = true }: AnswerInp
     // Allow digits, dot, and comma only
     const cleaned = e.target.value.replace(/[^0-9.,]/g, "");
     setValue(cleaned);
+    onChange?.(cleaned.trim() ? normalise(cleaned.trim()) : "");
   }
 
   return (

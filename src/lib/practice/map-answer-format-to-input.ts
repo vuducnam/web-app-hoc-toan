@@ -24,7 +24,13 @@ export function getInputVariant(answerFormat: AnswerFormat): AnswerFormat {
 
 /** Props signature that every input adapter must satisfy. */
 export interface AnswerInputProps {
+  /** Fired when user commits an answer (Enter key, MC click, Submit button). */
   onAnswer: (value: string) => void;
+  /**
+   * Fired continuously as the user types/selects. Parent uses this to track the
+   * current value so the bottom "Kiểm tra" button can submit it. Empty string when input cleared.
+   */
+  onChange?: (value: string) => void;
   disabled: boolean;
   autoFocus?: boolean;
   choices?: string[];

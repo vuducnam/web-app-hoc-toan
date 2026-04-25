@@ -12,7 +12,7 @@ const inputClass =
   " placeholder:text-ink-300";
 
 /** Generic text input for open-ended or word answers. */
-export function TextInput({ onAnswer, disabled, autoFocus = true }: AnswerInputProps) {
+export function TextInput({ onAnswer, onChange, disabled, autoFocus = true }: AnswerInputProps) {
   const [value, setValue] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 
@@ -26,6 +26,12 @@ export function TextInput({ onAnswer, disabled, autoFocus = true }: AnswerInputP
     }
   }
 
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const next = e.target.value;
+    setValue(next);
+    onChange?.(next.trim());
+  }
+
   return (
     <div className="flex flex-col items-center gap-2">
       <label className="text-sm text-ink-600 font-semibold">Nhập câu trả lời:</label>
@@ -35,7 +41,7 @@ export function TextInput({ onAnswer, disabled, autoFocus = true }: AnswerInputP
         aria-label="Nhập câu trả lời"
         value={value}
         disabled={disabled}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         className={cn(inputClass)}
         placeholder="..."

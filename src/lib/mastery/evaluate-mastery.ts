@@ -86,6 +86,10 @@ export function evaluateMastery(
   const ratio = correctRatio(correctAttempts, totalAttempts);
   const inactivityDays = daysSince(progress.lastPracticedAt, now);
   const isHard = attempt.difficulty === "HARD";
+  // STRICT progression gate (2026-04-25): each promotion requires the triggering
+  // attempt to be at the matching minimum difficulty. Closes the "D1 spam → MASTERED"
+  // loophole. NOT_STARTED → FAMILIAR has no gate (any first attempt advances).
+  const isMediumOrHigher = attempt.difficulty === "MEDIUM" || attempt.difficulty === "HARD";
 
   // --- 2. Determine new mastery level ---
   let masteryLevel: MasteryLevel = progress.masteryLevel;
@@ -105,6 +109,9 @@ export function evaluateMastery(
     }
 
     case "FAMILIAR": {
+      // STRICT GATE: PROFICIENT requires the triggering attempt to be at MEDIUM or HARD.
+      // Prevents reaching PROFICIENT by spamming EASY-only.
+      if (!isMediumOrHigher) break;
       // R3: streak=5 consecutive correct → PROFICIENT
       if (currentStreak >= PROFICIENT_STREAK_THRESHOLD) {
         masteryLevel = "PROFICIENT";
@@ -130,12 +137,15 @@ export function evaluateMastery(
         masteryLevel = "FAMILIAR";
         break;
       }
-      // R5: streak≥8 on hard → MASTERED
-      if (isHard && currentStreak >= MASTERED_STREAK_THRESHOLD) {
+      // STRICT GATE: MASTERED always requires the triggering attempt to be HARD.
+      // Closes the EASY/MEDIUM-only loophole on the ratio path (R5b).
+      if (!isHard) break;
+      // R5a: streak≥8 on hard → MASTERED
+      if (currentStreak >= MASTERED_STREAK_THRESHOLD) {
         masteryLevel = "MASTERED";
         break;
       }
-      // R5 (ratio path): ≥15 attempts AND ratio≥0.9 → MASTERED
+      // R5b (ratio path): ≥15 attempts AND ratio≥0.9 → MASTERED — now also requires isHard above.
       if (
         totalAttempts >= MASTERED_ATTEMPTS_THRESHOLD &&
         ratio >= MASTERED_RATIO_THRESHOLD

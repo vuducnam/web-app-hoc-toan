@@ -209,6 +209,9 @@ model SkillProgress {
   longestStreak         Int          @default(0)
   lastPracticedAt       DateTime?
   lastDifficulty        Difficulty?
+  // Parent-controlled difficulty override. Null = use mastery-derived default (nextDifficulty()).
+  // Set via parent's child-detail UI; student cannot change. Server reads at getNextQuestion time.
+  preferredDifficulty   Difficulty?
   // Spaced-repetition scheduling (Phase 05 populates; no cron job in MVP)
   nextReviewAt          DateTime?
   daysIntervalUntilReview Int        @default(0)

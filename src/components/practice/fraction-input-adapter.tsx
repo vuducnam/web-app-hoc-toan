@@ -6,7 +6,7 @@ import type { FractionValue } from "@/components/ui/fraction-input";
 import type { AnswerInputProps } from "@/lib/practice/map-answer-format-to-input";
 
 /** Fraction input adapter — emits "${num}/${den}" string on commit. */
-export function FractionInputAdapter({ onAnswer, disabled, autoFocus = true }: AnswerInputProps) {
+export function FractionInputAdapter({ onAnswer, onChange, disabled, autoFocus = true }: AnswerInputProps) {
   const [value, setValue] = useState<FractionValue>({ num: "", den: "" });
   // Focus the wrapper on mount so keyboard users can tab into numerator
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -27,6 +27,14 @@ export function FractionInputAdapter({ onAnswer, disabled, autoFocus = true }: A
     }
   }
 
+  function handleValueChange(next: FractionValue) {
+    setValue(next);
+    const num = next.num.trim();
+    const den = next.den.trim();
+    // Only emit a non-empty value when both fields are populated and den != 0
+    onChange?.(num && den && den !== "0" ? `${num}/${den}` : "");
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     // Allow Enter on denominator field to submit
     if (e.key === "Enter") handleCommit();
@@ -41,7 +49,7 @@ export function FractionInputAdapter({ onAnswer, disabled, autoFocus = true }: A
       <label className="text-sm text-ink-600 font-semibold">Điền phân số:</label>
       <FractionInput
         value={value}
-        onChange={setValue}
+        onChange={handleValueChange}
         disabled={disabled}
         ariaLabel="Nhập phân số đáp án"
       />

@@ -13,6 +13,8 @@ import type { Difficulty } from "@/lib/generators/types";
 interface QuestionCardProps {
   question: SafeQuestion & { seed: string; difficulty: Difficulty };
   onAnswer: (value: string) => void;
+  /** Live value while user types — wired to "Kiểm tra" button submit path. */
+  onChange?: (value: string) => void;
   disabled: boolean;
 }
 
@@ -21,11 +23,12 @@ interface QuestionCardProps {
  * The adapter receives key={question.seed} so it remounts (and auto-focuses)
  * on every new question.
  */
-export function QuestionCard({ question, onAnswer, disabled }: QuestionCardProps) {
+export function QuestionCard({ question, onAnswer, onChange, disabled }: QuestionCardProps) {
   const { problemText, problemLatex, answerFormat, choices, seed } = question;
 
   const adapterProps = {
     onAnswer,
+    onChange,
     disabled,
     autoFocus: true,
     choices: choices ?? [],

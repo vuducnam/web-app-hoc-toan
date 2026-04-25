@@ -13,6 +13,7 @@ function createProgress(overrides: Partial<SkillProgressShape> = {}): SkillProgr
     longestStreak: 0,
     lastPracticedAt: null,
     lastDifficulty: null,
+    preferredDifficulty: null,
     nextReviewAt: null,
     daysIntervalUntilReview: 0,
     ...overrides,
@@ -77,14 +78,15 @@ describe("evaluateMastery — 8-row state transition table", () => {
   // R3: FAMILIAR + streak=5 → PROFICIENT
   // =========================================================================
   describe("R3: FAMILIAR + streak=5 consecutive correct → PROFICIENT", () => {
-    it("transitions to PROFICIENT when streak reaches 5", () => {
+    it("transitions to PROFICIENT when streak reaches 5 (on MEDIUM)", () => {
       const progress = createProgress({
         masteryLevel: "FAMILIAR",
         currentStreak: 4,
         totalAttempts: 5,
         correctAttempts: 5,
       });
-      const attempt: AttemptInput = { correct: true, difficulty: "EASY", timestamp: now };
+      // Strict gate: PROFICIENT requires triggering attempt at MEDIUM or HARD.
+      const attempt: AttemptInput = { correct: true, difficulty: "MEDIUM", timestamp: now };
 
       const result = evaluateMastery(progress, attempt);
 
@@ -128,13 +130,14 @@ describe("evaluateMastery — 8-row state transition table", () => {
   // R4: FAMILIAR + ratio≥0.65 & attempts≥5 → PROFICIENT
   // =========================================================================
   describe("R4: FAMILIAR + ratio≥0.65 & attempts≥5 → PROFICIENT", () => {
-    it("transitions to PROFICIENT at ratio=0.65, 5 attempts", () => {
+    it("transitions to PROFICIENT at ratio=0.65, 5 attempts (on MEDIUM)", () => {
       const progress = createProgress({
         masteryLevel: "FAMILIAR",
         totalAttempts: 4,
         correctAttempts: 3, // 3/5 = 0.6, but attempt brings to 4/5 = 0.8
       });
-      const attempt: AttemptInput = { correct: true, difficulty: "EASY", timestamp: now };
+      // Strict gate: PROFICIENT requires triggering attempt at MEDIUM or HARD.
+      const attempt: AttemptInput = { correct: true, difficulty: "MEDIUM", timestamp: now };
 
       const result = evaluateMastery(progress, attempt);
 
@@ -212,13 +215,14 @@ describe("evaluateMastery — 8-row state transition table", () => {
   // R5b: PROFICIENT + ratio≥0.9 & attempts≥15 → MASTERED
   // =========================================================================
   describe("R5b: PROFICIENT + ratio≥0.9 & attempts≥15 → MASTERED", () => {
-    it("transitions to MASTERED at ratio=0.9, 15+ attempts", () => {
+    it("transitions to MASTERED at ratio=0.9, 15+ attempts (on HARD)", () => {
       const progress = createProgress({
         masteryLevel: "PROFICIENT",
         totalAttempts: 14,
         correctAttempts: 13, // 13/15 = 0.867, but next correct makes 14/15 = 0.933
       });
-      const attempt: AttemptInput = { correct: true, difficulty: "EASY", timestamp: now };
+      // Strict gate: MASTERED requires triggering attempt at HARD.
+      const attempt: AttemptInput = { correct: true, difficulty: "HARD", timestamp: now };
 
       const result = evaluateMastery(progress, attempt);
 
@@ -438,6 +442,70 @@ describe("evaluateMastery — 8-row state transition table", () => {
 
       expect(result.currentStreak).toBe(6);
       expect(result.longestStreak).toBe(6);
+    });
+  });
+
+  // =========================================================================
+  // STRICT DIFFICULTY GATE — closes "EASY-spam → MASTERED" loophole (2026-04-25)
+  // =========================================================================
+  describe("strict difficulty gate", () => {
+    it("FAMILIAR + EASY streak=5 stays FAMILIAR (no promotion on EASY)", () => {
+      const progress = createProgress({
+        masteryLevel: "FAMILIAR",
+        currentStreak: 4,
+        totalAttempts: 5,
+        correctAttempts: 5,
+      });
+      const attempt: AttemptInput = { correct: true, difficulty: "EASY", timestamp: now };
+      const result = evaluateMastery(progress, attempt);
+      expect(result.masteryLevel).toBe("FAMILIAR");
+      expect(result.leveledUp).toBe(false);
+    });
+
+    it("FAMILIAR + EASY ratio path stays FAMILIAR", () => {
+      const progress = createProgress({
+        masteryLevel: "FAMILIAR",
+        totalAttempts: 4,
+        correctAttempts: 3,
+      });
+      const attempt: AttemptInput = { correct: true, difficulty: "EASY", timestamp: now };
+      const result = evaluateMastery(progress, attempt);
+      expect(result.masteryLevel).toBe("FAMILIAR");
+    });
+
+    it("PROFICIENT + EASY ratio≥0.9, 15+ attempts stays PROFICIENT", () => {
+      const progress = createProgress({
+        masteryLevel: "PROFICIENT",
+        totalAttempts: 14,
+        correctAttempts: 13,
+      });
+      const attempt: AttemptInput = { correct: true, difficulty: "EASY", timestamp: now };
+      const result = evaluateMastery(progress, attempt);
+      expect(result.masteryLevel).toBe("PROFICIENT");
+      expect(result.leveledUp).toBe(false);
+    });
+
+    it("PROFICIENT + MEDIUM ratio≥0.9, 15+ attempts stays PROFICIENT (HARD required)", () => {
+      const progress = createProgress({
+        masteryLevel: "PROFICIENT",
+        totalAttempts: 14,
+        correctAttempts: 13,
+      });
+      const attempt: AttemptInput = { correct: true, difficulty: "MEDIUM", timestamp: now };
+      const result = evaluateMastery(progress, attempt);
+      expect(result.masteryLevel).toBe("PROFICIENT");
+    });
+
+    it("FAMILIAR + HARD streak=5 promotes to PROFICIENT (HARD also satisfies gate)", () => {
+      const progress = createProgress({
+        masteryLevel: "FAMILIAR",
+        currentStreak: 4,
+        totalAttempts: 5,
+        correctAttempts: 5,
+      });
+      const attempt: AttemptInput = { correct: true, difficulty: "HARD", timestamp: now };
+      const result = evaluateMastery(progress, attempt);
+      expect(result.masteryLevel).toBe("PROFICIENT");
     });
   });
 });

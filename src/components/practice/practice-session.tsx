@@ -8,7 +8,6 @@ import { submitAnswer, getNextQuestion } from "@/app/actions/practice-client-act
 import { QuestionCard } from "./question-card";
 import { ProgressDots, type DotState } from "./progress-dots";
 import { ActionBar } from "./action-bar";
-import { DifficultySelector, type DifficultyChoice } from "./difficulty-selector";
 import { FeedbackOverlay, ShakeWrapper, type FeedbackState } from "./feedback-overlay";
 import { IdleHintBubble } from "./idle-hint-bubble";
 import { NoteCard } from "@/components/knowledge-notes/note-card";
@@ -92,8 +91,6 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
   const [pendingAnswer, setPendingAnswer] = useState<string>("");
   const [isPending, startTransition] = useTransition();
   const [errorToast, setErrorToast] = useState<string | null>(null);
-  // Manual difficulty override — null = Auto (mastery-derived). Applies to NEXT question.
-  const [difficultyChoice, setDifficultyChoice] = useState<DifficultyChoice>(null);
   const sessionId = useRef<string>(randomSessionId());
   // Tracks current mastery so we can pass "before" level to level-up banner
   const currentMasteryRef = useRef<MasteryLevel>("NOT_STARTED");
@@ -112,7 +109,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
       return;
     }
     startTransition(async () => {
-      const next = await getNextQuestion(skillKey, difficultyChoice);
+      const next = await getNextQuestion(skillKey);
       if ("error" in next) {
         setErrorToast("Không thể tải câu tiếp theo. Vui lòng thử lại.");
         return;
@@ -121,7 +118,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
       resetTimer();
       setPendingAnswer("");
     });
-  }, [state.answered, skillKey, router, difficultyChoice]);
+  }, [state.answered, skillKey, router]);
 
   async function handleSubmit(userAnswer: string) {
     if (isPending || state.feedback) return;
@@ -176,7 +173,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
       return;
     }
     startTransition(async () => {
-      const next = await getNextQuestion(skillKey, difficultyChoice);
+      const next = await getNextQuestion(skillKey);
       if ("error" in next) {
         setErrorToast("Không thể tải câu tiếp theo.");
         return;
@@ -236,7 +233,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
 
       {/* Question card — wrapped in ShakeWrapper for wrong-answer animation */}
       <div className="relative bg-white rounded-3xl shadow-chunky border border-brand-100 p-6 md:p-10">
-        {/* Skill label + knowledge-note drawer + difficulty selector */}
+        {/* Skill label + knowledge-note drawer + read-only difficulty badge */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold bg-brand-50 text-brand-700 px-2.5 py-1 rounded-full">
@@ -246,11 +243,14 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
               <NoteDrawer note={knowledgeNote} skillName={skillName} />
             )}
           </div>
-          <DifficultySelector
-            value={difficultyChoice}
-            onChange={setDifficultyChoice}
-            disabled={isLocked}
-          />
+          {/* Difficulty is parent-controlled via SkillProgress.preferredDifficulty;
+              shown read-only for transparency. */}
+          <span
+            aria-label={`Độ khó hiện tại: mức ${state.current.difficulty}`}
+            className="text-xs font-bold bg-bubble-mint-300/40 text-bubble-mint-500 px-2.5 py-1 rounded-full"
+          >
+            Độ khó: {state.current.difficulty === 1 ? "Dễ" : state.current.difficulty === 2 ? "Vừa" : "Khó"}
+          </span>
         </div>
 
         <ShakeWrapper
@@ -264,6 +264,7 @@ export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeN
               setPendingAnswer(v);
               handleSubmit(v);
             }}
+            onChange={setPendingAnswer}
             disabled={isLocked}
           />
         </ShakeWrapper>

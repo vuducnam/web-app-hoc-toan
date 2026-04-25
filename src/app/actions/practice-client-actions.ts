@@ -6,6 +6,7 @@ import { verifyStudent } from "@/lib/dal";
 import { getGenerator } from "@/lib/generators/registry";
 import type { Difficulty as GenDifficulty } from "@/lib/generators/types";
 import { nextDifficulty } from "@/lib/mastery/next-difficulty";
+import { prismaDifficultyToNumeric } from "@/lib/mastery/types";
 import { stripAnswer, type SafeQuestion } from "@/lib/mastery/strip-answer";
 import { prisma } from "@/lib/prisma";
 import { loadProgress } from "./practice-helpers";
@@ -15,7 +16,6 @@ import type { QuestionError, SubmitAnswerInput, SubmitAnswerResult } from "./pra
 /** Next question — duplicated from practice.ts to avoid circular proxy chain. */
 export async function getNextQuestion(
   skillKey: string,
-  difficultyOverride?: GenDifficulty | null,
 ): Promise<(SafeQuestion & { seed: string; difficulty: GenDifficulty }) | QuestionError> {
   const user = await verifyStudent();
   const skill = await prisma.skill.findUnique({ where: { key: skillKey } });
@@ -25,10 +25,9 @@ export async function getNextQuestion(
   }
   const progress = await loadProgress(user.id, skillKey);
   const masteryDifficulty = nextDifficulty(progress.masteryLevel);
-  const difficulty: GenDifficulty =
-    difficultyOverride === 1 || difficultyOverride === 2 || difficultyOverride === 3
-      ? difficultyOverride
-      : masteryDifficulty;
+  const difficulty: GenDifficulty = progress.preferredDifficulty
+    ? prismaDifficultyToNumeric(progress.preferredDifficulty)
+    : masteryDifficulty;
   const seed = crypto.randomUUID();
   try {
     const generator = getGenerator(skill.generatorKey);

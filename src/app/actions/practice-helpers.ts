@@ -37,6 +37,7 @@ export async function loadProgress(
       longestStreak: row.longestStreak,
       lastPracticedAt: row.lastPracticedAt,
       lastDifficulty: row.lastDifficulty as SkillProgressShape["lastDifficulty"],
+      preferredDifficulty: row.preferredDifficulty as SkillProgressShape["preferredDifficulty"],
       nextReviewAt: row.nextReviewAt,
       daysIntervalUntilReview: row.daysIntervalUntilReview,
     };
@@ -53,6 +54,7 @@ export async function loadProgress(
     longestStreak: 0,
     lastPracticedAt: null,
     lastDifficulty: null,
+    preferredDifficulty: null,
     nextReviewAt: null,
     daysIntervalUntilReview: 0,
   };

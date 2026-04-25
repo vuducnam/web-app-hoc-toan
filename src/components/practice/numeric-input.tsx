@@ -12,7 +12,7 @@ const inputClass =
   " placeholder:text-ink-300";
 
 /** Numeric input for integer / whole-number answers. */
-export function NumericInput({ onAnswer, disabled, autoFocus = true }: AnswerInputProps) {
+export function NumericInput({ onAnswer, onChange, disabled, autoFocus = true }: AnswerInputProps) {
   const [value, setValue] = useState("");
   const ref = useRef<HTMLInputElement>(null);
 
@@ -27,6 +27,12 @@ export function NumericInput({ onAnswer, disabled, autoFocus = true }: AnswerInp
     }
   }
 
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const next = e.target.value;
+    setValue(next);
+    onChange?.(next.trim());
+  }
+
   return (
     <div className="flex flex-col items-center gap-2">
       <label className="text-sm text-ink-600 font-semibold">Nhập đáp số:</label>
@@ -37,7 +43,7 @@ export function NumericInput({ onAnswer, disabled, autoFocus = true }: AnswerInp
         aria-label="Nhập đáp số"
         value={value}
         disabled={disabled}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         className={cn(inputClass)}
         placeholder="0"

@@ -8,6 +8,7 @@ import { verifyStudent } from "@/lib/dal";
 import { getGenerator } from "@/lib/generators/registry";
 import type { Difficulty as GenDifficulty } from "@/lib/generators/types";
 import { nextDifficulty } from "@/lib/mastery/next-difficulty";
+import { prismaDifficultyToNumeric } from "@/lib/mastery/types";
 import { stripAnswer, type SafeQuestion } from "@/lib/mastery/strip-answer";
 import { prisma } from "@/lib/prisma";
 import { loadProgress } from "./practice-helpers";
@@ -42,13 +43,11 @@ export type {
  * Strips expectedAnswer before returning — the ONLY path a Question leaves the server.
  * Returns seed + difficulty so the client can echo them back on submitAnswer.
  *
- * `difficultyOverride`: optional manual difficulty selection (1|2|3) from client UI.
- * When provided, takes precedence over mastery-derived difficulty. Other values
- * (null/undefined/out-of-range) fall back to mastery-based.
+ * Difficulty priority: parent-set `preferredDifficulty` on SkillProgress (locked control)
+ * > mastery-derived default via nextDifficulty(). Student cannot override.
  */
 export async function getNextQuestion(
   skillKey: string,
-  difficultyOverride?: GenDifficulty | null,
 ): Promise<(SafeQuestion & { seed: string; difficulty: GenDifficulty }) | QuestionError> {
   // 1. Verify STUDENT session
   const user = await verifyStudent();
@@ -62,13 +61,12 @@ export async function getNextQuestion(
     return { error: "stub", message: "Bài đang được chuẩn bị" };
   }
 
-  // 3. Resolve difficulty: explicit client override (validated) wins over mastery default.
+  // 3. Resolve difficulty: parent-set preference takes priority over mastery default.
   const progress = await loadProgress(user.id, skillKey);
   const masteryDifficulty = nextDifficulty(progress.masteryLevel);
-  const difficulty: GenDifficulty =
-    difficultyOverride === 1 || difficultyOverride === 2 || difficultyOverride === 3
-      ? difficultyOverride
-      : masteryDifficulty;
+  const difficulty: GenDifficulty = progress.preferredDifficulty
+    ? prismaDifficultyToNumeric(progress.preferredDifficulty)
+    : masteryDifficulty;
 
   // 4. Generate seed + question; catch stub / not-implemented errors gracefully
   const seed = crypto.randomUUID();
