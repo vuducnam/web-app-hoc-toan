@@ -20,8 +20,13 @@ import type { Generator } from "./types";
 // Stub keys — curriculum skills not yet implemented as live generators.
 // Source: researcher-curriculum-knt-k45.md + expected generatorKeys from
 //   prisma/seed-data/grade-4.ts and grade-5.ts (Phase 03).
+// Phase 12.5 expansion: added 28 keys discovered as `Skill.generatorKey` in
+// seeded DB but missing from registry — getGenerator() previously threw
+// "Unknown generator" for these, now resolves to a stub with NotImplemented
+// thrown at generate() so practice page renders the "coming soon" placeholder.
 // ---------------------------------------------------------------------------
 const STUB_KEYS: readonly string[] = [
+  // Original Phase 03 stubs — kept for backward compat; some unused by current seed
   "round-to-nearest-10k",
   "compare-multi-digit",
   "convert-units-length",
@@ -41,6 +46,41 @@ const STUB_KEYS: readonly string[] = [
   "add-sub-decimals-vertical",
   "multiply-by-10-100-1000",
   "divide-by-10-100-1000",
+
+  // Phase 12.5 — seed generatorKeys missing from registry (28 keys)
+  // Grade 4 — number sense + arithmetic
+  "numbers-to-100k",
+  "even-odd",
+  "6-digit-numbers",
+  "place-value-6digit",
+  "rounding",
+  "add-large-numbers",
+  "sub-large-numbers",
+  "multiply-1-digit",
+  "divide-1-digit",
+  "multiply-divide-powers-10",
+  // Grade 4 — units + fractions
+  "length-conversion",
+  "mass-conversion",
+  "capacity-conversion",
+  "fraction-concept",
+  // Grade 5 — decimal + fraction extensions
+  "natural-numbers-review",
+  "fractions-review",
+  "decimal-concept",
+  "decimal-rounding",
+  "decimal-powers-10",
+  // Grade 5 — geometry + measurement
+  "area-unit-conversion",
+  "volume-units",
+  "rectangular-prism-volume",
+  "time-measurement",
+  // Reviews (composite generators — Phase 13 implements via composition)
+  "semester1-review-arithmetic",
+  "semester1-review-decimals",
+  "year-review-arithmetic",
+  "year-review-fractions",
+  "year-review-comprehensive",
 ];
 
 // ---------------------------------------------------------------------------

@@ -49,10 +49,15 @@ export async function submitAnswerCore(
   const skill = await prisma.skill.findUnique({ where: { key: skillKey } });
   if (!skill) return { error: "not-found" };
 
+  // poolKey skills have no procedural generator — surface placeholder.
+  if (!skill.generatorKey) {
+    return { error: "stub", message: "Bài đang được chuẩn bị" };
+  }
+
   // 3. Re-generate server-side to recover expectedAnswer, then validate
   let correct: boolean;
   try {
-    const generator = getGenerator(skillKey);
+    const generator = getGenerator(skill.generatorKey);
     const q = generator.generate({ seed, difficulty, skillKey });
     correct = generator.validate(userAnswer, q);
   } catch (err) {

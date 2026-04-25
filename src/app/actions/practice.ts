@@ -52,6 +52,11 @@ export async function getNextQuestion(
   const skill = await prisma.skill.findUnique({ where: { key: skillKey } });
   if (!skill) return { error: "not-found" };
 
+  // poolKey skills have no procedural generator — surface placeholder.
+  if (!skill.generatorKey) {
+    return { error: "stub", message: "Bài đang được chuẩn bị" };
+  }
+
   // 3. Derive difficulty from current mastery level
   const progress = await loadProgress(user.id, skillKey);
   const difficulty = nextDifficulty(progress.masteryLevel);
@@ -60,7 +65,7 @@ export async function getNextQuestion(
   const seed = crypto.randomUUID();
 
   try {
-    const generator = getGenerator(skillKey);
+    const generator = getGenerator(skill.generatorKey);
     const q = generator.generate({ seed, difficulty, skillKey });
 
     // 5. Strip expectedAnswer — mandatory before any return

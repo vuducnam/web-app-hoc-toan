@@ -19,11 +19,14 @@ export async function getNextQuestion(
   const user = await verifyStudent();
   const skill = await prisma.skill.findUnique({ where: { key: skillKey } });
   if (!skill) return { error: "not-found" };
+  if (!skill.generatorKey) {
+    return { error: "stub", message: "Bài đang được chuẩn bị" };
+  }
   const progress = await loadProgress(user.id, skillKey);
   const difficulty = nextDifficulty(progress.masteryLevel);
   const seed = crypto.randomUUID();
   try {
-    const generator = getGenerator(skillKey);
+    const generator = getGenerator(skill.generatorKey);
     const q = generator.generate({ seed, difficulty, skillKey });
     const safe = stripAnswer(q);
     return { ...safe, seed, difficulty };
