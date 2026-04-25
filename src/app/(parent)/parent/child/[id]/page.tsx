@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { verifyParent } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { loadChildDashboardData } from "@/lib/parent/load-child-dashboard-data";
+import { loadChildSkillDifficulties } from "@/lib/parent/load-child-skill-difficulties";
 import { ChildDashboardView } from "@/components/parent/child-dashboard-view";
+import { SkillDifficultyList } from "@/components/parent/skill-difficulty-list";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -32,7 +34,10 @@ export default async function ChildDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const data = await loadChildDashboardData(childId);
+  const [data, skillDifficulties] = await Promise.all([
+    loadChildDashboardData(childId),
+    loadChildSkillDifficulties(childId),
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -44,6 +49,14 @@ export default async function ChildDetailPage({ params }: PageProps) {
       </div>
 
       <ChildDashboardView data={data} />
+
+      {/* Difficulty preferences — parent only, applied at next-question time */}
+      <div className="rounded-lg border border-ink-400/20 bg-white shadow-flat p-5">
+        <h2 className="text-sm font-semibold text-ink-600 uppercase tracking-wider mb-3">
+          Độ khó cho từng kỹ năng
+        </h2>
+        <SkillDifficultyList childId={childId} rows={skillDifficulties} />
+      </div>
     </div>
   );
 }
