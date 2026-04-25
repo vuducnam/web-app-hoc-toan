@@ -61,7 +61,8 @@ export const fractionSubtract: Generator<Fraction> = {
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
-      problemText: `\\frac{${an1}}{${ad1}} - \\frac{${an2}}{${ad2}} = ?`,
+      problemText: `${an1}/${ad1} - ${an2}/${ad2} = ?`,
+      problemLatex: `\\frac{${an1}}{${ad1}} - \\frac{${an2}}{${ad2}} = ?`,
       answerFormat: "fraction",
       expectedAnswer: answer,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },

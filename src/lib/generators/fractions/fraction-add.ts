@@ -53,7 +53,8 @@ export const fractionAdd: Generator<Fraction> = {
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
-      problemText: `\\frac{${n1}}{${d1}} + \\frac{${n2}}{${d2}} = ?`,
+      problemText: `${n1}/${d1} + ${n2}/${d2} = ?`,
+      problemLatex: `\\frac{${n1}}{${d1}} + \\frac{${n2}}{${d2}} = ?`,
       answerFormat: "fraction",
       expectedAnswer: answer,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },

@@ -54,7 +54,8 @@ export const fractionCommonDenominator: Generator<string> = {
     return {
       id: `${skillKey}-${seed}`,
       skillKey,
-      problemText: `Quy đồng mẫu số: \\frac{${n1}}{${d1}} và \\frac{${n2}}{${d2}}`,
+      problemText: `Quy đồng mẫu số: ${n1}/${d1} và ${n2}/${d2}`,
+      problemLatex: `\\frac{${n1}}{${d1}} \\quad \\frac{${n2}}{${d2}}`,
       answerFormat: "text",
       expectedAnswer: answer,
       metadata: { difficulty: d, seed, skillKey, timeEstimateSec: TIME[d] },
