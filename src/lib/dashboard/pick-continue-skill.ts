@@ -11,15 +11,26 @@ export interface ContinueSkill {
 /**
  * Returns the skill the student should continue with next.
  * Excludes pool-only skills (generatorKey null) since practice page requires a generator.
- * Returns null only if no generator-backed skills exist in the DB.
+ * Filtered by gradeId so a Grade-4 student never gets suggested a Grade-5 skill.
+ * Returns null only if no generator-backed skills exist in the user's grade.
  */
-export async function pickContinueSkill(userId: string): Promise<ContinueSkill | null> {
-  // 1. Most recently practised, not yet MASTERED, with a generator key
+export async function pickContinueSkill(
+  userId: string,
+  gradeId: string | null,
+): Promise<ContinueSkill | null> {
+  const gradeFilter = gradeId
+    ? { lesson: { topic: { volume: { gradeId } } } }
+    : {};
+
+  // 1. Most recently practised, not yet MASTERED, with a generator key, in user's grade
   const recent = await prisma.skillProgress.findFirst({
     where: {
       userId,
       masteryLevel: { not: "MASTERED" },
-      skill: { generatorKey: { not: null } },
+      skill: {
+        generatorKey: { not: null },
+        ...gradeFilter,
+      },
     },
     orderBy: { lastPracticedAt: "desc" },
     include: { skill: true },
@@ -29,9 +40,12 @@ export async function pickContinueSkill(userId: string): Promise<ContinueSkill |
     return { key: recent.skillKey, nameVi: recent.skill.nameVi };
   }
 
-  // 2. Fallback: first generator-backed skill ordered by topic → lesson → skill
+  // 2. Fallback: first generator-backed skill in user's grade
   const first = await prisma.skill.findFirst({
-    where: { generatorKey: { not: null } },
+    where: {
+      generatorKey: { not: null },
+      ...gradeFilter,
+    },
     orderBy: [
       { lesson: { topic: { order: "asc" } } },
       { lesson: { order: "asc" } },

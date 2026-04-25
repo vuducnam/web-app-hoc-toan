@@ -27,6 +27,9 @@ export default async function TopicDetailPage({ params }: Props) {
 
   if (!topic) notFound();
 
+  // Cross-grade access check: a Grade-4 student must not view Grade-5 topics directly via URL.
+  if (user.gradeId && topic.volume.gradeId !== user.gradeId) notFound();
+
   const skills = topic.lessons.flatMap((l) => l.skills);
   const skillKeys = skills.map((s) => s.key);
 

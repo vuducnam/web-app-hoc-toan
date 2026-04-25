@@ -1,13 +1,20 @@
 // Parent: page to add a new child account. Verifies session via layout DAL.
 import type { Metadata } from "next";
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { AddChildForm } from "@/components/parent/add-child-form";
 
 export const metadata: Metadata = {
   title: "Thêm học sinh — Phụ huynh | Toán SGK",
 };
 
-export default function AddChildPage() {
+export default async function AddChildPage() {
+  // Load grades so the form can render a required grade selector.
+  const grades = await prisma.grade.findMany({
+    select: { id: true, key: true, name: true },
+    orderBy: { key: "asc" },
+  });
+
   return (
     <div className="max-w-2xl mx-auto py-8 flex flex-col gap-6">
       <div>
@@ -26,7 +33,7 @@ export default function AddChildPage() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-flat p-6 border border-ink-400/10">
-        <AddChildForm />
+        <AddChildForm grades={grades} />
       </div>
     </div>
   );

@@ -23,8 +23,9 @@ export default async function StudentDashboardPage() {
     prisma.dailyGoal.findUnique({
       where: { userId_date: { userId: user.id, date: today } },
     }),
-    // Full curriculum tree for topic grid
+    // Curriculum tree filtered to user's grade only — students see only their grade.
     prisma.topic.findMany({
+      where: user.gradeId ? { volume: { gradeId: user.gradeId } } : undefined,
       include: {
         volume: { include: { grade: true } },
         lessons: { include: { skills: true } },
@@ -40,8 +41,8 @@ export default async function StudentDashboardPage() {
       where: { userId: user.id },
       select: { skillKey: true, masteryLevel: true },
     }),
-    // Best skill to continue
-    pickContinueSkill(user.id),
+    // Best skill to continue (scoped to user's grade)
+    pickContinueSkill(user.id, user.gradeId),
   ]);
 
   // Build progress map for O(1) lookups in topic grid

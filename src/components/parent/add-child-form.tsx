@@ -1,13 +1,23 @@
 "use client";
 // Parent dashboard: form to create a new child (student) account.
-// Username + 4-digit PIN + display name. Server action verifies parent session.
+// Name + username + 4-digit PIN + grade. Server action verifies parent session.
 import { useActionState, useState } from "react";
 import {
   createChildAccount,
   type CreateChildState,
 } from "@/app/actions/parent-children";
 
-export function AddChildForm() {
+interface GradeOption {
+  id: string;
+  key: string;
+  name: string;
+}
+
+interface AddChildFormProps {
+  grades: GradeOption[];
+}
+
+export function AddChildForm({ grades }: AddChildFormProps) {
   const [state, formAction, isPending] = useActionState<CreateChildState, FormData>(
     createChildAccount,
     undefined,
@@ -82,6 +92,31 @@ export function AddChildForm() {
         />
         <span className="text-xs text-ink-400">
           Bé sẽ dùng PIN này để đăng nhập.
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="child-grade" className="text-sm font-medium text-ink-900">
+          Lớp đang học
+        </label>
+        <select
+          id="child-grade"
+          name="gradeId"
+          required
+          defaultValue=""
+          className="border border-ink-400/30 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+        >
+          <option value="" disabled>
+            Chọn lớp...
+          </option>
+          {grades.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-ink-400">
+          Bé chỉ thấy bài tập đúng lớp đang học. Phụ huynh có thể đổi lớp sau.
         </span>
       </div>
 

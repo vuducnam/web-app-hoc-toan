@@ -8,6 +8,7 @@ import { loadChildDashboardData } from "@/lib/parent/load-child-dashboard-data";
 import { loadChildSkillDifficulties } from "@/lib/parent/load-child-skill-difficulties";
 import { ChildDashboardView } from "@/components/parent/child-dashboard-view";
 import { SkillDifficultyList } from "@/components/parent/skill-difficulty-list";
+import { GradeSection } from "@/components/parent/grade-section";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -27,16 +28,20 @@ export default async function ChildDetailPage({ params }: PageProps) {
   // Cross-child guard: child MUST belong to this parent
   const child = await prisma.user.findFirst({
     where: { id: childId, parentId: user.id },
-    select: { id: true },
+    select: { id: true, name: true, gradeId: true, grade: { select: { id: true, key: true, name: true } } },
   });
 
   if (!child) {
     notFound();
   }
 
-  const [data, skillDifficulties] = await Promise.all([
+  const [data, skillDifficulties, grades] = await Promise.all([
     loadChildDashboardData(childId),
     loadChildSkillDifficulties(childId),
+    prisma.grade.findMany({
+      select: { id: true, key: true, name: true },
+      orderBy: { key: "asc" },
+    }),
   ]);
 
   return (
@@ -49,6 +54,15 @@ export default async function ChildDetailPage({ params }: PageProps) {
       </div>
 
       <ChildDashboardView data={data} />
+
+      {/* Grade selection — parent can change which grade the student is studying */}
+      <GradeSection
+        childId={childId}
+        childName={child.name}
+        currentGradeId={child.gradeId}
+        currentGradeName={child.grade?.name ?? null}
+        grades={grades}
+      />
 
       {/* Difficulty preferences — parent only, applied at next-question time */}
       <div className="rounded-lg border border-ink-400/20 bg-white shadow-flat p-5">

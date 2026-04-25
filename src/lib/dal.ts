@@ -5,6 +5,7 @@ import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Verify that a valid session exists and return the session user.
@@ -22,6 +23,7 @@ export const verifySession = cache(async () => {
 
 /**
  * Verify session and assert the user is a STUDENT.
+ * Loads gradeId from DB so callers can filter curriculum by grade.
  * Redirects to "/" for unauthenticated or wrong-role requests.
  */
 export const verifyStudent = cache(async () => {
@@ -29,7 +31,12 @@ export const verifyStudent = cache(async () => {
   if (user.role !== "STUDENT") {
     redirect("/");
   }
-  return user;
+  // Fetch gradeId from DB (not stored in JWT to keep token small).
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { gradeId: true },
+  });
+  return { ...user, gradeId: dbUser?.gradeId ?? null };
 });
 
 /**

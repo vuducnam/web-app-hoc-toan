@@ -18,6 +18,7 @@ const childSchema = z.object({
     .string()
     .length(4, "Mã PIN phải có 4 chữ số")
     .regex(/^\d{4}$/, "Mã PIN chỉ gồm chữ số"),
+  gradeId: z.string().min(1, "Vui lòng chọn lớp"),
 });
 
 export type CreateChildState = { error?: string; success?: string } | undefined;
@@ -32,11 +33,18 @@ export async function createChildAccount(
     name: formData.get("name"),
     username: formData.get("username"),
     pin: formData.get("pin"),
+    gradeId: formData.get("gradeId"),
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Dữ liệu không hợp lệ" };
   }
-  const { name, username, pin } = parsed.data;
+  const { name, username, pin, gradeId } = parsed.data;
+
+  // Validate selected grade exists in the curriculum.
+  const grade = await prisma.grade.findUnique({ where: { id: gradeId } });
+  if (!grade) {
+    return { error: "Lớp không hợp lệ" };
+  }
 
   // Username uniqueness check (User.username is @unique in schema)
   const existing = await prisma.user.findUnique({ where: { username } });
@@ -52,10 +60,64 @@ export async function createChildAccount(
       pinHash,
       role: "STUDENT",
       parentId: parent.id,
+      gradeId,
     },
   });
 
   // Refresh parent dashboard so new child appears
   revalidatePath("/parent");
-  return { success: `Đã tạo tài khoản cho ${name}` };
+  return { success: `Đã tạo tài khoản cho ${name} (${grade.name})` };
+}
+
+// ---------------------------------------------------------------------------
+// Update grade — parent changes a child's current grade.
+// Preserves SkillProgress (history is kept; only the dashboard view is filtered).
+// ---------------------------------------------------------------------------
+
+const updateGradeSchema = z.object({
+  childId: z.string().min(1),
+  gradeId: z.string().min(1),
+});
+
+export type UpdateGradeState = { error?: string; success?: string } | undefined;
+
+export async function updateChildGrade(
+  _prevState: UpdateGradeState,
+  formData: FormData,
+): Promise<UpdateGradeState> {
+  const parent = await verifyParent();
+
+  const parsed = updateGradeSchema.safeParse({
+    childId: formData.get("childId"),
+    gradeId: formData.get("gradeId"),
+  });
+  if (!parsed.success) {
+    return { error: "Dữ liệu không hợp lệ" };
+  }
+  const { childId, gradeId } = parsed.data;
+
+  // Ownership check: child must belong to this parent.
+  const child = await prisma.user.findFirst({
+    where: { id: childId, parentId: parent.id, role: "STUDENT" },
+    select: { id: true, name: true },
+  });
+  if (!child) {
+    return { error: "Không tìm thấy học sinh thuộc về bạn" };
+  }
+
+  const grade = await prisma.grade.findUnique({ where: { id: gradeId } });
+  if (!grade) {
+    return { error: "Lớp không hợp lệ" };
+  }
+
+  await prisma.user.update({
+    where: { id: childId },
+    data: { gradeId },
+  });
+
+  revalidatePath(`/parent/child/${childId}`);
+  revalidatePath("/parent");
+  // Student dashboard reflects the new grade on next visit.
+  revalidatePath("/student");
+  return { success: `Đã chuyển ${child.name} sang ${grade.name}` };
 }

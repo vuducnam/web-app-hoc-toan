@@ -56,6 +56,14 @@ export function FeedbackOverlay({
   // Track confetti trigger via state so re-renders see the new value (refs read during render are not allowed)
   const [confettiTrigger, setConfettiTrigger] = useState<number>(0);
   const triggerSeqRef = useRef<number>(0);
+  // Panel can be hidden without advancing — student may want to look at the original
+  // question while keeping the option to re-show the answer + explanation.
+  const [dismissed, setDismissed] = useState<boolean>(false);
+
+  // Reset dismissed state whenever a new feedback object arrives (next submit).
+  useEffect(() => {
+    setDismissed(false);
+  }, [feedback]);
 
   useEffect(() => {
     if (!feedback) return;
@@ -73,7 +81,8 @@ export function FeedbackOverlay({
     const mimiTimer = setTimeout(() => setMimi("idle"), mimiResetMs);
 
     // Hybrid advance: correct → auto-dismiss; wrong → wait for student click on "Tiếp theo".
-    if (feedback.correct) {
+    // If student manually dismissed the panel, cancel auto-advance so they have time to think.
+    if (feedback.correct && !dismissed) {
       const dismissMs = CORRECT_DISMISS_MS + (feedback.leveledUp ? LEVEL_UP_EXTRA_MS : 0);
       const advanceTimer = setTimeout(onAdvance, dismissMs);
       return () => {
@@ -83,7 +92,7 @@ export function FeedbackOverlay({
     }
 
     return () => clearTimeout(mimiTimer);
-  }, [feedback, setMimi, onAdvance]);
+  }, [feedback, setMimi, onAdvance, dismissed]);
 
   if (!feedback) return null;
 
@@ -110,12 +119,16 @@ export function FeedbackOverlay({
       )}
 
       {/* Inline panel — ALWAYS shown after submit. Correct = green/brand, wrong = coral.
-          Both render correctAnswer + explanation; correct auto-advances at 3s. */}
+          Both render correctAnswer + explanation. Can be temporarily hidden via close
+          button → "Xem lại đáp án" pill restores it. */}
       <FeedbackPanel
         correct={feedback.correct}
         phrase={phrase}
         correctAnswer={feedback.correctAnswer}
         explanation={feedback.explanation}
+        dismissed={dismissed}
+        onDismiss={() => setDismissed(true)}
+        onRestore={() => setDismissed(false)}
         onAdvance={onAdvance}
       />
     </>
@@ -127,22 +140,85 @@ interface FeedbackPanelProps {
   phrase: string;
   correctAnswer: string;
   explanation: string;
+  dismissed: boolean;
+  onDismiss: () => void;
+  onRestore: () => void;
   onAdvance: () => void;
 }
 
-/** Inline panel below the question card. Always shows correct answer + explanation. */
-function FeedbackPanel({ correct, phrase, correctAnswer, explanation, onAdvance }: FeedbackPanelProps) {
+/** Inline panel below the question card. Always shows correct answer + explanation.
+ *  When `dismissed`, renders a compact bar with "Xem lại đáp án" + "Tiếp theo →". */
+function FeedbackPanel({
+  correct,
+  phrase,
+  correctAnswer,
+  explanation,
+  dismissed,
+  onDismiss,
+  onRestore,
+  onAdvance,
+}: FeedbackPanelProps) {
   const tone = correct
     ? { wrap: "border-bubble-mint-300 bg-bubble-mint-300/10", label: "text-bubble-mint-500", header: "Đáp án" }
     : { wrap: "border-coral-300 bg-coral-50/30", label: "text-coral-500", header: "Đáp án đúng" };
+
+  if (dismissed) {
+    return (
+      <div className="mt-4 flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          onClick={onRestore}
+          aria-label="Xem lại đáp án và giải thích"
+          className={cn(
+            "inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl font-display font-bold text-sm md:text-base",
+            "bg-white border-2 border-brand-300 text-brand-700 shadow-chunky transition-all",
+            "hover:bg-brand-50 active:translate-y-[3px] active:shadow-none",
+            "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-sun-500",
+          )}
+        >
+          <span aria-hidden="true">↩</span>
+          Xem lại đáp án
+        </button>
+        <button
+          type="button"
+          onClick={onAdvance}
+          className={cn(
+            "inline-flex items-center px-6 py-2.5 rounded-2xl font-display font-bold",
+            "bg-brand-500 text-white shadow-chunky-brand transition-all",
+            "hover:bg-brand-700 active:translate-y-[3px] active:shadow-none",
+            "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-sun-500",
+          )}
+        >
+          Tiếp theo →
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
       role="region"
       aria-label={correct ? "Đáp án và giải thích" : "Đáp án đúng và giải thích"}
-      className={cn("mt-4 rounded-3xl border-2 p-5 md:p-6 space-y-3", tone.wrap)}
+      className={cn("mt-4 rounded-3xl border-2 p-5 md:p-6 space-y-3 relative", tone.wrap)}
     >
-      <p className={cn("text-sm font-bold", tone.label)} aria-live="polite">
+      {/* Close button — hides panel without advancing, lets student look at the question. */}
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Ẩn đáp án (vẫn có thể xem lại)"
+        className={cn(
+          "absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full",
+          "text-ink-600 hover:text-ink-900 hover:bg-white/70 transition-colors",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sun-500",
+        )}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <p className={cn("text-sm font-bold pr-10", tone.label)} aria-live="polite">
         {correct ? "✓ " : ""}{phrase}
       </p>
 
