@@ -159,7 +159,10 @@ const EYE_COMPONENTS: Record<MimiState, React.FC> = {
   cheering: EyesCheering,
 };
 
-/** Mimi cat mascot SVG — 6 emotional states via state prop */
+/** Mimi cat mascot SVG — 6 emotional states via state prop.
+ * When idle, the whole figure performs an ambient bob (token: --animate-mimi-bob)
+ * so the mascot feels alive without distracting from content. Other states stop
+ * the bob to let their distinctive transform (rotate, lift) read clearly. */
 export function MimiSVG({ state = "idle", size = 120, className }: MimiSVGProps) {
   const Eyes = EYE_COMPONENTS[state];
   const transform = STATE_TRANSFORMS[state];
@@ -173,6 +176,7 @@ export function MimiSVG({ state = "idle", size = 120, className }: MimiSVGProps)
       height={size}
       viewBox="0 0 120 120"
       xmlns="http://www.w3.org/2000/svg"
+      style={state === "idle" ? { animation: "var(--animate-mimi-bob)", transformOrigin: "60px 80px" } : undefined}
       className={cn("select-none", className)}
     >
       <g transform={transform}>

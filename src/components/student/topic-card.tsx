@@ -24,7 +24,7 @@ export function TopicCard({
   return (
     <Link
       href={`/student/topic/${topicId}`}
-      className="group block bg-white rounded-2xl p-5 shadow-[0_5px_0_0_rgb(0_0_0/.10)] border border-brand-100 hover:border-brand-500 transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-sun-500"
+      className="group block bg-white rounded-2xl p-5 shadow-[0_5px_0_0_rgb(0_0_0/.10)] border border-brand-100 transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(.34,1.56,.64,1)] hover:-translate-y-1 hover:scale-[1.015] hover:border-brand-500 hover:shadow-card-glow active:translate-y-0 active:scale-[0.99] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-sun-500"
     >
       <div className="flex items-start justify-between gap-2 mb-3">
         <h3 className="font-display font-bold text-xl text-ink-900 leading-tight group-hover:text-brand-700 transition-colors">

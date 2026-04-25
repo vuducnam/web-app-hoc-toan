@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* color */
+  /* ── Core brand (existing) ────────────────────────────────────────── */
   --color-brand-50: #e6faf7;
   --color-brand-100: #b3f0e6;
   --color-brand-500: #0cbbab;
@@ -11,45 +11,70 @@
   --color-sun-700: #a17a14;
   --color-coral-300: #ff7a99;
   --color-coral-500: #ff3366;
+
+  /* ── Candy accents — adds playful "kid world" feel ───────────────── */
+  --color-bubble-purple-300: #d8b4fe;
+  --color-bubble-purple-500: #a855f7;
+  --color-bubble-mint-300: #86efac;
+  --color-bubble-mint-500: #22c55e;
+  --color-bubble-sky-300: #7dd3fc;
+  --color-bubble-sky-500: #0ea5e9;
+
+  /* ── Tier / mastery (slightly more saturated for joy) ────────────── */
   --color-tier-bronze: #cd7f32;
   --color-tier-silver: #b8c2cc;
   --color-tier-gold: #ffc107;
   --color-mastery-0: #e5e7eb;
-  --color-mastery-1: #fcd34d;
-  --color-mastery-2: #34d399;
+  --color-mastery-1: #fbbf24;
+  --color-mastery-2: #10b981;
   --color-mastery-3: #0cbbab;
+
+  /* ── Ink (text) ──────────────────────────────────────────────────── */
   --color-ink-900: #0f172a;
   --color-ink-600: #475569;
   --color-ink-400: #94a3b8;
-  --color-paper: #fffdf7;
+
+  /* ── Surfaces — warmer "honey paper" for kids ────────────────────── */
+  --color-paper: #fff8e7;
   --color-canvas: #f8fafc;
   --color-success: #22c55e;
   --color-warn: #f59e0b;
 
-  /* font */
-  --font-display: "Fredoka", system-ui, sans-serif;
+  /* ── Fonts ───────────────────────────────────────────────────────── */
+  --font-display: "Baloo 2", system-ui, sans-serif;
   --font-body: "Nunito", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* radius */
+  /* ── Radius ──────────────────────────────────────────────────────── */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-2xl: 32px;
 
-  /* shadow */
+  /* ── Shadows ─────────────────────────────────────────────────────── */
   --shadow-flat: 0 1px 2px rgb(15 23 42 / .06);
   --shadow-soft: 0 4px 12px rgb(15 23 42 / .08);
   --shadow-chunky: 0 5px 0 0 rgb(0 0 0 / .15);
   --shadow-chunky-brand: 0 5px 0 0 #067a70;
   --shadow-chunky-sun: 0 5px 0 0 #a17a14;
   --shadow-celebration: 0 0 32px rgb(255 51 102 / .35);
+  --shadow-card-glow: 0 8px 24px -4px rgb(12 187 171 / .25), 0 4px 12px -2px rgb(15 23 42 / .08);
 
-  /* motion */
+  /* ── Motion easings ──────────────────────────────────────────────── */
   --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
   --ease-snap: cubic-bezier(.4, 0, .2, 1);
   --ease-shake: cubic-bezier(.36, .07, .19, .97);
+
+  /* ── Animations (token-driven, available as Tailwind animate-*) ── */
+  --animate-mimi-bob: mimi-bob 3.2s ease-in-out infinite;
+  --animate-cta-wiggle: cta-wiggle 2.4s ease-in-out infinite;
+  --animate-soft-pulse: soft-pulse 2.6s ease-in-out infinite;
+}
+
+/* ── Default body size — bumped to 17px so 9–11 yo eyes ── */
+html {
+  font-size: 17px;
 }
 
 /* student-side root */
@@ -66,6 +91,29 @@
   font-family: var(--font-body);
 }
 
+/* ── Keyframes — engagement micro-motion ──────────────────────────── */
+@keyframes mimi-bob {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50%      { transform: translateY(-4px) rotate(1.5deg); }
+}
+
+@keyframes cta-wiggle {
+  /* gentle attention nudge — never blocks reading */
+  0%, 88%, 100% { transform: rotate(0deg) scale(1); }
+  92%           { transform: rotate(-1.5deg) scale(1.02); }
+  96%           { transform: rotate(1.5deg) scale(1.02); }
+}
+
+@keyframes soft-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(240 180 41 / .35); }
+  50%      { box-shadow: 0 0 0 10px rgb(240 180 41 / 0); }
+}
+
+/* Reduced motion — kill ambient loops, leave functional ones short */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
 }

@@ -37,10 +37,13 @@ const buttonVariants = cva(
           "hover:bg-brand-50 hover:text-brand-700",
           "min-h-[56px] px-4 py-3",
         ],
-        /** Student celebration — sun yellow CTA */
+        /** Student celebration — sun yellow CTA with ambient wiggle to invite tap.
+         *  Wiggle pauses on hover/active so the press feels deliberate, not jittery. */
         celebration: [
           "bg-sun-500 text-ink-900 font-bold font-display",
           "rounded-xl shadow-chunky-sun",
+          "animate-[cta-wiggle_2.4s_ease-in-out_infinite]",
+          "hover:[animation-play-state:paused] active:[animation-play-state:paused]",
           "active:translate-y-[3px] active:shadow-none",
           "hover:bg-sun-300",
           "min-h-[56px] px-8 py-4 text-xl",

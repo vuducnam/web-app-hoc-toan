@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Fredoka, Nunito, JetBrains_Mono } from "next/font/google";
+import { Baloo_2, Nunito, JetBrains_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
-// Fredoka does not ship a "vietnamese" subset — "latin-ext" covers
-// extended Latin glyphs including Vietnamese diacritics via Unicode ranges.
-const fredoka = Fredoka({
+// Baloo 2 ships a first-class "vietnamese" subset — picks proper diacritic glyphs
+// (ờ ợ ằ ặ etc.) instead of synthesizing them via Unicode-range fallback.
+const baloo = Baloo_2({
   variable: "--font-display",
-  subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const nunito = Nunito({
@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${fredoka.variable} ${nunito.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${baloo.variable} ${nunito.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
