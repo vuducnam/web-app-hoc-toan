@@ -50,14 +50,19 @@ async function upsertLesson(topicId: string, l: SeedLesson) {
   const existing = await prisma.lesson.findFirst({
     where: { topicId, order: l.order },
   });
+  const noteData = {
+    knowledgeNoteRemember:  l.knowledgeNoteRemember  ?? null,
+    knowledgeNoteCaution:   l.knowledgeNoteCaution   ?? null,
+    knowledgeNoteExtension: l.knowledgeNoteExtension ?? null,
+  };
   if (existing) {
     return prisma.lesson.update({
       where: { id: existing.id },
-      data: { nameVi: l.nameVi },
+      data: { nameVi: l.nameVi, ...noteData },
     });
   }
   return prisma.lesson.create({
-    data: { topicId, order: l.order, nameVi: l.nameVi },
+    data: { topicId, order: l.order, nameVi: l.nameVi, ...noteData },
   });
 }
 

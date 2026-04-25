@@ -11,6 +11,9 @@ import { ActionBar } from "./action-bar";
 import { DifficultySelector, type DifficultyChoice } from "./difficulty-selector";
 import { FeedbackOverlay, ShakeWrapper, type FeedbackState } from "./feedback-overlay";
 import { IdleHintBubble } from "./idle-hint-bubble";
+import { NoteCard } from "@/components/knowledge-notes/note-card";
+import { NoteDrawer } from "@/components/knowledge-notes/note-drawer";
+import type { KnowledgeNote } from "@/lib/knowledge-notes/resolve-note";
 import type { MasteryLevel } from "@/components/ui/mastery-pill";
 import { EncouragingToast } from "@/components/ui/encouraging-toast";
 import { randomSessionId } from "@/lib/practice/random-session-id";
@@ -74,10 +77,15 @@ interface PracticeSessionProps {
   firstQuestion: SafeQ;
   skillKey: string;
   skillName: string;
+  /** Pre-exercise knowledge note (lesson-level). Null = skip note flow. */
+  knowledgeNote?: KnowledgeNote | null;
 }
 
 /** Root client container for a 10-question practice session. */
-export function PracticeSession({ firstQuestion, skillKey, skillName }: PracticeSessionProps) {
+export function PracticeSession({ firstQuestion, skillKey, skillName, knowledgeNote }: PracticeSessionProps) {
+  // Pre-session note gate. Show NoteCard until student clicks "Bắt đầu".
+  // null/no-note → skip directly to practice.
+  const [noteDismissed, setNoteDismissed] = useState<boolean>(!knowledgeNote);
   const [state, dispatch] = useReducer(reducer, firstQuestion, initState);
   // Initialized lazily on first effect run; safe default 0 keeps useRef pure during render.
   const questionStartTimeRef = useRef<number>(0);
@@ -195,6 +203,17 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
     ? state.feedback.correct ? "correct" : "wrong"
     : null;
 
+  // Pre-session knowledge note gate — full-screen card before first question.
+  if (!noteDismissed && knowledgeNote) {
+    return (
+      <NoteCard
+        note={knowledgeNote}
+        skillName={skillName}
+        onContinue={() => setNoteDismissed(true)}
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
       {/* Progress header */}
@@ -217,11 +236,16 @@ export function PracticeSession({ firstQuestion, skillKey, skillName }: Practice
 
       {/* Question card — wrapped in ShakeWrapper for wrong-answer animation */}
       <div className="relative bg-white rounded-3xl shadow-chunky border border-brand-100 p-6 md:p-10">
-        {/* Skill label + difficulty selector */}
+        {/* Skill label + knowledge-note drawer + difficulty selector */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-bold bg-brand-50 text-brand-700 px-2.5 py-1 rounded-full">
-            {skillName}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold bg-brand-50 text-brand-700 px-2.5 py-1 rounded-full">
+              {skillName}
+            </span>
+            {knowledgeNote && (
+              <NoteDrawer note={knowledgeNote} skillName={skillName} />
+            )}
+          </div>
           <DifficultySelector
             value={difficultyChoice}
             onChange={setDifficultyChoice}

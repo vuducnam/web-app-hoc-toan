@@ -7,6 +7,7 @@ import { verifyStudent } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getNextQuestion } from "@/app/actions/practice";
 import { PracticeSession } from "@/components/practice/practice-session";
+import { resolveKnowledgeNote } from "@/lib/knowledge-notes/resolve-note";
 
 interface Props {
   params: Promise<{ skillKey: string }>;
@@ -18,9 +19,15 @@ export default async function PracticePage({ params }: Props) {
   // Auth guard — redirects to "/" if unauthenticated or wrong role.
   await verifyStudent();
 
-  // Skill must exist in curriculum.
-  const skill = await prisma.skill.findUnique({ where: { key: skillKey } });
+  // Skill must exist in curriculum. Include lesson so we can resolve knowledge notes.
+  const skill = await prisma.skill.findUnique({
+    where: { key: skillKey },
+    include: { lesson: true },
+  });
   if (!skill) notFound();
+
+  // Resolve pre-exercise knowledge note from lesson (MVP: lesson-only).
+  const knowledgeNote = resolveKnowledgeNote(skill.lesson);
 
   // Prefetch first question server-side for fast TTI.
   const firstQ = await getNextQuestion(skillKey);
@@ -51,6 +58,7 @@ export default async function PracticePage({ params }: Props) {
       firstQuestion={firstQ}
       skillKey={skillKey}
       skillName={skill.nameVi}
+      knowledgeNote={knowledgeNote}
     />
   );
 }

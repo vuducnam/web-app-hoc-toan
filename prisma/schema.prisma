@@ -162,6 +162,11 @@ model Lesson {
   topicId String
   order   Int
   nameVi  String
+  // Pre-exercise knowledge notes (Markdown + KaTeX). Three Vietnamese pedagogical sections.
+  // Resolution: lesson-level only (no skill override in MVP). Null in any field = section omitted in UI.
+  knowledgeNoteRemember  String? // "Ghi nhớ" — definitions, formulas, core concepts
+  knowledgeNoteCaution   String? // "Chú ý" — common mistakes, careful points
+  knowledgeNoteExtension String? // "Mở rộng" — extension thinking, related concepts
   topic   Topic   @relation(fields: [topicId], references: [id])
   skills  Skill[]
 

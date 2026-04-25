@@ -24,6 +24,17 @@ export const grade4: SeedGrade = {
             {
               order: 1,
               nameVi: "Số tự nhiên đến 100 000",
+              knowledgeNoteRemember:
+                "Số tự nhiên đến 100 000 gồm năm chữ số trở xuống.\n\n" +
+                "**Cách đọc:** đọc từ trái sang phải, theo các hàng:\n\n" +
+                "- Hàng chục nghìn — hàng nghìn — hàng trăm — hàng chục — hàng đơn vị.\n\n" +
+                "**Ví dụ:** $35\\,720$ đọc là *“ba mươi lăm nghìn bảy trăm hai mươi”*.",
+              knowledgeNoteCaution:
+                "- Khi đọc số có chữ số $0$ ở giữa, phải đọc *“không trăm”* hoặc *“không chục”* nếu cần (vd: $30\\,205$ → *“ba mươi nghìn hai trăm linh năm”*).\n" +
+                "- Đừng quên dấu cách giữa hàng nghìn và hàng trăm khi viết.",
+              knowledgeNoteExtension:
+                "Lên lớp 5 em sẽ học số đến hàng triệu, hàng tỉ — quy tắc đọc tương tự nhưng có thêm các lớp nghìn và lớp triệu. " +
+                "Trong đời sống, các số như dân số thành phố hay số tiền em thường gặp ở hàng nghìn này.",
               skills: [
                 {
                   key: "g4-numbers-to-100k",
@@ -37,6 +48,17 @@ export const grade4: SeedGrade = {
             {
               order: 2,
               nameVi: "Cộng và trừ trong phạm vi 100 000",
+              knowledgeNoteRemember:
+                "**Đặt tính rồi tính** theo cột dọc, các chữ số cùng hàng thẳng cột với nhau.\n\n" +
+                "- **Cộng có nhớ:** khi tổng hai chữ số $\\geq 10$, viết hàng đơn vị, *nhớ* $1$ sang hàng kế tiếp.\n" +
+                "- **Trừ có nhớ:** khi chữ số bị trừ nhỏ hơn chữ số trừ, *mượn* $1$ từ hàng cao hơn (giá trị $10$).\n\n" +
+                "**Ví dụ:** $45\\,678 + 27\\,894 = 73\\,572$.",
+              knowledgeNoteCaution:
+                "- Quên cộng *“nhớ 1”* sang hàng tiếp theo là lỗi rất phổ biến — kiểm tra lại từng cột.\n" +
+                "- Khi trừ, sau khi mượn $1$ thì hàng vừa cho mượn giảm đi $1$ — đừng quên!",
+              knowledgeNoteExtension:
+                "Phép cộng và trừ có nhớ là nền tảng cho phép cộng số thập phân (lớp 5) và phép cộng phân số. " +
+                "Hãy tập tính nhanh nhẩm với các số tròn nghìn để tăng tốc độ.",
               skills: [
                 {
                   key: "g4-add-sub-100k-carry",
@@ -50,6 +72,16 @@ export const grade4: SeedGrade = {
             {
               order: 3,
               nameVi: "Số chẵn, số lẻ",
+              knowledgeNoteRemember:
+                "- Số **chẵn** là số chia hết cho $2$: tận cùng là $0, 2, 4, 6, 8$.\n" +
+                "- Số **lẻ** là số *không* chia hết cho $2$: tận cùng là $1, 3, 5, 7, 9$.\n\n" +
+                "**Ví dụ:** $48$ chẵn, $137$ lẻ.",
+              knowledgeNoteCaution:
+                "- Chỉ cần nhìn **chữ số tận cùng** để biết một số chẵn hay lẻ — *không cần chia thử*.\n" +
+                "- Số $0$ là số **chẵn**.",
+              knowledgeNoteExtension:
+                "Tổng của hai số chẵn (hoặc hai số lẻ) là một số chẵn. " +
+                "Tổng một số chẵn và một số lẻ là một số lẻ. Em thử với các ví dụ để kiểm chứng nhé!",
               skills: [
                 {
                   key: "g4-even-odd",
@@ -99,6 +131,15 @@ export const grade4: SeedGrade = {
             {
               order: 1,
               nameVi: "Đọc, viết số có nhiều chữ số (đến 6 chữ số)",
+              knowledgeNoteRemember:
+                "Số có 6 chữ số có giá trị từ $100\\,000$ đến $999\\,999$.\n\n" +
+                "Các hàng từ phải sang trái: **đơn vị – chục – trăm – nghìn – chục nghìn – trăm nghìn**.\n\n" +
+                "**Ví dụ:** $234\\,567$ đọc là *“hai trăm ba mươi tư nghìn năm trăm sáu mươi bảy”*.",
+              knowledgeNoteCaution:
+                "- Khi viết, để **dấu cách (hoặc dấu chấm)** giữa hàng trăm và hàng nghìn cho dễ đọc.\n" +
+                "- Cẩn thận với chữ số $0$ ở giữa số (vd $200\\,015$): khi đọc phải đọc đúng các hàng có chữ số $0$.",
+              knowledgeNoteExtension:
+                "Trong dân số, dân số một huyện thường ở mức 6 chữ số. Em hãy tìm hiểu dân số quê em rồi viết số đó ra giấy nhé.",
               skills: [
                 {
                   key: "g4-6-digit-numbers",
@@ -112,6 +153,20 @@ export const grade4: SeedGrade = {
             {
               order: 2,
               nameVi: "Hàng và lớp — giá trị chữ số",
+              knowledgeNoteRemember:
+                "**Giá trị** của một chữ số $=$ chữ số đó $\\times$ giá trị của hàng nó đứng.\n\n" +
+                "- Hàng đơn vị: $\\times 1$\n" +
+                "- Hàng chục: $\\times 10$\n" +
+                "- Hàng trăm: $\\times 100$\n" +
+                "- Hàng nghìn: $\\times 1\\,000$\n" +
+                "- Hàng chục nghìn: $\\times 10\\,000$\n" +
+                "- Hàng trăm nghìn: $\\times 100\\,000$\n\n" +
+                "**Ví dụ:** Trong số $352\\,489$, chữ số $5$ ở hàng chục nghìn → giá trị là $5 \\times 10\\,000 = 50\\,000$.",
+              knowledgeNoteCaution:
+                "- Đừng nhầm **chữ số** với **giá trị của chữ số**: chữ số luôn là $0\\text{–}9$, còn giá trị thì có thể đến hàng trăm nghìn.\n" +
+                "- Đếm hàng từ phải sang trái — không từ trái sang.",
+              knowledgeNoteExtension:
+                "Hệ thập phân (cơ số $10$) là cách viết số em đang dùng. Lên cấp 2, em sẽ học hệ nhị phân (cơ số $2$) trong tin học.",
               skills: [
                 {
                   key: "g4-place-value-6digit",
@@ -125,6 +180,18 @@ export const grade4: SeedGrade = {
             {
               order: 3,
               nameVi: "Làm tròn số",
+              knowledgeNoteRemember:
+                "**Quy tắc làm tròn:** xét chữ số ngay bên *phải* hàng cần làm tròn.\n\n" +
+                "- Nếu chữ số đó **$\\geq 5$**: làm tròn lên (hàng cần làm tròn tăng $1$).\n" +
+                "- Nếu chữ số đó **$< 5$**: làm tròn xuống (hàng cần làm tròn giữ nguyên).\n" +
+                "- Tất cả chữ số bên phải hàng cần làm tròn đều thay bằng $0$.\n\n" +
+                "**Ví dụ:** Làm tròn $4\\,567$ đến hàng trăm: chữ số hàng chục là $6 \\geq 5$ → $4\\,600$.",
+              knowledgeNoteCaution:
+                "- *Làm tròn đến hàng chục* có nghĩa là kết quả tận cùng bằng $0$, không phải “lấy 1 chữ số”.\n" +
+                "- Khi chữ số bên phải đúng bằng $5$ (vd $45$ làm tròn hàng chục), quy tắc tiểu học: vẫn làm tròn lên ($45 \\to 50$).",
+              knowledgeNoteExtension:
+                "Trong cuộc sống, các siêu thị thường niêm yết giá tròn nghìn, ngân hàng làm tròn lãi suất đến phần trăm. " +
+                "Lên lớp 5 em sẽ học làm tròn số thập phân.",
               skills: [
                 {
                   key: "g4-rounding",

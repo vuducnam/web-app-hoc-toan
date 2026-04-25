@@ -27,7 +27,15 @@ export type SeedSkill =
       generatorKey?: never;
     };
 
-export interface SeedLesson {
+// Pre-exercise knowledge notes — 3 Vietnamese pedagogical sections.
+// Markdown + KaTeX content. Lesson-only granularity (no skill override in MVP).
+export interface KnowledgeNoteFields {
+  knowledgeNoteRemember?: string | null;
+  knowledgeNoteCaution?: string | null;
+  knowledgeNoteExtension?: string | null;
+}
+
+export interface SeedLesson extends KnowledgeNoteFields {
   order: number;
   nameVi: string;
   skills: SeedSkill[];
